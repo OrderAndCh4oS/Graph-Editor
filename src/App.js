@@ -12,7 +12,14 @@ class App extends Component {
         const g = new Digraph();
         const connections = [];
         trainFares.map(data => {
-                g.add_node(new Node(data.id, data.val));
+                g.addNode(
+                    new Node(
+                        data.id,
+                        data.val,
+                        data.color,
+                        data.conv
+                    )
+                );
                 if(data.equn !== '') {
                     const joins = data.equn.match(/{(.*?)}/g);
                     for(let join of joins) {
@@ -25,7 +32,7 @@ class App extends Component {
         );
 
         for (let connection of connections) {
-            g.add_edge(new Edge(g.get_node(connection[0]), g.get_node(connection[1])));
+            g.addEdge(new Edge(g.getNode(connection[0]), g.getNode(connection[1])));
         }
 
         this.state = {graph: g};

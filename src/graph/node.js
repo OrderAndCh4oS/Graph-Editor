@@ -1,19 +1,25 @@
 
 export default class Node {
 
-    name;
+    id;
     value;
+    label;
+    title;
+    color = 'blue';
+    conv = 1;
 
-    constructor(name, value) {
-        this.name = name;
-        this.value = value
+    constructor(id, value, color, conv) {
+        this.id = id;
+        this.value = value;
+        this.color = color;
+        this.conv = conv;
     }
 
-    get_name() {
-        return this.name
+    getId() {
+        return this.id
     }
 
-    get_value() {
+    getValue() {
         return this.value
     }
 

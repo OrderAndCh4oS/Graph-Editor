@@ -10,14 +10,14 @@ export default class Edge {
     }
 
     display() {
-        return this.source.get_name() + '->' + this.destination.get_name();
+        return this.source.getId() + '->' + this.destination.getId();
     }
 
-    get_source() {
+    getSource() {
         return this.source;
     }
 
-    get_destination() {
+    getDestination() {
         return this.destination;
     }
 }

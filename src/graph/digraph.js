@@ -4,20 +4,20 @@ import ConnectionView from '../component/connection-view';
 export default class Digraph {
     edges = [];
 
-    add_node(node) {
+    addNode(node) {
         if(this.edges.includes(node)) {
             throw Error('Duplicate node');
         }
         this.edges.push({node, edges: []});
     }
 
-    add_edge(edge) {
+    addEdge(edge) {
         const source = edge.source;
         const destination = edge.destination;
         const sourceNode = this.edges.find(
-            n => n.node.get_name() === source.get_name());
+            n => n.node.getId() === source.getId());
         const destinationNode = this.edges.find(
-            n => n.node.get_name() === destination.get_name());
+            n => n.node.getId() === destination.getId());
         if(!(sourceNode && destinationNode)) {
             throw Error('Node not in graph');
         }
@@ -25,17 +25,17 @@ export default class Digraph {
         sourceNode.edges.push(destination);
     }
 
-    children_of(node) {
+    childrenOf(node) {
         return this.edges[node];
     }
 
-    has_node(node) {
+    hasNode(node) {
         return this.edges.includes(node);
     }
 
-    get_node(name) {
+    getNode(name) {
         for(let n of this.edges) {
-            if(n.node.get_name() === name) {
+            if(n.node.getId() === name) {
                 return n.node;
             }
         }
@@ -48,7 +48,7 @@ export default class Digraph {
             source.edges.map(
                 destination =>
                     <ConnectionView
-                        key={source.node.get_name()+"->"+destination.get_name()}
+                        key={source.node.getId()+"->"+destination.getId()}
                         source={source.node}
                         destination={destination}
                     />,
