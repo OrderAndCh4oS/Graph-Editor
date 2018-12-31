@@ -47,7 +47,11 @@ export default class Digraph {
         return this.edges.map(source =>
             source.edges.map(
                 destination =>
-                    <ConnectionView source={source.node} destination={destination}/>,
+                    <ConnectionView
+                        key={source.node.get_name()+"->"+destination.get_name()}
+                        source={source.node}
+                        destination={destination}
+                    />,
             ),
         );
     }

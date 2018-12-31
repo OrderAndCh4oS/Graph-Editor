@@ -1,9 +1,9 @@
 import React from 'react';
 
 const NodeView = ({node}) =>
-    <div className={'node'}>
-        {node.get_name()}
-    </div>
+    <span className={'node'}>
+        {node.get_name()}: {node.get_value()}
+    </span>
 ;
 
 export default NodeView;

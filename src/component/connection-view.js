@@ -1,8 +1,9 @@
 import React from 'react';
+import NodeView from './node-view';
 
 const ConnectionView = ({source, destination}) =>
     <div className={'connection'}>
-        {source.get_name()} -> {destination.get_name()}
+        <NodeView node={source}/> -> <NodeView node={destination}/>
     </div>
 ;
 
