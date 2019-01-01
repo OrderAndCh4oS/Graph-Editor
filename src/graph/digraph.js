@@ -15,9 +15,9 @@ export default class Digraph {
         const source = edge.source;
         const destination = edge.destination;
         const sourceNode = this.edges.find(
-            n => n.node.getId() === source.getId());
+            n => n.node.id === source.id);
         const destinationNode = this.edges.find(
-            n => n.node.getId() === destination.getId());
+            n => n.node.id === destination.id);
         if(!(sourceNode && destinationNode)) {
             throw Error('Node not in graph');
         }
@@ -35,7 +35,7 @@ export default class Digraph {
 
     getNode(name) {
         for(let n of this.edges) {
-            if(n.node.getId() === name) {
+            if(n.node.id === name) {
                 return n.node;
             }
         }
@@ -48,7 +48,7 @@ export default class Digraph {
             source.edges.map(
                 destination =>
                     <ConnectionView
-                        key={source.node.getId()+"->"+destination.getId()}
+                        key={source.node.id + '->' + destination.id}
                         source={source.node}
                         destination={destination}
                     />,

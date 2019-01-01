@@ -10,7 +10,7 @@ export default class Edge {
     }
 
     display() {
-        return this.source.getId() + '->' + this.destination.getId();
+        return this.source.id + '->' + this.destination.id;
     }
 
     getSource() {

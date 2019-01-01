@@ -1,26 +1,45 @@
 
 export default class Node {
 
-    id;
-    value;
-    label;
-    title;
-    color = 'blue';
-    conv = 1;
-
-    constructor(id, value, color, conv) {
-        this.id = id;
-        this.value = value;
-        this.color = color;
-        this.conv = conv;
+    constructor(id, value, label, title, color, conv, equn) {
+        this._id = id;
+        this._value = value;
+        this._label = label;
+        this._title = title;
+        this._equn = equn;
+        this._color = color || 'blue';
+        this._conv = conv || 1;
     }
 
-    getId() {
-        return this.id
+    get id() {
+        return this._id;
     }
 
-    getValue() {
-        return this.value
+    get value() {
+        return this._value;
     }
 
+    set value(value) {
+        this._value = value;
+    }
+
+    get label() {
+        return this._label;
+    }
+
+    get title() {
+        return this._title;
+    }
+
+    get color() {
+        return this._color;
+    }
+
+    get conv() {
+        return this._conv;
+    }
+
+    get equn() {
+        return this._equn;
+    }
 }
