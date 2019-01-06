@@ -1,15 +1,7 @@
 
 export default class Node {
 
-    constructor(id, value, label, title, color, conv, equn) {
-        this._id = id;
-        this._value = value;
-        this._label = label;
-        this._title = title;
-        this._equn = equn;
-        this._color = color || 'blue';
-        this._conv = conv || 1;
-    }
+    _value;
 
     get id() {
         return this._id;
@@ -39,7 +31,12 @@ export default class Node {
         return this._conv;
     }
 
-    get equn() {
-        return this._equn;
+    constructor(id, value, label, title, color, conv) {
+        this._id = id;
+        this._value = value;
+        this._label = label;
+        this._title = title;
+        this._color = color || 'blue';
+        this._conv = conv || 1;
     }
 }

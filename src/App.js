@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import './App.css';
 import Graph from './graph/graph';
-import Node from './graph/node';
 import Edge from './graph/edge';
 import trainFares from './data/train-fares-model';
+import EquationNode from './graph/equation-node';
+import SeedNode from './graph/seed-node';
 
 class App extends Component {
     constructor(props) {
@@ -11,28 +12,40 @@ class App extends Component {
         const g = new Graph();
         const connections = [];
         for(let data of trainFares) {
-            g.addNode(new Node(
-                data.id,
-                data.val,
-                data.label,
-                data.title,
-                data.color,
-                data.conv,
-                data.equn,
-            ));
+            let node;
             if(data.equn !== '') {
                 const joins = data.equn.match(/{(.*?)}/g);
                 for(let join of joins) {
                     const id = join.replace(/^[{]|[}]+$/g, '');
                     connections.push([id, data.id]);
                 }
+                node = new EquationNode(
+                    data.id,
+                    data.label,
+                    data.title,
+                    data.color,
+                    data.conv,
+                    data.equn,
+                );
+            } else {
+                node = new SeedNode(
+                    data.id,
+                    data.val,
+                    data.label,
+                    data.title,
+                    data.color,
+                    data.conv,
+                );
             }
+            g.addNode(node);
         }
 
         for(let connection of connections) {
             g.addEdge(
                 new Edge(g.getNode(connection[0]), g.getNode(connection[1])));
         }
+
+        g.updateValues();
 
         this.state = {graph: g};
     }
