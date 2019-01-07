@@ -49,43 +49,48 @@ export default class Digraph {
 
     updateValues() {
         const nodesToUpdateLater = [];
-        let finished = false;
-        while(!finished) {
-            for(let node of this.edges) {
-                const n = node.node;
-                if(!(n instanceof EquationNode)) {
-                    continue;
-                }
-                console.log(n.equn);
-                let nodes = [];
-                let equation = n.equn;
-                const joins = n.equn.match(/{(.*?)}/g);
-                let canCalculate = true;
-                for(let join of joins) {
-                    const id = join.replace(/^[{]|[}]+$/g, '');
-                    const node = this.getNode(id);
-                    nodes.push(node);
-                    if(node.value !== null) {
-                        equation = equation.replace(/{(.*?)}/, node.value);
-                        console.log('E1: ', equation);
-                    } else {
-                        canCalculate = false;
-                    }
-                    console.log('E2: ', equation);
-
-                }
-                if(canCalculate) {
-                    // Todo: {equation: '{a}*{b}', values: []}
-                    n.setValue(eval(equation));
-                    console.log('V1: ', eval(equation));
-                } else {
-                    // Todo: loop through until all values are updated
-                    nodesToUpdateLater.push({node: n, otherNodes: nodes});
-                }
-
-                console.log(nodes);
+        for(let node of this.edges) {
+            const n = node.node;
+            if(!(n instanceof EquationNode)) {
+                continue;
             }
-            finished = true;
+            let nodes = [];
+            let equation = n.equn;
+            const edges = n.equn.match(/{(.*?)}/g);
+            let canCalculate = true;
+            for(let edge of edges) {
+                const id = edge.replace(/^[{]|[}]+$/g, '');
+                const node = this.getNode(id);
+                nodes.push(node);
+                if(node.value !== null) {
+                    equation = equation.replace(/{(.*?)}/, node.value);
+                } else {
+                    canCalculate = false;
+                }
+            }
+            if(canCalculate) {
+                n.setValue(eval(equation));
+                this._orderOfUpdates.push({node: n, otherNodes: nodes});
+            } else {
+                nodesToUpdateLater.push({node: n, otherNodes: nodes});
+            }
+        }
+        while(nodesToUpdateLater.length) {
+            const nodeToUpdate = nodesToUpdateLater.pop();
+            let canCalculate = true;
+            let equation = nodeToUpdate.node.equn;
+            for(const node of nodeToUpdate.otherNodes) {
+                if(node.value === null) {
+                    nodesToUpdateLater.unshift(nodeToUpdate);
+                    canCalculate = false;
+                    break;
+                }
+                equation = equation.replace(/{(.*?)}/, node.value);
+            }
+            if(canCalculate) {
+                nodeToUpdate.node.setValue(eval(equation));
+                this._orderOfUpdates.push(nodeToUpdate);
+            }
         }
     }
 
