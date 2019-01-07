@@ -48,6 +48,8 @@ export default class Digraph {
     }
 
     updateValues() {
+        // Todo: if this._orderOfUpdates is not empty use that.
+        // Todo: this should only organise the data for find the equations.
         const nodesToUpdateLater = [];
         for(let node of this.edges) {
             const n = node.node;
@@ -75,6 +77,11 @@ export default class Digraph {
                 nodesToUpdateLater.push({node: n, otherNodes: nodes});
             }
         }
+        this.calculateMissingEquations(nodesToUpdateLater);
+    }
+
+    calculateMissingEquations(nodesToUpdateLater) {
+        // Todo: use this for all calculations.
         while(nodesToUpdateLater.length) {
             const nodeToUpdate = nodesToUpdateLater.pop();
             let canCalculate = true;
