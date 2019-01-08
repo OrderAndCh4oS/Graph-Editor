@@ -6,6 +6,7 @@ import EquationNode from './equation-node';
 
 export default class Digraph {
     edges = [];
+    _nodesWithEquationData = [];
     _orderOfUpdates = [];
 
     addNode(node) {
@@ -47,44 +48,34 @@ export default class Digraph {
         throw Error('Name not found: ' + id);
     }
 
-    makeEquationDataForEachNode() {
-        // Todo: if this._orderOfUpdates is not empty use that instead.
-        const nodesWithEquationData = [];
-        for(let node of this.edges) {
-            const n = node.node;
-            if(!(n instanceof EquationNode)) {
+    populateNodesWithEquationData() {
+        for(let edge of this.edges) {
+            const node = edge.node;
+            if(!(node instanceof EquationNode)) {
                 continue;
             }
-            let nodes = [];
-            // Todo: consider whether or not we need to find the edges again.
-            const edges = n.equn.match(/{(.*?)}/g);
-            for(let edge of edges) {
-                const nodeId = edge.replace(/^[{]|[}]+$/g, '');
-                nodes.push(this.getNodeById(nodeId));
+            let edges = [];
+            for(let id of this.findEquationNodeIds(node.equn)) {
+                edges.push(this.getNodeById(id));
             }
-            nodesWithEquationData.push({node: n, equationNodes: nodes});
+            this._nodesWithEquationData.push({node, edges});
         }
-        return nodesWithEquationData;
     }
 
-    calculateEquations(nodesToUpdateLater) {
-        if(this._orderOfUpdates.length) {
-            for(const nodeToUpdate of this._orderOfUpdates) {
-                let equation = nodeToUpdate.node.equn;
-                for(const node of nodeToUpdate.equationNodes) {
-                    equation = equation.replace(/{(.*?)}/, node.value);
-                }
-                nodeToUpdate.node.setValue(eval(equation));
-                this._orderOfUpdates.push(nodeToUpdate);
-            }
-        }
-        while(nodesToUpdateLater.length) {
-            const nodeToUpdate = nodesToUpdateLater.pop();
+    calculateEquations() {
+        this._orderOfUpdates.length
+            ? this.updateEquations()
+            : this.hydrateEquations();
+    }
+
+    hydrateEquations() {
+        while(this._nodesWithEquationData.length) {
+            const nodeToUpdate = this._nodesWithEquationData.pop();
             let canCalculate = true;
             let equation = nodeToUpdate.node.equn;
-            for(const node of nodeToUpdate.equationNodes) {
+            for(const node of nodeToUpdate.edges) {
                 if(node.value === null) {
-                    nodesToUpdateLater.unshift(nodeToUpdate);
+                    this._nodesWithEquationData.unshift(nodeToUpdate);
                     canCalculate = false;
                     break;
                 }
@@ -94,6 +85,17 @@ export default class Digraph {
                 nodeToUpdate.node.setValue(eval(equation));
                 this._orderOfUpdates.push(nodeToUpdate);
             }
+        }
+    }
+
+    updateEquations() {
+        for(const nodeToUpdate of this._orderOfUpdates) {
+            let equation = nodeToUpdate.node.equn;
+            for(const node of nodeToUpdate.edges) {
+                equation = equation.replace(/{(.*?)}/, node.value);
+            }
+            nodeToUpdate.node.setValue(eval(equation));
+            this._orderOfUpdates.push(nodeToUpdate);
         }
     }
 
@@ -110,4 +112,13 @@ export default class Digraph {
         );
     }
 
+    findEquationNodeIds(str) {
+        const re = /(?:{)(.*?)(?:})/g;
+        const ids = [];
+        let m;
+        while((m = re.exec(str)) !== null) {
+            ids.push(m[1]);
+        }
+        return ids;
+    }
 }
