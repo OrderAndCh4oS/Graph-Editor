@@ -37,56 +37,52 @@ export default class Digraph {
         return this.edges.includes(node);
     }
 
-    getNode(name) {
+    getNodeById(id) {
         for(let n of this.edges) {
-            if(n.node.id === name) {
+            if(n.node.id === id) {
                 return n.node;
             }
         }
 
-        throw Error('Name not found: ' + name);
+        throw Error('Name not found: ' + id);
     }
 
-    updateValues() {
-        // Todo: if this._orderOfUpdates is not empty use that.
-        // Todo: this should only organise the data for find the equations.
-        const nodesToUpdateLater = [];
+    makeEquationDataForEachNode() {
+        // Todo: if this._orderOfUpdates is not empty use that instead.
+        const nodesWithEquationData = [];
         for(let node of this.edges) {
             const n = node.node;
             if(!(n instanceof EquationNode)) {
                 continue;
             }
             let nodes = [];
-            let equation = n.equn;
+            // Todo: consider whether or not we need to find the edges again.
             const edges = n.equn.match(/{(.*?)}/g);
-            let canCalculate = true;
             for(let edge of edges) {
-                const id = edge.replace(/^[{]|[}]+$/g, '');
-                const node = this.getNode(id);
-                nodes.push(node);
-                if(node.value !== null) {
-                    equation = equation.replace(/{(.*?)}/, node.value);
-                } else {
-                    canCalculate = false;
-                }
+                const nodeId = edge.replace(/^[{]|[}]+$/g, '');
+                nodes.push(this.getNodeById(nodeId));
             }
-            if(canCalculate) {
-                n.setValue(eval(equation));
-                this._orderOfUpdates.push({node: n, otherNodes: nodes});
-            } else {
-                nodesToUpdateLater.push({node: n, otherNodes: nodes});
-            }
+            nodesWithEquationData.push({node: n, equationNodes: nodes});
         }
-        this.calculateMissingEquations(nodesToUpdateLater);
+        return nodesWithEquationData;
     }
 
-    calculateMissingEquations(nodesToUpdateLater) {
-        // Todo: use this for all calculations.
+    calculateEquations(nodesToUpdateLater) {
+        if(this._orderOfUpdates.length) {
+            for(const nodeToUpdate of this._orderOfUpdates) {
+                let equation = nodeToUpdate.node.equn;
+                for(const node of nodeToUpdate.equationNodes) {
+                    equation = equation.replace(/{(.*?)}/, node.value);
+                }
+                nodeToUpdate.node.setValue(eval(equation));
+                this._orderOfUpdates.push(nodeToUpdate);
+            }
+        }
         while(nodesToUpdateLater.length) {
             const nodeToUpdate = nodesToUpdateLater.pop();
             let canCalculate = true;
             let equation = nodeToUpdate.node.equn;
-            for(const node of nodeToUpdate.otherNodes) {
+            for(const node of nodeToUpdate.equationNodes) {
                 if(node.value === null) {
                     nodesToUpdateLater.unshift(nodeToUpdate);
                     canCalculate = false;

@@ -42,10 +42,12 @@ class App extends Component {
 
         for(let connection of connections) {
             g.addEdge(
-                new Edge(g.getNode(connection[0]), g.getNode(connection[1])));
+                new Edge(g.getNodeById(connection[0]),
+                    g.getNodeById(connection[1])));
         }
 
-        g.updateValues();
+        const data = g.makeEquationDataForEachNode();
+        g.calculateEquations(data);
 
         this.state = {graph: g};
     }
