@@ -46,8 +46,8 @@ class App extends Component {
                     g.getNodeById(connection[1])));
         }
 
-        const data = g.populateNodesWithEquationData();
-        g.calculateEquations(data);
+        g.populateNodesWithEquationData();
+        g.calculateEquations();
 
         this.state = {graph: g};
     }
