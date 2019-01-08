@@ -105,6 +105,10 @@ export default class Digraph {
         }
     }
 
+    /**
+     * If all the equations have been populated we can
+     * loop straight through them in right order and update their values
+     */
     updateEquations() {
         for(const nodeToUpdate of this._orderedNodeEquation) {
             let equation = nodeToUpdate.node.equn;
