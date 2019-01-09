@@ -7,8 +7,7 @@ const NodeView = ({node, updateNode}) =>
             <label>
                 {node.id}{': '}
                 <input
-                    className={'node'}
-                    defaultValue={node.value}
+                    className={'node'} value={node.value}
                     onChange={(event) => updateNode(node, event)}
                 />
             </label>
