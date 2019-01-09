@@ -86,23 +86,21 @@ export default class Digraph {
      * If this array is populated the equations can be run in the correct order.
      */
     hydrateEquations() {
-        while(this._nodesWithEquationData.length) {
-            const nodeToUpdate = this._nodesWithEquationData.pop();
-            let canCalculate = true;
-            let equation = nodeToUpdate.node.equn;
-            for(const node of nodeToUpdate.edges) {
-                if(node.value === null) {
-                    this._nodesWithEquationData.unshift(nodeToUpdate);
-                    canCalculate = false;
-                    break;
-                }
-                equation = equation.replace(/{(.*?)}/, node.value);
-            }
-            if(canCalculate) {
-                nodeToUpdate.node.setValue(eval(equation));
-                this._orderedNodeEquation.push(nodeToUpdate);
-            }
+        if(!this._nodesWithEquationData.length) {
+            return;
         }
+        const nodeToUpdate = this._nodesWithEquationData.pop();
+        let equation = nodeToUpdate.node.equn;
+        for(const node of nodeToUpdate.edges) {
+            if(node.value === null) {
+                this._nodesWithEquationData.unshift(nodeToUpdate);
+                this.hydrateEquations();
+            }
+            equation = equation.replace(/{(.*?)}/, node.value);
+        }
+        nodeToUpdate.node.setValue(eval(equation));
+        this._orderedNodeEquation.push(nodeToUpdate);
+        this.hydrateEquations();
     }
 
     /**
