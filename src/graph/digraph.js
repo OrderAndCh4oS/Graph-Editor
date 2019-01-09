@@ -1,10 +1,10 @@
 /* eslint no-eval: 0 */
+import React, { Component } from 'react';
 
-import React from 'react';
 import ConnectionView from '../component/connection-view';
 import EquationNode from './equation-node';
 
-export default class Digraph {
+export default class Digraph extends Component {
     edges = [];
     _nodesWithEquationData = [];
     _orderedNodeEquation = [];
@@ -114,18 +114,17 @@ export default class Digraph {
                 equation = equation.replace(/{(.*?)}/, node.value);
             }
             nodeToUpdate.node.setValue(eval(equation));
-            this._orderedNodeEquation.push(nodeToUpdate);
         }
     }
 
-    display() {
+    display(updateNode) {
         return this.edges.map(source =>
             source.edges.map(
                 destination =>
                     <ConnectionView
                         key={source.node.id + '->' + destination.id}
                         source={source.node}
-                        destination={destination}
+                        destination={destination} updateNode={updateNode}
                     />,
             ),
         );

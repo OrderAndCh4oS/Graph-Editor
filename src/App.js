@@ -52,10 +52,18 @@ class App extends Component {
         this.state = {graph: g};
     }
 
+    updateNode = (node, event) => {
+        node.value = event.target.value;
+        this.state.graph.calculateEquations();
+        this.setState(() => ({
+            graph: this.state.graph,
+        }));
+    };
+
     render() {
         return (
             <div className="app">
-                {this.state.graph.display()}
+                {this.state.graph.display(this.updateNode)}
             </div>
         );
     }
