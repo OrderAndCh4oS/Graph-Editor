@@ -5,6 +5,7 @@ import Edge from './graph/edge';
 import trainFares from './data/train-fares-model';
 import EquationNode from './graph/equation-node';
 import SeedNode from './graph/seed-node';
+import GraphView from './component/graph-view';
 
 class App extends Component {
     constructor(props) {
@@ -63,6 +64,7 @@ class App extends Component {
     render() {
         return (
             <div className="app">
+                <GraphView graph={this.state.graph}/>
                 {this.state.graph.display(this.updateNode)}
             </div>
         );
