@@ -1,8 +1,10 @@
 import React, { Fragment } from 'react';
 import SeedNode from '../graph/seed-node';
+import prettifyValue from '../utility/prettify-value';
 
-const NodeView = ({node, updateNode}) =>
-    node instanceof SeedNode
+const NodeView = ({node, updateNode}) => {
+    let value = prettifyValue(node.value, node.conv, node.unit);
+    return node instanceof SeedNode
         ? <Fragment>
             <label>
                 {node.id}{': '}
@@ -13,8 +15,8 @@ const NodeView = ({node, updateNode}) =>
             </label>
         </Fragment>
         : <Fragment>
-            <span>{node.id}: {node.value}</span>
-        </Fragment>
-;
+            <span>{node.id}: {value}</span>
+        </Fragment>;
+};
 
 export default NodeView;

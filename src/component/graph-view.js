@@ -1,5 +1,6 @@
 import { Graph } from 'react-d3-graph';
 import React from 'react';
+import prettifyValue from '../utility/prettify-value';
 
 // the graph configuration, you only need to pass down properties
 // that you want to override, otherwise default ones will be used
@@ -26,7 +27,8 @@ const GraphView = ({graph}) => {
     for(const edge of graph.edges) {
         data.nodes.push({
             id: edge.node.id,
-            value: edge.node.value,
+            value: prettifyValue(edge.node.value, edge.node.conv,
+                edge.node.unit),
         });
         data.links = [
             ...data.links, ...edge.edges.map(e => ({

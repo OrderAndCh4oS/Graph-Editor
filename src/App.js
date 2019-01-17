@@ -26,6 +26,7 @@ class App extends Component {
                     data.title,
                     data.color,
                     data.conv,
+                    data.unit,
                     data.equn,
                 );
             } else {
@@ -36,6 +37,7 @@ class App extends Component {
                     data.title,
                     data.color,
                     data.conv,
+                    data.unit,
                 );
             }
             g.addNode(node);
