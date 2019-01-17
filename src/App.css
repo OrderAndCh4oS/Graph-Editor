@@ -1,21 +1,86 @@
 body {
-  color: darkslategray;
+  margin: 0 auto;
+  padding: 40px;
   font-family: "Roboto", "Verdana", "Avenir", sans-serif;
+  color: darkslategray;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+  monospace;
 }
 
 input {
-  border: 1px solid lightslategrey;
+  border: 1px solid #c3c3ca;
   border-radius: 5px;
+  padding: 2px 3px;
+  display: inline-block;
+  width: 100%;
 }
 
 .app {
   max-width: 1240px;
   margin: 0 auto;
+  display: flex;
 }
 
-
 .graph-view {
-  border: 1px solid lightslategrey;
+  border: 1px solid #c3c3ca;
   border-radius: 5px;
   margin-bottom: 20px;
+  width: 60%;
+  height: 500px;
+}
+
+.connection-view {
+  width: calc(40% - 15px);
+  padding-left: 15px;
+}
+
+.connection {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 3px 0 6px;
+  border-bottom: 1px solid #c3c3ca;
+}
+
+.node-view {
+  display: block;
+  width: 35%;
+  text-align: left;
+}
+
+.pointer {
+  display: block;
+}
+
+.node-title {
+  font-size: 11px;
+  margin: 0 0 4px;
+}
+
+.node-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.node-label span, .node-label input {
+  margin: 0 3px;
+}
+
+.node-unit {
+  font-size: 11px;
+}
+
+.node-text {
+  font-size: 11px;
+  font-style: italic;
+}
+
+.node-input {
+  font-size: 11px;
 }

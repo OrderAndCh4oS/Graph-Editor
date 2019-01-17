@@ -5,7 +5,7 @@ import prettifyValue from '../utility/prettify-value';
 // the graph configuration, you only need to pass down properties
 // that you want to override, otherwise default ones will be used
 const myConfig = {
-    height: 500, width: 1240, maxZoom: 1.8, minZoom: 1,
+    height: 500, width: 744, maxZoom: 1.8, minZoom: 1,
     nodeHighlightBehavior: true,
     node: {
         color: 'lightgreen',

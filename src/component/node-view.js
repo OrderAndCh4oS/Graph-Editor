@@ -1,28 +1,29 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import SeedNode from '../graph/seed-node';
 import prettifyValue from '../utility/prettify-value';
 
 const NodeView = ({node, updateNode}) => {
-    let value = prettifyValue(node.value, node.conv, node.unit);
-    return node instanceof SeedNode
-        ? <Fragment>
-            <label>
-                <span>{node.id}{' '}</span>
+    return (
+        <div className={'node-view'}>
+            <p className={'node-title'}>
+                {node.label},{' '}
+                            (<span className={'node-text'}>{node.id}</span>)
+            </p>
+            <label className={'node-label'}>
                 <input
                     type='number'
-                    className={'node'}
+                    className={'node-input'}
                     value={prettifyValue(node.value, node.conv, false)}
                     min={node.min === '-' ? '0' : node.min}
                     max={node.max === '-' ? '' : node.max}
                     step={node.step === '-' ? '' : node.step}
                     onChange={(event) => updateNode(node, event)}
+                    disabled={node instanceof SeedNode}
                 />
-                {node.unit}
+                <span className={'node-unit'}>{node.unit}</span>
             </label>
-        </Fragment>
-        : <Fragment>
-            <span>{node.id} {value}</span>
-        </Fragment>;
+        </div>
+    );
 };
 
 export default NodeView;

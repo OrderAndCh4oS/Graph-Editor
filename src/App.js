@@ -83,7 +83,9 @@ class App extends Component {
         return (
             <div className="app">
                 <GraphView graph={this.state.graph}/>
-                {this.state.graph.display(this.updateNode)}
+                <div className={'connection-view'}>
+                    {this.state.graph.display(this.updateNode)}
+                </div>
             </div>
         );
     }
