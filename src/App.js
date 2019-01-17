@@ -27,6 +27,9 @@ class App extends Component {
                     data.color,
                     data.conv,
                     data.unit,
+                    data.min,
+                    data.max,
+                    data.step,
                     data.equn,
                 );
             } else {
@@ -38,6 +41,9 @@ class App extends Component {
                     data.color,
                     data.conv,
                     data.unit,
+                    data.min,
+                    data.max,
+                    data.step,
                 );
             }
             g.addNode(node);
@@ -56,11 +62,21 @@ class App extends Component {
     }
 
     updateNode = (node, event) => {
-        node.value = event.target.value;
-        this.state.graph.calculateEquations();
-        this.setState(() => ({
-            graph: this.state.graph,
-        }));
+        let value =
+            event.target.value.toString()[0] === '0' &&
+            event.target.value.toString()[1] !== '.'
+                ? 0
+                : parseFloat(event.target.value);
+        if(isNaN(value)) {
+            return;
+        }
+        node.value = value === 0 ? 0 : value / node.conv;
+        if(!isNaN(node.value)) {
+            this.state.graph.calculateEquations();
+            this.setState(() => ({
+                graph: this.state.graph,
+            }));
+        }
     };
 
     render() {
