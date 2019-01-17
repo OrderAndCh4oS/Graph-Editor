@@ -6,8 +6,9 @@ const NodeView = ({node, updateNode}) => {
     return (
         <div className={'node-view'}>
             <p className={'node-title'}>
-                {node.label},{' '}
-                            (<span className={'node-text'}>{node.id}</span>)
+                {node.label},
+                {' '}
+                <span className={'node-text'}>{node.id}</span>
             </p>
             <label className={'node-label'}>
                 <input
@@ -18,7 +19,7 @@ const NodeView = ({node, updateNode}) => {
                     max={node.max === '-' ? '' : node.max}
                     step={node.step === '-' ? '' : node.step}
                     onChange={(event) => updateNode(node, event)}
-                    disabled={node instanceof SeedNode}
+                    disabled={!(node instanceof SeedNode)}
                 />
                 <span className={'node-unit'}>{node.unit}</span>
             </label>
