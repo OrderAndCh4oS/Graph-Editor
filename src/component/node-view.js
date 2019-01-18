@@ -11,17 +11,26 @@ const NodeView = ({node, updateNode}) => {
                 <span className={'node-text'}>{node.id}</span>
             </p>
             <label className={'node-label'}>
+                {
+                    node.prefix
+                        ? <span className={'node-prefix'}>{node.prefix}</span>
+                        : null
+                }
                 <input
                     type='number'
                     className={'node-input'}
-                    value={prettifyValue(node.value, node.conv, false)}
+                    value={prettifyValue(node.value, node.conv, false, false)}
                     min={node.min === '-' ? '0' : node.min}
                     max={node.max === '-' ? '' : node.max}
                     step={node.step === '-' ? '' : node.step}
                     onChange={(event) => updateNode(node, event)}
                     disabled={!(node instanceof SeedNode)}
                 />
-                <span className={'node-unit'}>{node.unit}</span>
+                {
+                    node.suffix
+                        ? <span className={'node-suffix'}>{node.suffix}</span>
+                        : null
+                }
             </label>
         </div>
     );

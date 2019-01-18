@@ -30,13 +30,14 @@ input {
   border: 1px solid #c3c3ca;
   border-radius: 5px;
   margin-bottom: 20px;
-  width: 60%;
+  width: 800px;
   height: 500px;
 }
 
 .connection-view {
-  width: calc(40% - 15px);
+  display: inline-block;
   padding-left: 15px;
+  flex-grow: 1;
 }
 
 .connection {
@@ -49,11 +50,12 @@ input {
 
 .node-view {
   display: block;
-  width: 40%;
+  width: 180px;
   text-align: left;
 }
 
 .pointer {
+  padding: 0 10px;
   display: block;
 }
 
@@ -72,7 +74,7 @@ input {
   margin: 0 3px;
 }
 
-.node-unit {
+.node-suffix, .node-prefix {
   font-size: 11px;
 }
 

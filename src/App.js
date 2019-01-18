@@ -6,6 +6,7 @@ import trainFares from './data/train-fares-model';
 import EquationNode from './graph/equation-node';
 import SeedNode from './graph/seed-node';
 import GraphView from './component/graph-view';
+import ConnectionList from './component/connection-list';
 
 class App extends Component {
     constructor(props) {
@@ -26,7 +27,8 @@ class App extends Component {
                     data.title,
                     data.color,
                     data.conv,
-                    data.unit,
+                    data.prefix,
+                    data.suffix,
                     data.min,
                     data.max,
                     data.step,
@@ -40,7 +42,8 @@ class App extends Component {
                     data.title,
                     data.color,
                     data.conv,
-                    data.unit,
+                    data.prefix,
+                    data.suffix,
                     data.min,
                     data.max,
                     data.step,
@@ -83,9 +86,9 @@ class App extends Component {
         return (
             <div className="app">
                 <GraphView graph={this.state.graph}/>
-                <div className={'connection-view'}>
-                    {this.state.graph.display(this.updateNode)}
-                </div>
+                <ConnectionList
+                    graph={this.state.graph} updateNode={this.updateNode}
+                />
             </div>
         );
     }

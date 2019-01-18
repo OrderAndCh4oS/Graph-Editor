@@ -1,4 +1,3 @@
-
 export default class Node {
 
     get id() {
@@ -21,19 +20,6 @@ export default class Node {
         return this._title;
     }
 
-    constructor(id, value, label, title, color, conv, unit, min, max, step) {
-        this._id = id;
-        this._value = value;
-        this._label = label;
-        this._title = title;
-        this._min = min;
-        this._max = max;
-        this._step = step;
-        this._color = color || 'blue';
-        this._conv = conv || 1;
-        this._unit = unit;
-    }
-
     get min() {
         return this._min;
     }
@@ -54,7 +40,37 @@ export default class Node {
         return this._step;
     }
 
-    get unit() {
-        return this._unit;
+    constructor(
+        id,
+        value,
+        label,
+        title,
+        color,
+        conv,
+        prefix,
+        suffix,
+        min,
+        max,
+        step,
+    ) {
+        this._id = id;
+        this._value = value;
+        this._label = label;
+        this._title = title;
+        this._min = min;
+        this._max = max;
+        this._step = step;
+        this._color = color || 'blue';
+        this._conv = conv || 1;
+        this._prefix = prefix;
+        this._suffix = suffix;
+    }
+
+    get prefix() {
+        return this._prefix;
+    }
+
+    get suffix() {
+        return this._suffix;
     }
 }
