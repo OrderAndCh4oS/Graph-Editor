@@ -7,6 +7,7 @@ import EquationNode from './graph/equation-node';
 import SeedNode from './graph/seed-node';
 import GraphView from './component/graph-view';
 import ConnectionList from './component/connection-list';
+import GraphEditor from './component/graph-editor';
 
 class App extends Component {
     constructor(props) {
@@ -85,10 +86,15 @@ class App extends Component {
     render() {
         return (
             <div className="app">
-                <GraphView graph={this.state.graph}/>
-                <ConnectionList
-                    graph={this.state.graph} updateNode={this.updateNode}
-                />
+                <div className="row">
+                    <GraphView graph={this.state.graph}/>
+                    <ConnectionList
+                        graph={this.state.graph} updateNode={this.updateNode}
+                    />
+                </div>
+                <div className="row">
+                    <GraphEditor/>
+                </div>
             </div>
         );
     }
