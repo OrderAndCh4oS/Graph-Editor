@@ -68,9 +68,7 @@ class BuildGraph extends Component {
                         graph={this.state.graph} updateNode={this.updateNode}
                     />
                 </div>
-                <div className="row">
-                    <GraphEditor buildGraph={this.buildGraph}/>
-                </div>
+                <GraphEditor buildGraph={this.buildGraph}/>
             </div>
         );
     }

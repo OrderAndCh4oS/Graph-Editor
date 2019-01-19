@@ -60,21 +60,26 @@ export default class GraphEditor extends Component {
     render() {
         const {buildGraph} = this.props;
         return (
-            <Scrollbars style={{height: 500}}>
-                <div className={'graph-editor'}>
-                    {this.state.nodePanels.map(panel => panel)}
-                    <button onClick={this.addSeedNode}>
-                        Add Seed Node
-                    </button>
-                    <button onClick={this.addEquationNode}>
-                        Add Equation Node
-                    </button>
-                    <button onClick={() => buildGraph(this.state.nodes)}>Build
-                                                                         Graph
+            <div>
+                <div className={'row'}>
+                    <button onClick={() => buildGraph(this.state.nodes)}>
+                        Build Graph
                     </button>
                 </div>
-            </Scrollbars>
-
+                <div className={'row'}>
+                    <Scrollbars style={{height: 500}}>
+                        <div className={'graph-editor'}>
+                            {this.state.nodePanels.map(panel => panel)}
+                            <button onClick={this.addSeedNode}>
+                                Add Seed Node
+                            </button>
+                            <button onClick={this.addEquationNode}>
+                                Add Equation Node
+                            </button>
+                        </div>
+                    </Scrollbars>
+                </div>
+            </div>
         );
     }
 }

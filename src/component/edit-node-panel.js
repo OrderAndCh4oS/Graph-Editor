@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import SeedNode from '../graph/seed-node';
 
 const EditNodeInput = ({label, value, handleOnChange, type}) =>
     <div className={'edit-node--input-holder'}>
@@ -38,41 +39,59 @@ export default class EditNodePanel extends Component {
                     handleOnChange={e => this.updateValue('title',
                         e.target.value)}
                 />
-                <EditNodeInput
-                    label={'Value'} value={node.value}
-                    type='number'
-                    handleOnChange={e => this.updateValue('value',
-                        e.target.value)}
-                />
+                {
+                    node instanceof SeedNode
+                        ? <EditNodeInput
+                            label={'Value'}
+                            value={node.value}
+                            type='number'
+                            handleOnChange={e =>
+                                this.updateValue('value',
+                                    e.target.value)
+                            }
+                        />
+                        : <EditNodeInput
+                            label={'Equation'}
+                            value={node.equn}
+                            handleOnChange={e =>
+                                this.updateValue('equn',
+                                    e.target.value)
+                            }
+                        />
+                }
                 <EditNodeInput
                     label={'Conversion'} value={node.conv}
                     type='number'
                     handleOnChange={e => this.updateValue('conv',
                         e.target.value)}
                 />
-                <EditNodeInput
-                    label={'Minimum Value'} value={node.min}
-                    type='number'
-                    handleOnChange={e => this.updateValue('min',
-                        e.target.value)}
-                />
-                <EditNodeInput
-                    label={'Maximum Value'} value={node.max}
-                    type='number'
-                    handleOnChange={e => this.updateValue('max',
-                        e.target.value)}
-                />
-                <EditNodeInput
-                    label={'Step'} value={node.step}
-                    type='number'
-                    handleOnChange={e => this.updateValue('step',
-                        e.target.value)}
-                />
-                <EditNodeInput
-                    label={'Equation'} value={node.equn}
-                    handleOnChange={e => this.updateValue('equn',
-                        e.target.value)}
-                />
+                {node instanceof SeedNode ?
+                    <EditNodeInput
+                        label={'Minimum Value'}
+                        value={node.min}
+                        type='number'
+                        handleOnChange={e => this.updateValue('min',
+                            e.target.value)}
+                    />
+                    : null}
+                {node instanceof SeedNode ?
+                    <EditNodeInput
+                        label={'Maximum Value'}
+                        value={node.max}
+                        type='number'
+                        handleOnChange={e => this.updateValue('max',
+                            e.target.value)}
+                    />
+                    : null}
+                {node instanceof SeedNode ?
+                    <EditNodeInput
+                        label={'Step'}
+                        value={node.step}
+                        type='number'
+                        handleOnChange={e => this.updateValue('step',
+                            e.target.value)}
+                    />
+                    : null}
                 <EditNodeInput
                     label={'Prefix'} value={node.prefix}
                     handleOnChange={e => this.updateValue('prefix',
