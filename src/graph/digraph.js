@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 
 import ConnectionView from '../component/connection-view';
 import EquationNode from './equation-node';
+import Edge from './edge';
 
 export default class Digraph extends Component {
     edges = [];
@@ -28,6 +29,17 @@ export default class Digraph extends Component {
         }
 
         sourceNode.edges.push(destination);
+    }
+
+    addEdges(connections) {
+        for(let connection of connections) {
+            this.addEdge(
+                new Edge(
+                    this.getNodeById(connection[0]),
+                    this.getNodeById(connection[1]),
+                ),
+            );
+        }
     }
 
     childrenOf(node) {
@@ -124,7 +136,8 @@ export default class Digraph extends Component {
                     <ConnectionView
                         key={source.node.id + '->' + destination.id}
                         source={source.node}
-                        destination={destination} updateNode={updateNode}
+                        destination={destination}
+                        updateNode={updateNode}
                     />,
             ),
         );

@@ -1,100 +1,12 @@
 import React, { Component } from 'react';
 import './App.css';
-import Graph from './graph/graph';
-import Edge from './graph/edge';
-import trainFares from './data/train-fares-model';
-import EquationNode from './graph/equation-node';
-import SeedNode from './graph/seed-node';
-import GraphView from './component/graph-view';
-import ConnectionList from './component/connection-list';
-import GraphEditor from './component/graph-editor';
+import BuildGraph from './component/build-graph';
 
 class App extends Component {
-    constructor(props) {
-        super(props);
-        const g = new Graph();
-        const connections = [];
-        for(let data of trainFares) {
-            let node;
-            if(data.equn !== '') {
-                const joins = data.equn.match(/{(.*?)}/g);
-                for(let join of joins) {
-                    const id = join.replace(/^[{]|[}]+$/g, '');
-                    connections.push([id, data.id]);
-                }
-                node = new EquationNode(
-                    data.id,
-                    data.label,
-                    data.title,
-                    data.color,
-                    data.conv,
-                    data.prefix,
-                    data.suffix,
-                    data.min,
-                    data.max,
-                    data.step,
-                    data.equn,
-                );
-            } else {
-                node = new SeedNode(
-                    data.id,
-                    data.val,
-                    data.label,
-                    data.title,
-                    data.color,
-                    data.conv,
-                    data.prefix,
-                    data.suffix,
-                    data.min,
-                    data.max,
-                    data.step,
-                );
-            }
-            g.addNode(node);
-        }
-
-        for(let connection of connections) {
-            g.addEdge(
-                new Edge(g.getNodeById(connection[0]),
-                    g.getNodeById(connection[1])));
-        }
-
-        g.populateNodesWithEquationData();
-        g.calculateEquations();
-
-        this.state = {graph: g};
-    }
-
-    updateNode = (node, event) => {
-        let value =
-            event.target.value.toString()[0] === '0' &&
-            event.target.value.toString()[1] !== '.'
-                ? 0
-                : parseFloat(event.target.value);
-        if(isNaN(value)) {
-            return;
-        }
-        node.value = value === 0 ? 0 : value / node.conv;
-        if(!isNaN(node.value)) {
-            this.state.graph.calculateEquations();
-            this.setState(() => ({
-                graph: this.state.graph,
-            }));
-        }
-    };
-
     render() {
         return (
             <div className="app">
-                <div className="row">
-                    <GraphView graph={this.state.graph}/>
-                    <ConnectionList
-                        graph={this.state.graph} updateNode={this.updateNode}
-                    />
-                </div>
-                <div className="row">
-                    <GraphEditor/>
-                </div>
+                <BuildGraph/>
             </div>
         );
     }

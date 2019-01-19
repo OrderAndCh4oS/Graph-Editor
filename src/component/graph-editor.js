@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import EditNodePanel from './edit-node-panel';
 import SeedNode from '../graph/seed-node';
+import EquationNode from '../graph/equation-node';
+import { Scrollbars } from 'react-custom-scrollbars';
 
 export default class GraphEditor extends Component {
     state = {
-        graph: {},
+        nodes: {},
         nodePanels: [],
     };
 
@@ -13,40 +15,37 @@ export default class GraphEditor extends Component {
         this.setState(prevState => ({
             nodePanels: [
                 ...prevState.nodePanels,
-                <EditNodePanel node={node} saveNode={this.saveNode}/>,
+                (key) => <EditNodePanel
+                    key={key} node={node} saveNode={this.saveNode}
+                />,
             ],
         }));
     };
 
     saveNode = (nodeData) => {
-        console.log(nodeData);
-        const node = new SeedNode(
-            nodeData.id,
-            nodeData.value,
-            nodeData.label,
-            nodeData.title,
-            nodeData.color,
-            nodeData.conv,
-            nodeData.prefix,
-            nodeData.suffix,
-            nodeData.min,
-            nodeData.max,
-            nodeData.step,
-        );
+        const node = nodeData.equn
+            ? new EquationNode(nodeData)
+            : new SeedNode(nodeData);
         this.setState(prevState => ({
-            graph: {
-                ...prevState.graph,
+            nodes: {
+                ...prevState.nodes,
                 [node.id]: node,
             },
         }));
     };
 
     render() {
+        const {buildGraph} = this.props;
         return (
-            <div className={'graph-editor'}>
-                {this.state.nodePanels.map(p => p)}
-                <button onClick={this.createNode}>Add Node</button>
-            </div>
+            <Scrollbars style={{height: 500}}>
+                <div className={'graph-editor'}>
+                    {this.state.nodePanels.map((p, i) => p(i))}
+                    <button onClick={this.createNode}>Add Node</button>
+                </div>
+                <button onClick={() => buildGraph(this.state.nodes)}>Build
+                                                                     Graph
+                </button>
+            </Scrollbars>
         );
     }
 }

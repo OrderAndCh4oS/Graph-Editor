@@ -1,10 +1,8 @@
 import Node from './node';
 
 export default class EquationNode extends Node {
-    constructor(
-        id, label, title, color, conv, prefix, suffix, min, max, step, equn) {
-        super(id, null, label, title, color, conv, prefix, suffix, min, max,
-            step);
+    constructor({equn, ...rest}) {
+        super(rest);
         this._equn = equn;
     }
 

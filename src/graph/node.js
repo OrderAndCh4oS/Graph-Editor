@@ -40,30 +40,18 @@ export default class Node {
         return this._step;
     }
 
-    constructor(
-        id,
-        value,
-        label,
-        title,
-        color,
-        conv,
-        prefix,
-        suffix,
-        min,
-        max,
-        step,
-    ) {
-        this._id = id;
-        this._value = value;
-        this._label = label;
-        this._title = title;
-        this._min = min;
-        this._max = max;
-        this._step = step;
-        this._color = color || 'blue';
-        this._conv = conv || 1;
-        this._prefix = prefix;
-        this._suffix = suffix;
+    constructor(nodeData) {
+        this._id = nodeData.id;
+        this._value = nodeData.value;
+        this._label = nodeData.label;
+        this._title = nodeData.title;
+        this._min = nodeData.min;
+        this._max = nodeData.max;
+        this._step = nodeData.step;
+        this._color = nodeData.color || 'blue';
+        this._conv = nodeData.conv || 1;
+        this._prefix = nodeData.prefix;
+        this._suffix = nodeData.suffix;
     }
 
     get prefix() {
