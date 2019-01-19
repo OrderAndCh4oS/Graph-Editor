@@ -3,6 +3,7 @@ import Graph from '../graph/graph';
 import GraphView from './graph-view';
 import ConnectionList from './connection-list';
 import GraphEditor from './graph-editor';
+import EquationNode from '../graph/equation-node';
 
 class BuildGraph extends Component {
     constructor(props) {
@@ -13,7 +14,6 @@ class BuildGraph extends Component {
 
     buildGraph = (nodes) => {
         const g = new Graph();
-        console.log(nodes);
         const edges = this.findEdges(nodes, g);
         if(edges.length) {
             g.addEdges(edges);
@@ -28,9 +28,8 @@ class BuildGraph extends Component {
 
     findEdges = (nodes, g) => {
         const edges = [];
-        console.log(nodes);
         for(let node of Object.values(nodes)) {
-            if(node.equn) {
+            if(node instanceof EquationNode) {
                 const joins = node.equn.match(/{(.*?)}/g);
                 for(let join of joins) {
                     const id = join.replace(/^[{]|[}]+$/g, '');

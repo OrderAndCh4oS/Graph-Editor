@@ -25,7 +25,6 @@ class PreloadedGraph extends Component {
             } else {
                 node = new SeedNode(nodeData);
             }
-            console.log(node);
             g.addNode(node);
         }
 

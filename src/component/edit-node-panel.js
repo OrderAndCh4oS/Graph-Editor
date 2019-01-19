@@ -15,108 +15,79 @@ const EditNodeInput = ({label, value, handleOnChange, type}) =>
 ;
 
 export default class EditNodePanel extends Component {
-    state = {
-        id: '',
-        label: '',
-        title: '',
-        color: '',
-        value: 0,
-        conv: 1,
-        suffix: null,
-        prefix: null,
-        min: null,
-        max: null,
-        step: null,
-        equn: null,
+    updateValue = (key, value) => {
+        const {uid} = this.props;
+        this.props.updateNode(uid, key, value);
     };
 
-    updateValue = (key, value) =>
-        this.setState(() => ({
-            [key]: value,
-        }))
-    ;
-
     render() {
-        const {saveNode} = this.props;
+        const {node} = this.props;
         return (
             <div className={'edit-node--panel'}>
                 <EditNodeInput
-                    label={'Id'}
-                    value={this.state.id}
+                    label={'Id'} value={node.id}
                     handleOnChange={e => this.updateValue('id', e.target.value)}
                 />
                 <EditNodeInput
-                    label={'Label'}
-                    value={this.state.label}
+                    label={'Label'} value={node.label}
                     handleOnChange={e => this.updateValue('label',
                         e.target.value)}
                 />
                 <EditNodeInput
-                    label={'Title'}
-                    value={this.state.title}
+                    label={'Title'} value={node.title}
                     handleOnChange={e => this.updateValue('title',
                         e.target.value)}
                 />
                 <EditNodeInput
-                    label={'Value'}
-                    value={this.state.value}
+                    label={'Value'} value={node.value}
                     type='number'
                     handleOnChange={e => this.updateValue('value',
                         e.target.value)}
                 />
                 <EditNodeInput
-                    label={'Conversion'}
-                    value={this.state.conv}
+                    label={'Conversion'} value={node.conv}
                     type='number'
                     handleOnChange={e => this.updateValue('conv',
                         e.target.value)}
                 />
                 <EditNodeInput
-                    label={'Minimum Value'}
-                    value={this.state.min}
+                    label={'Minimum Value'} value={node.min}
                     type='number'
                     handleOnChange={e => this.updateValue('min',
                         e.target.value)}
                 />
                 <EditNodeInput
-                    label={'Maximum Value'}
-                    value={this.state.max}
+                    label={'Maximum Value'} value={node.max}
                     type='number'
                     handleOnChange={e => this.updateValue('max',
                         e.target.value)}
                 />
                 <EditNodeInput
-                    label={'Step'}
-                    value={this.state.step}
+                    label={'Step'} value={node.step}
                     type='number'
                     handleOnChange={e => this.updateValue('step',
                         e.target.value)}
                 />
                 <EditNodeInput
-                    label={'Equation'}
-                    value={this.state.equn}
+                    label={'Equation'} value={node.equn}
                     handleOnChange={e => this.updateValue('equn',
                         e.target.value)}
                 />
                 <EditNodeInput
-                    label={'Prefix'}
-                    value={this.state.prefix}
+                    label={'Prefix'} value={node.prefix}
                     handleOnChange={e => this.updateValue('prefix',
                         e.target.value)}
                 />
                 <EditNodeInput
-                    label={'Suffix'}
-                    value={this.state.suffix}
+                    label={'Suffix'} value={node.suffix}
                     handleOnChange={e => this.updateValue('suffix',
                         e.target.value)}
                 />
                 <EditNodeInput
-                    label={'Colour'}
-                    value={this.state.color}
+                    label={'Colour'} value={node.color}
                     handleOnChange={e => this.updateValue('color',
                         e.target.value)}
                 />
-                <button onClick={() => saveNode(this.state)}>Save</button>
             </div>
         );
     }

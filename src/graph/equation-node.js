@@ -1,13 +1,22 @@
 import Node from './node';
 
 export default class EquationNode extends Node {
-    constructor({equn, ...rest}) {
-        super(rest);
-        this._equn = equn;
+
+    constructor(nodeData) {
+        if(nodeData) {
+            const {equn, ...rest} = nodeData;
+            super(rest);
+            this._equn = equn;
+        }
+        super();
     }
 
     get equn() {
         return this._equn;
+    }
+
+    set equn(value) {
+        this._equn = value;
     }
 
     setValue(value) {

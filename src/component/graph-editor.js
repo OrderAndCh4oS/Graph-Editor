@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import EditNodePanel from './edit-node-panel';
+import { Scrollbars } from 'react-custom-scrollbars';
 import SeedNode from '../graph/seed-node';
 import EquationNode from '../graph/equation-node';
-import { Scrollbars } from 'react-custom-scrollbars';
 
 export default class GraphEditor extends Component {
     state = {
@@ -10,26 +10,49 @@ export default class GraphEditor extends Component {
         nodePanels: [],
     };
 
-    createNode = () => {
-        const node = {};
+    addSeedNode = () => {
+        const node = new SeedNode();
+        // Todo: use UUIDs for this
+        // Todo: Could probably manage removal with the key attribute
+        const uid = Math.random().toString() + Math.random().toString();
         this.setState(prevState => ({
+            nodes: {
+                ...prevState.nodes,
+                [uid]: node,
+            },
             nodePanels: [
                 ...prevState.nodePanels,
-                (key) => <EditNodePanel
-                    key={key} node={node} saveNode={this.saveNode}
+                <EditNodePanel
+                    key={uid} uid={uid} node={node} updateNode={this.updateNode}
                 />,
             ],
         }));
     };
 
-    saveNode = (nodeData) => {
-        const node = nodeData.equn
-            ? new EquationNode(nodeData)
-            : new SeedNode(nodeData);
+    addEquationNode = () => {
+        const node = new EquationNode();
+        const uid = Math.random().toString() + Math.random().toString();
         this.setState(prevState => ({
             nodes: {
                 ...prevState.nodes,
-                [node.id]: node,
+                [uid]: node,
+            },
+            nodePanels: [
+                ...prevState.nodePanels,
+                <EditNodePanel
+                    key={uid} uid={uid} node={node} updateNode={this.updateNode}
+                />,
+            ],
+        }));
+    };
+
+    updateNode = (uid, key, value) => {
+        const node = this.state.nodes[uid];
+        node[key] = value;
+        this.setState(prevState => ({
+            nodes: {
+                ...prevState.nodes,
+                [uid]: node,
             },
         }));
     };
@@ -39,13 +62,19 @@ export default class GraphEditor extends Component {
         return (
             <Scrollbars style={{height: 500}}>
                 <div className={'graph-editor'}>
-                    {this.state.nodePanels.map((p, i) => p(i))}
-                    <button onClick={this.createNode}>Add Node</button>
+                    {this.state.nodePanels.map(panel => panel)}
+                    <button onClick={this.addSeedNode}>
+                        Add Seed Node
+                    </button>
+                    <button onClick={this.addEquationNode}>
+                        Add Equation Node
+                    </button>
+                    <button onClick={() => buildGraph(this.state.nodes)}>Build
+                                                                         Graph
+                    </button>
                 </div>
-                <button onClick={() => buildGraph(this.state.nodes)}>Build
-                                                                     Graph
-                </button>
             </Scrollbars>
+
         );
     }
 }
