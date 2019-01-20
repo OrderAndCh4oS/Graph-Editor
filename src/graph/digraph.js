@@ -32,6 +32,7 @@ export default class Digraph extends Component {
     }
 
     addEdges(connections) {
+        console.log('C: ', connections);
         for(let connection of connections) {
             this.addEdge(
                 new Edge(
@@ -58,6 +59,16 @@ export default class Digraph extends Component {
         }
 
         throw Error('Name not found: ' + id);
+    }
+
+    getNodeByUuid(uuid) {
+        for(let n of this.edges) {
+            if(n.node.uuid === uuid) {
+                return n.node;
+            }
+        }
+
+        throw Error('UUID not found: ' + uuid);
     }
 
     /**

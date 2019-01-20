@@ -1,10 +1,7 @@
 export default class Node {
 
-    get id() {
-        return this._id;
-    }
-
-    constructor(nodeData) {
+    constructor(uuid, nodeData) {
+        this._uuid = uuid;
         if(nodeData) {
             this._id = nodeData.id;
             this._value = nodeData.value;
@@ -21,6 +18,18 @@ export default class Node {
         }
     }
 
+    get uuid() {
+        return this._uuid;
+    }
+
+    get id() {
+        return this._id;
+    }
+
+    set id(value) {
+        this._id = value;
+    }
+
     get value() {
         return this._value;
     }
@@ -33,32 +42,28 @@ export default class Node {
         return this._label;
     }
 
-    set id(value) {
-        this._id = value;
+    set label(value) {
+        this._label = value;
     }
 
     get title() {
         return this._title;
     }
 
-    set label(value) {
-        this._label = value;
+    set title(value) {
+        this._title = value;
     }
 
     get min() {
         return this._min;
     }
 
-    set title(value) {
-        this._title = value;
+    set min(value) {
+        this._min = value;
     }
 
     get max() {
         return this._max;
-    }
-
-    set min(value) {
-        this._min = value;
     }
 
     set max(value) {
@@ -69,20 +74,20 @@ export default class Node {
         return this._step;
     }
 
-    get color() {
-        return this._color;
-    }
-
     set step(value) {
         this._step = value;
     }
 
-    get conv() {
-        return this._conv;
+    get color() {
+        return this._color;
     }
 
     set color(value) {
         this._color = value;
+    }
+
+    get conv() {
+        return this._conv;
     }
 
     set conv(value) {

@@ -6,7 +6,6 @@ import EquationNode from '../graph/equation-node';
 import SeedNode from '../graph/seed-node';
 import GraphView from './graph-view';
 import ConnectionList from './connection-list';
-import GraphEditor from './graph-editor';
 
 class PreloadedGraph extends Component {
     constructor(props) {
@@ -66,9 +65,6 @@ class PreloadedGraph extends Component {
                     <ConnectionList
                         graph={this.state.graph} updateNode={this.updateNode}
                     />
-                </div>
-                <div className="row">
-                    <GraphEditor/>
                 </div>
             </div>
         );

@@ -40,7 +40,7 @@ const GraphView = ({graph}) => {
                 }),
             )];
     }
-
+    console.log('Data: ', data);
     return (
         <div className={'graph-view'}>
             {data.nodes.length ? <Graph

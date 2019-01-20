@@ -2,13 +2,13 @@ import Node from './node';
 
 export default class EquationNode extends Node {
 
-    constructor(nodeData) {
+    constructor(uuid, nodeData) {
         if(nodeData) {
             const {equn, ...rest} = nodeData;
-            super(rest);
+            super(uuid, rest);
             this._equn = equn;
         }
-        super();
+        super(uuid);
     }
 
     get equn() {

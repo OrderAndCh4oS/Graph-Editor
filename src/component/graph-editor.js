@@ -6,56 +6,37 @@ import EquationNode from '../graph/equation-node';
 
 export default class GraphEditor extends Component {
     state = {
-        nodes: {},
         nodePanels: [],
     };
 
     addSeedNode = () => {
-        const node = new SeedNode();
         // Todo: use UUIDs for this
-        // Todo: Could probably manage removal with the key attribute
-        const uid = Math.random().toString() + Math.random().toString();
-        this.setState(prevState => ({
-            nodes: {
-                ...prevState.nodes,
-                [uid]: node,
-            },
-            nodePanels: [
-                ...prevState.nodePanels,
-                <EditNodePanel
-                    key={uid} uid={uid} node={node} updateNode={this.updateNode}
-                />,
-            ],
-        }));
+        const uuid = Math.random().toString();
+        const node = new SeedNode(uuid);
+        this.addNode(uuid, node);
     };
 
     addEquationNode = () => {
-        const node = new EquationNode();
-        const uid = Math.random().toString() + Math.random().toString();
+        const uuid = Math.random().toString();
+        const node = new EquationNode(uuid);
+        this.addNode(uuid, node);
+    };
+
+    addNode(uuid, node) {
+        const {graph, updateNodeKey} = this.props;
+        graph.addNode(node);
         this.setState(prevState => ({
-            nodes: {
-                ...prevState.nodes,
-                [uid]: node,
-            },
             nodePanels: [
                 ...prevState.nodePanels,
                 <EditNodePanel
-                    key={uid} uid={uid} node={node} updateNode={this.updateNode}
+                    key={uuid}
+                    uuid={uuid}
+                    node={node}
+                    updateNode={updateNodeKey}
                 />,
             ],
         }));
-    };
-
-    updateNode = (uid, key, value) => {
-        const node = this.state.nodes[uid];
-        node[key] = value;
-        this.setState(prevState => ({
-            nodes: {
-                ...prevState.nodes,
-                [uid]: node,
-            },
-        }));
-    };
+    }
 
     render() {
         const {buildGraph} = this.props;

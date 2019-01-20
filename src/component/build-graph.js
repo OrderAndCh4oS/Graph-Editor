@@ -5,19 +5,30 @@ import ConnectionList from './connection-list';
 import GraphEditor from './graph-editor';
 import EquationNode from '../graph/equation-node';
 
+// Todo: move this function
+function cleanValue(value) {
+    return (
+        value.toString()[0] === '0' &&
+        value.toString()[1] !== '.'
+            ? 0
+            : parseFloat(value)
+    );
+}
+
 class BuildGraph extends Component {
     constructor(props) {
         super(props);
-
         this.state = {graph: new Graph()};
     }
 
-    buildGraph = (nodes) => {
-        const g = new Graph();
-        const edges = this.findEdges(nodes, g);
+    buildGraph = () => {
+        const g = this.state.graph;
+        console.log('G: ', g);
+        const edges = this.findEdges(g);
         if(edges.length) {
             g.addEdges(edges);
         }
+        console.log('Edges: ', edges);
         g.populateNodesWithEquationData();
         g.calculateEquations();
 
@@ -26,27 +37,25 @@ class BuildGraph extends Component {
         }));
     };
 
-    findEdges = (nodes, g) => {
+    findEdges = (graph) => {
         const edges = [];
-        for(let node of Object.values(nodes)) {
-            if(node instanceof EquationNode) {
-                const joins = node.equn.match(/{(.*?)}/g);
+        for(let node of graph.edges) {
+            console.log('N: ', node);
+            const n = node.node;
+            if(n instanceof EquationNode) {
+                const joins = n.equn.match(/{(.*?)}/g);
+                console.log('joins: ', joins);
                 for(let join of joins) {
                     const id = join.replace(/^[{]|[}]+$/g, '');
-                    edges.push([id, node.id]);
+                    edges.push([id, n.id]);
                 }
             }
-            g.addNode(node);
         }
         return edges;
     };
 
-    updateNode = (node, event) => {
-        let value =
-            event.target.value.toString()[0] === '0' &&
-            event.target.value.toString()[1] !== '.'
-                ? 0
-                : parseFloat(event.target.value);
+    updateNodeValue = (node, event) => {
+        let value = cleanValue(event.target.value);
         if(isNaN(value)) {
             return;
         }
@@ -59,16 +68,27 @@ class BuildGraph extends Component {
         }
     };
 
+    updateNodeKey = (uuid, key, value) => {
+        const node = this.state.graph.getNodeByUuid(uuid);
+        console.log('Node: ', node);
+        node[key] = value;
+    };
+
     render() {
         return (
             <div className="app">
                 <div className="row">
                     <GraphView graph={this.state.graph}/>
                     <ConnectionList
-                        graph={this.state.graph} updateNode={this.updateNode}
+                        graph={this.state.graph}
+                        updateNode={this.updateNodeValue}
                     />
                 </div>
-                <GraphEditor buildGraph={this.buildGraph}/>
+                <GraphEditor
+                    graph={this.state.graph}
+                    buildGraph={this.buildGraph}
+                    updateNodeKey={this.updateNodeKey}
+                />
             </div>
         );
     }
