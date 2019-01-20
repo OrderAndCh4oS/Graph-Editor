@@ -17,6 +17,7 @@ const myConfig = {
         highlightColor: 'green',
     },
 };
+
 const onClickNode = function(nodeId) {
     window.alert(`Clicked node ${nodeId}`);
 };

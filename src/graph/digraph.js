@@ -2,6 +2,8 @@
 import EquationNode from './equation-node';
 import Edge from './edge';
 
+// Todo: handle catching the errors thrown in Digraphs methods
+
 export default class Digraph {
     edges = [];
     _nodesWithEquationData = [];
@@ -22,7 +24,8 @@ export default class Digraph {
         const destinationNode = this.edges.find(
             n => n.node.id === destination.id);
         if(!(sourceNode && destinationNode)) {
-            throw Error('Node not in graph');
+            throw Error(
+                'Either the source node or destination is not in the graph');
         }
         if(!sourceNode.edges.includes(destination)) {
             sourceNode.edges.push(destination);
@@ -50,13 +53,14 @@ export default class Digraph {
     }
 
     getNodeById(id) {
+        console.log('getID: ', id);
         for(let n of this.edges) {
             if(n.node.id === id) {
                 return n.node;
             }
         }
 
-        throw Error('Name not found: ' + id);
+        throw Error('This is no node with this ID in the graph: ' + id);
     }
 
     getNodeByUuid(uuid) {

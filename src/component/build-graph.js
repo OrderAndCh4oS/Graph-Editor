@@ -85,9 +85,7 @@ class BuildGraph extends Component {
         return (
             <div className="app">
                 <div className="row">
-                    <GraphView
-                        graphRef={this.graphRef} graph={this.state.graph}
-                    />
+                    <GraphView graph={this.state.graph}/>
                     <ConnectionList
                         graph={this.state.graph}
                         updateNodeValue={this.updateNodeValue}
