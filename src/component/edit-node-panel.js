@@ -1,25 +1,12 @@
 import React, { Component } from 'react';
 import SeedNode from '../graph/seed-node';
-
-const EditNodeInput = ({label, value, handleOnChange, type}) =>
-    <div className={'edit-node--input-holder'}>
-        <label className={'edit-node-label'}>
-            <span className={'node-text'}>{label}</span>
-            <input
-                type={type}
-                className={'node-input edit-node--input'}
-                defaultValue={value}
-                onChange={handleOnChange}
-            />
-        </label>
-    </div>
-;
+import EditNodeInput from './edit-node-input';
 
 export default class EditNodePanel extends Component {
     updateValue = (key, value) => {
-        const {uuid, updateNode} = this.props;
+        const {node, updateNode} = this.props;
         console.log('Value Entered:', value);
-        updateNode(uuid, key, value);
+        updateNode(node.uuid, key, value);
     };
 
     render() {

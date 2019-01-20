@@ -1,11 +1,8 @@
 /* eslint no-eval: 0 */
-import React, { Component } from 'react';
-
-import ConnectionView from '../component/connection-view';
 import EquationNode from './equation-node';
 import Edge from './edge';
 
-export default class Digraph extends Component {
+export default class Digraph {
     edges = [];
     _nodesWithEquationData = [];
     _orderedNodeEquation = [];
@@ -27,8 +24,9 @@ export default class Digraph extends Component {
         if(!(sourceNode && destinationNode)) {
             throw Error('Node not in graph');
         }
-
-        sourceNode.edges.push(destination);
+        if(!sourceNode.edges.includes(destination)) {
+            sourceNode.edges.push(destination);
+        }
     }
 
     addEdges(connections) {
@@ -138,20 +136,6 @@ export default class Digraph extends Component {
             }
             nodeToUpdate.node.setValue(eval(equation));
         }
-    }
-
-    display(updateNode) {
-        return this.edges.map(source =>
-            source.edges.map(
-                destination =>
-                    <ConnectionView
-                        key={source.node.id + '->' + destination.id}
-                        source={source.node}
-                        destination={destination}
-                        updateNode={updateNode}
-                    />,
-            ),
-        );
     }
 
     findEquationNodeIds(str) {

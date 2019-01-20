@@ -5,56 +5,63 @@ import SeedNode from '../graph/seed-node';
 import EquationNode from '../graph/equation-node';
 
 export default class GraphEditor extends Component {
-    state = {
-        nodePanels: [],
-    };
 
-    addSeedNode = () => {
+    makeSeedNode = () => {
         // Todo: use UUIDs for this
+        console.log('Add SeedNode');
         const uuid = Math.random().toString();
         const node = new SeedNode(uuid);
+        console.log('SdN: ', node);
         this.addNode(uuid, node);
     };
 
-    addEquationNode = () => {
+    makeEquationNode = () => {
+        console.log('Add EquationNode');
         const uuid = Math.random().toString();
         const node = new EquationNode(uuid);
+        console.log('EqN: ', node);
         this.addNode(uuid, node);
     };
 
     addNode(uuid, node) {
-        const {graph, updateNodeKey} = this.props;
+        console.log('Add Node');
+        const {graph, updateGraph} = this.props;
         graph.addNode(node);
-        this.setState(prevState => ({
-            nodePanels: [
-                ...prevState.nodePanels,
-                <EditNodePanel
-                    key={uuid}
-                    uuid={uuid}
-                    node={node}
-                    updateNode={updateNodeKey}
-                />,
-            ],
-        }));
+        updateGraph();
     }
+
+    displayEditNodePanels = () => {
+        const {graph, updateNodeKey} = this.props;
+        return graph.edges.map(
+            node => {
+                console.log('Looped Node: ', node);
+                console.log('UUID Key: ', node.node.uuid);
+                return <EditNodePanel
+                    key={node.node.uuid}
+                    node={node.node}
+                    updateNode={updateNodeKey}
+                />;
+            },
+        );
+    };
 
     render() {
         const {buildGraph} = this.props;
         return (
             <div>
                 <div className={'row'}>
-                    <button onClick={() => buildGraph(this.state.nodes)}>
-                        Build Graph
+                    <button onClick={() => buildGraph()}>
+                        Update Graph
                     </button>
                 </div>
                 <div className={'row'}>
                     <Scrollbars style={{height: 500}}>
                         <div className={'graph-editor'}>
-                            {this.state.nodePanels.map(panel => panel)}
-                            <button onClick={this.addSeedNode}>
+                            {this.displayEditNodePanels()}
+                            <button onClick={this.makeSeedNode}>
                                 Add Seed Node
                             </button>
-                            <button onClick={this.addEquationNode}>
+                            <button onClick={this.makeEquationNode}>
                                 Add Equation Node
                             </button>
                         </div>

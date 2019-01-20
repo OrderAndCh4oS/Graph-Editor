@@ -23,7 +23,7 @@ const NodeView = ({node, updateNode}) => {
                     min={node.min === null ? '0' : node.min}
                     max={node.max === null ? '' : node.max}
                     step={node.step === null ? '' : node.step}
-                    onChange={(event) => updateNode(node, event)}
+                    onChange={(event) => updateNode(node.uuid, event)}
                     disabled={!(node instanceof SeedNode)}
                 />
                 {

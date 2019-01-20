@@ -54,7 +54,16 @@ class BuildGraph extends Component {
         return edges;
     };
 
-    updateNodeValue = (node, event) => {
+    updateGraph = () => {
+        const g = this.state.graph;
+        this.setState(() => ({
+            graph: g,
+        }));
+    };
+
+    updateNodeValue = (uuid, event) => {
+        console.log('unv UUID', uuid);
+        const node = this.state.graph.getNodeByUuid(uuid);
         let value = cleanValue(event.target.value);
         if(isNaN(value)) {
             return;
@@ -62,16 +71,15 @@ class BuildGraph extends Component {
         node.value = value === 0 ? 0 : value / node.conv;
         if(!isNaN(node.value)) {
             this.state.graph.calculateEquations();
-            this.setState(() => ({
-                graph: this.state.graph,
-            }));
         }
+        this.updateGraph();
     };
 
     updateNodeKey = (uuid, key, value) => {
         const node = this.state.graph.getNodeByUuid(uuid);
         console.log('Node: ', node);
         node[key] = value;
+        this.updateGraph();
     };
 
     render() {
@@ -81,12 +89,12 @@ class BuildGraph extends Component {
                     <GraphView graph={this.state.graph}/>
                     <ConnectionList
                         graph={this.state.graph}
-                        updateNode={this.updateNodeValue}
+                        updateNodeValue={this.updateNodeValue}
                     />
                 </div>
                 <GraphEditor
                     graph={this.state.graph}
-                    buildGraph={this.buildGraph}
+                    buildGraph={this.buildGraph} updateGraph={this.updateGraph}
                     updateNodeKey={this.updateNodeKey}
                 />
             </div>

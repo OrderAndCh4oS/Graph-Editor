@@ -31,6 +31,7 @@ input {
   border-radius: 5px;
   margin-bottom: 20px;
   width: 800px;
+  min-width: 800px;
   height: 500px;
 }
 

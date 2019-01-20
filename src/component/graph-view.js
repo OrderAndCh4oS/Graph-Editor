@@ -25,13 +25,13 @@ const GraphView = ({graph}) => {
     const data = {nodes: [], links: []};
     for(const edge of graph.edges) {
         data.nodes.push({
-            id: edge.node.id,
+            id: edge.node.id || '',
             value: prettifyValue(
                 edge.node.value,
                 edge.node.conv,
                 edge.node.prefix,
                 edge.node.suffix,
-            ),
+            ) || '',
         });
         data.links = [
             ...data.links, ...edge.edges.map(e => ({
