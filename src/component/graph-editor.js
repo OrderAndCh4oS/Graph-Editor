@@ -51,7 +51,7 @@ export default class GraphEditor extends Component {
             <div>
                 <div className={'row'}>
                     <button onClick={() => buildGraph()}>
-                        Update Graph
+                        Build Graph
                     </button>
                 </div>
                 <div className={'row'}>

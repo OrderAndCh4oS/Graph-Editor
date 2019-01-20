@@ -1,5 +1,5 @@
 import { Graph } from 'react-d3-graph';
-import React from 'react';
+import React, { createRef } from 'react';
 import prettifyValue from '../utility/prettify-value';
 
 // the graph configuration, you only need to pass down properties
@@ -11,21 +11,24 @@ const myConfig = {
         color: 'lightgreen',
         size: 150,
         highlightStrokeColor: 'blue',
-        labelProperty: (node) => node.id + '\n' + node.value,
+        labelProperty: (node) => node.label + '\n' + node.value,
     },
     link: {
-        highlightColor: 'lightblue',
+        highlightColor: 'green',
     },
 };
 const onClickNode = function(nodeId) {
     window.alert(`Clicked node ${nodeId}`);
 };
 
+const graphRef = createRef();
+
 const GraphView = ({graph}) => {
     const data = {nodes: [], links: []};
     for(const edge of graph.edges) {
         data.nodes.push({
-            id: edge.node.id || '',
+            id: edge.node.uuid,
+            label: edge.node.id || '',
             value: prettifyValue(
                 edge.node.value,
                 edge.node.conv,
@@ -34,9 +37,9 @@ const GraphView = ({graph}) => {
             ) || '',
         });
         data.links = [
-            ...data.links, ...edge.edges.map(e => ({
-                    source: edge.node.id,
-                    target: e.id,
+            ...data.links, ...edge.edges.map(node => ({
+                source: edge.node.uuid,
+                target: node.uuid,
                 }),
             )];
     }
@@ -44,6 +47,7 @@ const GraphView = ({graph}) => {
     return (
         <div className={'graph-view'}>
             {data.nodes.length ? <Graph
+                ref={graphRef}
                 id="graph-id" // id is mandatory, if no id is defined rd3g will throw an error
                 className={'graph-visual'}
                 data={data}

@@ -31,7 +31,6 @@ class BuildGraph extends Component {
         console.log('Edges: ', edges);
         g.populateNodesWithEquationData();
         g.calculateEquations();
-
         this.setState(() => ({
             graph: g,
         }));
@@ -86,7 +85,9 @@ class BuildGraph extends Component {
         return (
             <div className="app">
                 <div className="row">
-                    <GraphView graph={this.state.graph}/>
+                    <GraphView
+                        graphRef={this.graphRef} graph={this.state.graph}
+                    />
                     <ConnectionList
                         graph={this.state.graph}
                         updateNodeValue={this.updateNodeValue}
@@ -94,7 +95,8 @@ class BuildGraph extends Component {
                 </div>
                 <GraphEditor
                     graph={this.state.graph}
-                    buildGraph={this.buildGraph} updateGraph={this.updateGraph}
+                    buildGraph={this.buildGraph}
+                    updateGraph={this.updateGraph}
                     updateNodeKey={this.updateNodeKey}
                 />
             </div>
