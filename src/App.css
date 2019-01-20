@@ -20,7 +20,7 @@ input {
   width: 100%;
 }
 
-.app {
+.row {
   max-width: 1240px;
   margin: 0 auto;
   display: flex;
@@ -31,6 +31,7 @@ input {
   border-radius: 5px;
   margin-bottom: 20px;
   width: 800px;
+  min-width: 800px;
   height: 500px;
 }
 
@@ -85,4 +86,16 @@ input {
 
 .node-input {
   font-size: 11px;
+}
+
+.edit-node--panel {
+    display: flex;
+}
+
+.edit-node--input-holder {
+    padding: 0 12px 12px 0;
+}
+
+.edit-node--name {
+    font-size: 11px;
 }

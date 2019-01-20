@@ -22,17 +22,16 @@ const onClickNode = function(nodeId) {
 };
 
 const GraphView = ({graph}) => {
-
     const data = {nodes: [], links: []};
     for(const edge of graph.edges) {
         data.nodes.push({
-            id: edge.node.id,
+            id: edge.node.id || '',
             value: prettifyValue(
                 edge.node.value,
                 edge.node.conv,
                 edge.node.prefix,
                 edge.node.suffix,
-            ),
+            ) || '',
         });
         data.links = [
             ...data.links, ...edge.edges.map(e => ({
@@ -41,16 +40,16 @@ const GraphView = ({graph}) => {
                 }),
             )];
     }
-
+    console.log('Data: ', data);
     return (
         <div className={'graph-view'}>
-            <Graph
+            {data.nodes.length ? <Graph
                 id="graph-id" // id is mandatory, if no id is defined rd3g will throw an error
                 className={'graph-visual'}
                 data={data}
                 config={myConfig}
                 onClickNode={onClickNode} zoom={5}
-            />
+            /> : null}
         </div>
     );
 };
