@@ -5,9 +5,18 @@ import Edge from './edge';
 // Todo: handle catching the errors thrown in Digraphs methods
 
 export default class Digraph {
+    _hydrated = false;
+
+    get hydrated() {
+        return this._hydrated;
+    }
     edges = [];
     _nodesWithEquationData = [];
     _orderedNodeEquation = [];
+
+    set hydrated(value) {
+        this._hydrated = value;
+    }
 
     addNode(node) {
         if(this.edges.includes(node)) {
@@ -98,7 +107,7 @@ export default class Digraph {
      * If it has the equations can be run in order with out the need to look them up.
      */
     calculateEquations() {
-        this._orderedNodeEquation.length
+        this._hydrated
             ? this.updateEquations()
             : this.hydrateEquations();
     }
@@ -112,6 +121,7 @@ export default class Digraph {
      */
     hydrateEquations() {
         if(!this._nodesWithEquationData.length) {
+            this._hydrated = true;
             return;
         }
         const nodeToUpdate = this._nodesWithEquationData.pop();
