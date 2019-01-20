@@ -26,7 +26,13 @@ class BuildGraph extends Component {
         console.log('G: ', g);
         const edges = this.findEdges(g);
         if(edges.length) {
-            g.addEdges(edges);
+            try {
+                g.addEdges(edges);
+            } catch(e) {
+                console.log(e);
+                alert(e.message);
+                return;
+            }
         }
         console.log('Edges: ', edges);
         g.populateNodesWithEquationData();
