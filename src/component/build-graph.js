@@ -61,6 +61,7 @@ class BuildGraph extends Component {
 
     updateGraph = () => {
         const g = this.state.graph;
+        g._hydrated = false;
         this.setState(() => ({
             graph: g,
         }));
