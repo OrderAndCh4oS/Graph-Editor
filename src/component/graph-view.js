@@ -11,12 +11,13 @@ const myConfig = {
         color: 'lightgreen',
         size: 150,
         highlightStrokeColor: 'blue',
-        labelProperty: (node) => node.id + '\n' + node.value,
+        labelProperty: (node) => node.label + '\n' + node.value,
     },
     link: {
-        highlightColor: 'lightblue',
+        highlightColor: 'green',
     },
 };
+
 const onClickNode = function(nodeId) {
     window.alert(`Clicked node ${nodeId}`);
 };
@@ -25,7 +26,8 @@ const GraphView = ({graph}) => {
     const data = {nodes: [], links: []};
     for(const edge of graph.edges) {
         data.nodes.push({
-            id: edge.node.id || '',
+            id: edge.node.uuid,
+            label: edge.node.id || '',
             value: prettifyValue(
                 edge.node.value,
                 edge.node.conv,
@@ -34,9 +36,9 @@ const GraphView = ({graph}) => {
             ) || '',
         });
         data.links = [
-            ...data.links, ...edge.edges.map(e => ({
-                    source: edge.node.id,
-                    target: e.id,
+            ...data.links, ...edge.edges.map(node => ({
+                source: edge.node.uuid,
+                target: node.uuid,
                 }),
             )];
     }

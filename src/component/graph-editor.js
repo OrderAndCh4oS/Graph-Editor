@@ -26,7 +26,13 @@ export default class GraphEditor extends Component {
     addNode(uuid, node) {
         console.log('Add Node');
         const {graph, updateGraph} = this.props;
-        graph.addNode(node);
+        try {
+            graph.addNode(node);
+        } catch(e) {
+            console.log(e);
+            alert(e.message);
+            return;
+        }
         updateGraph();
     }
 
@@ -51,7 +57,7 @@ export default class GraphEditor extends Component {
             <div>
                 <div className={'row'}>
                     <button onClick={() => buildGraph()}>
-                        Update Graph
+                        Build Graph
                     </button>
                 </div>
                 <div className={'row'}>

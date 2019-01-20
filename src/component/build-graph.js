@@ -26,12 +26,17 @@ class BuildGraph extends Component {
         console.log('G: ', g);
         const edges = this.findEdges(g);
         if(edges.length) {
-            g.addEdges(edges);
+            try {
+                g.addEdges(edges);
+            } catch(e) {
+                console.log(e);
+                alert(e.message);
+                return;
+            }
         }
         console.log('Edges: ', edges);
         g.populateNodesWithEquationData();
         g.calculateEquations();
-
         this.setState(() => ({
             graph: g,
         }));
@@ -94,7 +99,8 @@ class BuildGraph extends Component {
                 </div>
                 <GraphEditor
                     graph={this.state.graph}
-                    buildGraph={this.buildGraph} updateGraph={this.updateGraph}
+                    buildGraph={this.buildGraph}
+                    updateGraph={this.updateGraph}
                     updateNodeKey={this.updateNodeKey}
                 />
             </div>
