@@ -99,3 +99,7 @@ input {
 .edit-node--name {
     font-size: 11px;
 }
+
+.edit-node--action-column {
+  padding-top: 20px;
+}

@@ -60,6 +60,8 @@ class BuildGraph extends Component {
     };
 
     updateGraph = () => {
+        console.log('Update Graph');
+        // Todo: The graph should be immutable.
         const g = this.state.graph;
         g._hydrated = false;
         this.setState(() => ({
@@ -67,23 +69,28 @@ class BuildGraph extends Component {
         }));
     };
 
-    updateNodeValue = (uuid, event) => {
+    updateNodeValue = (uuid, value) => {
         console.log('unv UUID', uuid);
         const node = this.state.graph.getNodeByUuid(uuid);
-        let value = cleanValue(event.target.value);
+        value = cleanValue(value);
         if(isNaN(value)) {
             return;
         }
         node.value = value === 0 ? 0 : value / node.conv;
         if(!isNaN(node.value)) {
+            console.log('>>>> ', node.value);
             this.state.graph.calculateEquations();
         }
-        this.updateGraph();
+        const g = this.state.graph;
+        this.setState(() => ({
+            graph: g,
+        }));
+        // this.updateGraph();
     };
 
-    updateNodeKey = (uuid, key, value) => {
+    updateNodeKey = (uuid) => (key, value) => {
         const node = this.state.graph.getNodeByUuid(uuid);
-        console.log('Node: ', node);
+        console.log('Update Node Key Value: ', node);
         node[key] = value;
         this.updateGraph();
     };

@@ -36,6 +36,13 @@ export default class GraphEditor extends Component {
         updateGraph();
     }
 
+    removeNode = (uuid) => () => {
+        // Todo: fix errors this causes with graph-view
+        const {graph, updateGraph} = this.props;
+        graph.removeNodeWithUuid(uuid);
+        updateGraph();
+    };
+
     displayEditNodePanels = () => {
         const {graph, updateNodeKey} = this.props;
         return graph.edges.map(
@@ -45,7 +52,8 @@ export default class GraphEditor extends Component {
                 return <EditNodePanel
                     key={node.node.uuid}
                     node={node.node}
-                    updateNode={updateNodeKey}
+                    updateNode={updateNodeKey(node.node.uuid)}
+                    removeNode={this.removeNode(node.node.uuid)}
                 />;
             },
         );
@@ -57,7 +65,7 @@ export default class GraphEditor extends Component {
             <div>
                 <div className={'row'}>
                     <button onClick={() => buildGraph()}>
-                        Build Graph
+                        Update Graph
                     </button>
                 </div>
                 <div className={'row'}>
