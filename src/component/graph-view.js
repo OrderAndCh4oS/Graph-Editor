@@ -1,5 +1,5 @@
 import { Graph } from 'react-d3-graph';
-import React, { createRef } from 'react';
+import React from 'react';
 import prettifyValue from '../utility/prettify-value';
 
 // the graph configuration, you only need to pass down properties
@@ -20,8 +20,6 @@ const myConfig = {
 const onClickNode = function(nodeId) {
     window.alert(`Clicked node ${nodeId}`);
 };
-
-const graphRef = createRef();
 
 const GraphView = ({graph}) => {
     const data = {nodes: [], links: []};
@@ -47,7 +45,6 @@ const GraphView = ({graph}) => {
     return (
         <div className={'graph-view'}>
             {data.nodes.length ? <Graph
-                ref={graphRef}
                 id="graph-id" // id is mandatory, if no id is defined rd3g will throw an error
                 className={'graph-visual'}
                 data={data}
