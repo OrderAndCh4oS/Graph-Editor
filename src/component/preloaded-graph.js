@@ -7,6 +7,9 @@ import SeedNode from '../graph/seed-node';
 import GraphView from './graph-view';
 import ConnectionList from './connection-list';
 
+/**
+ * First draft no longer used
+ */
 class PreloadedGraph extends Component {
     constructor(props) {
         super(props);

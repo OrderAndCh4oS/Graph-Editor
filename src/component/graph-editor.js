@@ -64,20 +64,25 @@ export default class GraphEditor extends Component {
         return (
             <div>
                 <div className={'row'}>
-                    <button onClick={() => buildGraph()}>
-                        Update Graph
-                    </button>
+                    <p>
+                        <button onClick={() => buildGraph()}>
+                            Update Graph
+                        </button>
+                    </p>
                 </div>
                 <div className={'row'}>
                     <Scrollbars style={{height: 500}}>
                         <div className={'graph-editor'}>
                             {this.displayEditNodePanels()}
-                            <button onClick={this.makeSeedNode}>
-                                Add Seed Node
-                            </button>
-                            <button onClick={this.makeEquationNode}>
-                                Add Equation Node
-                            </button>
+                            <p>
+                                <button onClick={this.makeSeedNode}>
+                                    Add Seed Node
+                                </button>
+                                {' '}
+                                <button onClick={this.makeEquationNode}>
+                                    Add Equation Node
+                                </button>
+                            </p>
                         </div>
                     </Scrollbars>
                 </div>

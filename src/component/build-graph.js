@@ -99,41 +99,12 @@ class BuildGraph extends Component {
         this.updateGraph();
     };
 
-    render() {
-        return (
-            <div className="app">
-                <div className="row">
-                    <GraphView graph={this.state.graph}/>
-                    <ConnectionList
-                        graph={this.state.graph}
-                        updateNodeValue={this.updateNodeValue}
-                    />
-                </div>
-                <GraphEditor
-                    graph={this.state.graph}
-                    buildGraph={this.buildGraph}
-                    updateGraph={this.updateGraph}
-                    updateNodeKey={this.updateNodeKey}
-                />
-                <div className="row">
-                    <label>
-                        <span>Import CSV</span>
-                        <input type='file' onChange={this.handleCSVImport}/>
-                    </label>
-                </div>
-            </div>
-        );
-    }
-
     createGraph = (data) => {
         const g = new Graph();
         const connections = [];
-        console.log(data);
         data.data.pop();
         for(let nodeData of data.data) {
             let node;
-            console.log('=========================');
-            console.log(nodeData);
             if(nodeData.equn !== null) {
                 const joins = nodeData.equn.match(/{(.*?)}/g);
                 for(let join of joins) {
@@ -145,7 +116,6 @@ class BuildGraph extends Component {
                 node = new SeedNode(Math.random().toString(), nodeData);
             }
             g.addNode(node);
-            console.log('Added Node');
         }
 
         for(let connection of connections) {
@@ -179,6 +149,34 @@ class BuildGraph extends Component {
             },
         });
     };
+
+    render() {
+        return (
+            <div className="app">
+                <div className="row">
+                    <p>
+                        <label>
+                            <span>Import CSV</span>
+                            <input type='file' onChange={this.handleCSVImport}/>
+                        </label>
+                    </p>
+                </div>
+                <div className="row">
+                    <GraphView graph={this.state.graph}/>
+                    <ConnectionList
+                        graph={this.state.graph}
+                        updateNodeValue={this.updateNodeValue}
+                    />
+                </div>
+                <GraphEditor
+                    graph={this.state.graph}
+                    buildGraph={this.buildGraph}
+                    updateGraph={this.updateGraph}
+                    updateNodeKey={this.updateNodeKey}
+                />
+            </div>
+        );
+    }
 }
 
 export default BuildGraph;
