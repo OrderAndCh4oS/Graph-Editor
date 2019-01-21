@@ -95,6 +95,7 @@ input {
 .edit-node--panel {
     display: flex;
     border-bottom: 1px solid #c3c3ca;
+    padding-right: 15px;
 }
 
 .edit-node--input-holder {
