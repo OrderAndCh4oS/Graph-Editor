@@ -1,9 +1,13 @@
 import React, { Component } from 'react';
+import * as Papa from 'papaparse';
+
 import Graph from '../graph/graph';
 import GraphView from './graph-view';
 import ConnectionList from './connection-list';
 import GraphEditor from './graph-editor';
 import EquationNode from '../graph/equation-node';
+import SeedNode from '../graph/seed-node';
+import Edge from '../graph/edge';
 
 // Todo: move this function
 function cleanValue(value) {
@@ -111,9 +115,70 @@ class BuildGraph extends Component {
                     updateGraph={this.updateGraph}
                     updateNodeKey={this.updateNodeKey}
                 />
+                <div className="row">
+                    <label>
+                        <span>Import CSV</span>
+                        <input type='file' onChange={this.handleCSVImport}/>
+                    </label>
+                </div>
             </div>
         );
     }
+
+    createGraph = (data) => {
+        const g = new Graph();
+        const connections = [];
+        console.log(data);
+        data.data.pop();
+        for(let nodeData of data.data) {
+            let node;
+            console.log('=========================');
+            console.log(nodeData);
+            if(nodeData.equn !== null) {
+                const joins = nodeData.equn.match(/{(.*?)}/g);
+                for(let join of joins) {
+                    const id = join.replace(/^[{]|[}]+$/g, '');
+                    connections.push([id, nodeData.id]);
+                }
+                node = new EquationNode(Math.random().toString(), nodeData);
+            } else {
+                node = new SeedNode(Math.random().toString(), nodeData);
+            }
+            g.addNode(node);
+            console.log('Added Node');
+        }
+
+        for(let connection of connections) {
+            g.addEdge(
+                new Edge(g.getNodeById(connection[0]),
+                    g.getNodeById(connection[1])));
+        }
+
+        g.populateNodesWithEquationData();
+        g.calculateEquations();
+
+        this.setState(() => ({graph: g}));
+    };
+
+    handleCSVImport = (event) => {
+        console.log(event.target.files);
+        Papa.parse(event.target.files[0], {
+            header: true,
+            complete: this.createGraph,
+            transform: (value, header) => {
+                switch(header) {
+                    case 'value':
+                    case 'conv':
+                    case 'min':
+                    case 'max':
+                    case 'step':
+                        return value !== '' ? parseFloat(value) : null;
+                    default:
+                        return value !== '' ? value : null;
+                }
+            },
+        });
+    };
 }
 
 export default BuildGraph;
