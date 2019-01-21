@@ -1,9 +1,13 @@
 import React, { Component } from 'react';
+import * as Papa from 'papaparse';
+
 import Graph from '../graph/graph';
 import GraphView from './graph-view';
 import ConnectionList from './connection-list';
 import GraphEditor from './graph-editor';
 import EquationNode from '../graph/equation-node';
+import SeedNode from '../graph/seed-node';
+import Edge from '../graph/edge';
 
 // Todo: move this function
 function cleanValue(value) {
@@ -60,6 +64,8 @@ class BuildGraph extends Component {
     };
 
     updateGraph = () => {
+        console.log('Update Graph');
+        // Todo: The graph should be immutable.
         const g = this.state.graph;
         g._hydrated = false;
         this.setState(() => ({
@@ -67,30 +73,94 @@ class BuildGraph extends Component {
         }));
     };
 
-    updateNodeValue = (uuid, event) => {
+    updateNodeValue = (uuid, value) => {
         console.log('unv UUID', uuid);
         const node = this.state.graph.getNodeByUuid(uuid);
-        let value = cleanValue(event.target.value);
+        value = cleanValue(value);
         if(isNaN(value)) {
             return;
         }
         node.value = value === 0 ? 0 : value / node.conv;
         if(!isNaN(node.value)) {
+            console.log('>>>> ', node.value);
             this.state.graph.calculateEquations();
         }
+        const g = this.state.graph;
+        this.setState(() => ({
+            graph: g,
+        }));
+        // this.updateGraph();
+    };
+
+    updateNodeKey = (uuid) => (key, value) => {
+        const node = this.state.graph.getNodeByUuid(uuid);
+        console.log('Update Node Key Value: ', node);
+        node[key] = value;
         this.updateGraph();
     };
 
-    updateNodeKey = (uuid, key, value) => {
-        const node = this.state.graph.getNodeByUuid(uuid);
-        console.log('Node: ', node);
-        node[key] = value;
-        this.updateGraph();
+    createGraph = (data) => {
+        const g = new Graph();
+        const connections = [];
+        data.data.pop();
+        for(let nodeData of data.data) {
+            let node;
+            if(nodeData.equn !== null) {
+                const joins = nodeData.equn.match(/{(.*?)}/g);
+                for(let join of joins) {
+                    const id = join.replace(/^[{]|[}]+$/g, '');
+                    connections.push([id, nodeData.id]);
+                }
+                node = new EquationNode(Math.random().toString(), nodeData);
+            } else {
+                node = new SeedNode(Math.random().toString(), nodeData);
+            }
+            g.addNode(node);
+        }
+
+        for(let connection of connections) {
+            g.addEdge(
+                new Edge(g.getNodeById(connection[0]),
+                    g.getNodeById(connection[1])));
+        }
+
+        g.populateNodesWithEquationData();
+        g.calculateEquations();
+
+        this.setState(() => ({graph: g}));
+    };
+
+    handleCSVImport = (event) => {
+        console.log(event.target.files);
+        Papa.parse(event.target.files[0], {
+            header: true,
+            complete: this.createGraph,
+            transform: (value, header) => {
+                switch(header) {
+                    case 'value':
+                    case 'conv':
+                    case 'min':
+                    case 'max':
+                    case 'step':
+                        return value !== '' ? parseFloat(value) : null;
+                    default:
+                        return value !== '' ? value : null;
+                }
+            },
+        });
     };
 
     render() {
         return (
             <div className="app">
+                <div className="row">
+                    <p>
+                        <label>
+                            <span>Import CSV</span>
+                            <input type='file' onChange={this.handleCSVImport}/>
+                        </label>
+                    </p>
+                </div>
                 <div className="row">
                     <GraphView graph={this.state.graph}/>
                     <ConnectionList

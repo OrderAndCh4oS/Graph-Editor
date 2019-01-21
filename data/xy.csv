@@ -1,0 +1,4 @@
+id,label,title,color,value,conv,suffix,prefix,min,max,step,equn
+x,param,param x,green,5000000,0.000001,M,,1,10,1,
+y,param,param y,green,10,1,,,10,25,5,
+x+y,calc,calc x+y,blue,,1,,,,,,{x}+{y}

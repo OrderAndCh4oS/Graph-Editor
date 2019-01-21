@@ -5,6 +5,7 @@
   "dependencies": {
     "d3": "^5.7.0",
     "lodash": "^4.17.11",
+    "papaparse": "^4.6.3",
     "react": "^16.7.0",
     "react-custom-scrollbars": "^4.2.1",
     "react-d3-graph": "^2.0.0-rc2",

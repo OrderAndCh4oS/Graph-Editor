@@ -49,8 +49,7 @@ const GraphView = ({graph}) => {
                 id="graph-id" // id is mandatory, if no id is defined rd3g will throw an error
                 className={'graph-visual'}
                 data={data}
-                config={myConfig}
-                onClickNode={onClickNode} zoom={5}
+                config={myConfig} onClickNode={onClickNode} zoom={1.3}
             /> : null}
         </div>
     );
