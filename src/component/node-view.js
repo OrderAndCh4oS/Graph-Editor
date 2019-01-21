@@ -19,11 +19,15 @@ const NodeView = ({node, updateNode}) => {
                 <input
                     type='number'
                     className={'node-input'}
-                    value={prettifyValue(node.value, node.conv, false, false)}
+                    value={prettifyValue(
+                        node.value, node.conv, false, false,
+                    )}
                     min={node.min === null ? '0' : node.min}
                     max={node.max === null ? '' : node.max}
                     step={node.step === null ? '' : node.step}
-                    onChange={(event) => updateNode(node.uuid, event)}
+                    onChange={(event) =>
+                        updateNode(node.uuid, event.target.value)
+                    }
                     disabled={!(node instanceof SeedNode)}
                 />
                 {

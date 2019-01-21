@@ -4,13 +4,12 @@ import EditNodeInput from './edit-node-input';
 
 export default class EditNodePanel extends Component {
     updateValue = (key, value) => {
-        const {node, updateNode} = this.props;
         console.log('Value Entered:', value);
-        updateNode(node.uuid, key, value);
+        this.props.updateNode(key, value);
     };
 
     render() {
-        const {node} = this.props;
+        const {node, removeNode} = this.props;
         return (
             <div className={'edit-node--panel'}>
                 <EditNodeInput
@@ -119,6 +118,13 @@ export default class EditNodePanel extends Component {
                         e.target.value,
                     )}
                 />
+                <div className={'edit-node--action-column'}>
+                    <button
+                        className={'button button--remove-node'}
+                        onClick={removeNode}
+                    >x
+                    </button>
+                </div>
             </div>
         );
     }

@@ -61,6 +61,13 @@ export default class Digraph {
         return this.edges.includes(node);
     }
 
+    removeNodeWithUuid(uuid) {
+        this.edges = this.edges.filter(e => e.node.uuid !== uuid);
+        for(const node of this.edges) {
+            node.edges = node.edges.filter(e => e.uuid !== uuid);
+        }
+    }
+
     getNodeById(id) {
         console.log('getID: ', id);
         for(let n of this.edges) {

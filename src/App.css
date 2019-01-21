@@ -1,95 +1,101 @@
 body {
-  margin: 0 auto;
-  padding: 40px;
-  font-family: "Roboto", "Verdana", "Avenir", sans-serif;
-  color: darkslategray;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+    margin: 0 auto;
+    padding: 40px;
+    font-family: "Roboto", "Verdana", "Avenir", sans-serif;
+    color: darkslategray;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
-  monospace;
+    font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
 }
 
 input {
-  border: 1px solid #c3c3ca;
-  border-radius: 5px;
-  padding: 2px 3px;
-  display: inline-block;
-  width: 100%;
+    border: 1px solid #c3c3ca;
+    border-radius: 5px;
+    padding: 2px 3px;
+    display: inline-block;
+    width: 100%;
 }
 
 .row {
-  max-width: 1240px;
-  margin: 0 auto;
-  display: flex;
+    max-width: 1240px;
+    margin: 0 auto;
+    display: flex;
+}
+
+.bottom-gutter {
+    padding-bottom: 15px;
 }
 
 .graph-view {
-  border: 1px solid #c3c3ca;
-  border-radius: 5px;
-  margin-bottom: 20px;
-  width: 800px;
-  min-width: 800px;
-  height: 500px;
+    border: 1px solid #c3c3ca;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    width: 800px;
+    min-width: 800px;
+    height: 500px;
 }
 
 .connection-view {
-  display: inline-block;
-  padding-left: 15px;
-  flex-grow: 1;
+    display: inline-block;
+    padding-left: 15px;
+    flex-grow: 1;
 }
 
 .connection {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 3px 0 6px;
-  border-bottom: 1px solid #c3c3ca;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 3px 0 6px;
+    border-bottom: 1px solid #c3c3ca;
 }
 
 .node-view {
-  display: block;
-  width: 180px;
-  text-align: left;
+    display: block;
+    width: 180px;
+    text-align: left;
 }
 
 .pointer {
-  padding: 0 10px;
-  display: block;
+    padding: 0 10px;
+    display: block;
 }
 
 .node-title {
-  font-size: 11px;
-  margin: 0 0 4px;
+    font-size: 11px;
+    margin: 0 0 4px;
 }
 
 .node-label {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .node-label span, .node-label input {
-  margin: 0 3px;
+    margin: 0 3px;
 }
 
 .node-suffix, .node-prefix {
-  font-size: 11px;
+    font-size: 11px;
 }
 
 .node-text {
-  font-size: 11px;
-  font-style: italic;
+    font-size: 11px;
+    font-style: italic;
 }
 
 .node-input {
-  font-size: 11px;
+    font-size: 11px;
 }
 
 .edit-node--panel {
     display: flex;
+    border-bottom: 1px solid #c3c3ca;
+    padding-right: 15px;
 }
 
 .edit-node--input-holder {
@@ -98,4 +104,8 @@ input {
 
 .edit-node--name {
     font-size: 11px;
+}
+
+.edit-node--action-column {
+    padding-top: 20px;
 }
