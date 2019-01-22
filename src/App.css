@@ -92,6 +92,14 @@ input {
     font-size: 11px;
 }
 
+.node-input--narrow {
+    width: 75px;
+}
+
+.node-input--grow {
+    flex: 1;
+}
+
 .edit-node--panel {
     display: flex;
     border-bottom: 1px solid #c3c3ca;
