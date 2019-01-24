@@ -42,7 +42,7 @@ export default class Digraph {
     }
 
     addEdges(connections) {
-        console.log('C: ', connections);
+
         for(let connection of connections) {
             this.addEdge(
                 new Edge(
@@ -69,7 +69,6 @@ export default class Digraph {
     }
 
     getNodeById(id) {
-        console.log('getID: ', id);
         for(let n of this.edges) {
             if(n.node.id === id) {
                 return n.node;

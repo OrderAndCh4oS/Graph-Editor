@@ -4,7 +4,7 @@ import EditNodeInput from './edit-node-input';
 
 export default class EditNodePanel extends Component {
     updateValue = (key, value) => {
-        console.log('Value Entered:', value);
+
         this.props.updateNode(key, value);
     };
 

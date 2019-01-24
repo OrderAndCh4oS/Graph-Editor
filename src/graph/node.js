@@ -14,7 +14,6 @@ export default class Node {
             this._conv = nodeData.conv || 1;
             this._prefix = nodeData.prefix;
             this._suffix = nodeData.suffix;
-            this._nodeData = nodeData;
         }
     }
 

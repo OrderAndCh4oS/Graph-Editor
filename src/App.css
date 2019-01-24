@@ -26,6 +26,18 @@ input {
     display: flex;
 }
 
+.top-tool-bar {
+    padding-bottom: 15px;
+}
+
+.tool-bar-item {
+    margin-right: 30px;
+}
+
+.export-csv {
+    padding-top: 22px;
+}
+
 .bottom-gutter {
     padding-bottom: 15px;
 }

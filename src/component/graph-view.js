@@ -5,16 +5,23 @@ import prettifyValue from '../utility/prettify-value';
 // the graph configuration, you only need to pass down properties
 // that you want to override, otherwise default ones will be used
 const myConfig = {
-    height: 500, width: 800, maxZoom: 1.8, minZoom: 1,
+    height: 500, width: 800,
+    maxZoom: 2, minZoom: 0.8, focusZoom: 1.5,
     nodeHighlightBehavior: true,
+    directed: true,
+    d3: {
+        gravity: -190,
+        linkLength: 75,
+        linkStrength: 0.5,
+    },
     node: {
-        color: 'lightgreen',
+        color: 'lightgrey',
         size: 150,
-        highlightStrokeColor: 'blue',
+        highlightStrokeColor: 'grey',
         labelProperty: (node) => node.label + '\n' + node.value,
     },
     link: {
-        highlightColor: 'green',
+        highlightColor: 'slategrey',
     },
 };
 
@@ -28,6 +35,7 @@ const GraphView = ({graph}) => {
         data.nodes.push({
             id: edge.node.uuid,
             label: edge.node.id || '',
+            color: edge.node.color,
             value: prettifyValue(
                 edge.node.value,
                 edge.node.conv,
@@ -42,14 +50,13 @@ const GraphView = ({graph}) => {
                 }),
             )];
     }
-    console.log('Data: ', data);
+
     return (
         <div className={'graph-view'}>
             {data.nodes.length ? <Graph
                 id="graph-id" // id is mandatory, if no id is defined rd3g will throw an error
                 className={'graph-visual'}
-                data={data}
-                config={myConfig} onClickNode={onClickNode} zoom={1.3}
+                data={data} config={myConfig} onClickNode={onClickNode}
             /> : null}
         </div>
     );

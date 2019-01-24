@@ -8,28 +8,28 @@ export default class GraphEditor extends Component {
 
     makeSeedNode = () => {
         // Todo: use UUIDs for this
-        console.log('Add SeedNode');
+
         const uuid = Math.random().toString();
         const node = new SeedNode(uuid);
-        console.log('SdN: ', node);
+
         this.addNode(uuid, node);
     };
 
     makeEquationNode = () => {
-        console.log('Add EquationNode');
+
         const uuid = Math.random().toString();
         const node = new EquationNode(uuid);
-        console.log('EqN: ', node);
+
         this.addNode(uuid, node);
     };
 
     addNode(uuid, node) {
-        console.log('Add Node');
+
         const {graph, updateGraph} = this.props;
         try {
             graph.addNode(node);
         } catch(e) {
-            console.log(e);
+
             alert(e.message);
             return;
         }
@@ -47,8 +47,7 @@ export default class GraphEditor extends Component {
         const {graph, updateNodeKey} = this.props;
         return graph.edges.map(
             node => {
-                console.log('Looped Node: ', node);
-                console.log('UUID Key: ', node.node.uuid);
+
                 return <EditNodePanel
                     key={node.node.uuid}
                     node={node.node}
@@ -65,7 +64,9 @@ export default class GraphEditor extends Component {
             <div>
                 <div className={'row'}>
                     <p>
-                        <button onClick={() => buildGraph()}>
+                        <button
+                            className={'button'} onClick={() => buildGraph()}
+                        >
                             Update Graph
                         </button>
                     </p>
@@ -73,11 +74,16 @@ export default class GraphEditor extends Component {
                 <div className={'row'}>
                     <div>
                         <p>
-                            <button onClick={this.makeSeedNode}>
+                            <button
+                                className={'button'} onClick={this.makeSeedNode}
+                            >
                                 Add Seed Node
                             </button>
                             {' '}
-                            <button onClick={this.makeEquationNode}>
+                            <button
+                                className={'button'}
+                                onClick={this.makeEquationNode}
+                            >
                                 Add Equation Node
                             </button>
                         </p>
