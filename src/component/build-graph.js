@@ -12,8 +12,6 @@ import cleanValue from '../utility/clean-value';
 import getProperty from '../utility/get-property';
 import { saveAs } from 'file-saver';
 
-// Todo: move this function
-
 class BuildGraph extends Component {
     constructor(props) {
         super(props);
@@ -22,13 +20,11 @@ class BuildGraph extends Component {
 
     buildGraph = () => {
         const g = this.state.graph;
-
         const edges = this.findEdges(g);
         if(edges.length) {
             try {
                 g.addEdges(edges);
             } catch(e) {
-
                 alert(e.message);
                 return;
             }
@@ -36,15 +32,14 @@ class BuildGraph extends Component {
 
         g.populateNodesWithEquationData();
         g.calculateEquations();
-        this.setState(() => ({
+        this.setState({
             graph: g,
-        }));
+        });
     };
 
     findEdges = (graph) => {
         const edges = [];
         for(let node of graph.edges) {
-
             const n = node.node;
             if(n instanceof EquationNode) {
                 const joins = n.equn.match(/{(.*?)}/g);
@@ -59,17 +54,15 @@ class BuildGraph extends Component {
     };
 
     updateGraph = () => {
-
         // Todo: The graph should be immutable.
         const g = this.state.graph;
         g._hydrated = false;
-        this.setState(() => ({
+        this.setState({
             graph: g,
-        }));
+        });
     };
 
     updateNodeValue = (uuid, value) => {
-
         const node = this.state.graph.getNodeByUuid(uuid);
         value = cleanValue(value);
         if(isNaN(value)) {
@@ -81,10 +74,9 @@ class BuildGraph extends Component {
             this.state.graph.calculateEquations();
         }
         const g = this.state.graph;
-        this.setState(() => ({
+        this.setState({
             graph: g,
-        }));
-        // this.updateGraph();
+        });
     };
 
     updateNodeKey = (uuid) => (key, value) => {
@@ -122,7 +114,7 @@ class BuildGraph extends Component {
         g.populateNodesWithEquationData();
         g.calculateEquations();
 
-        this.setState(() => ({graph: g}));
+        this.setState({graph: g});
     };
 
     handleCSVImport = (event) => {
@@ -146,7 +138,6 @@ class BuildGraph extends Component {
 
     handleCSVExport = () => {
         const data = this.state.graph.edges.map(n => {
-
             return {
                 id: n.node.id,
                 label: n.node.label,

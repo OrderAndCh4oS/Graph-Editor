@@ -45,8 +45,8 @@ const GraphView = ({graph}) => {
         });
         data.links = [
             ...data.links, ...edge.edges.map(node => ({
-                source: edge.node.uuid,
-                target: node.uuid,
+                    source: edge.node.uuid,
+                    target: node.uuid,
                 }),
             )];
     }
@@ -56,7 +56,9 @@ const GraphView = ({graph}) => {
             {data.nodes.length ? <Graph
                 id="graph-id" // id is mandatory, if no id is defined rd3g will throw an error
                 className={'graph-visual'}
-                data={data} config={myConfig} onClickNode={onClickNode}
+                data={data}
+                config={myConfig}
+                onClickNode={onClickNode}
             /> : null}
         </div>
     );

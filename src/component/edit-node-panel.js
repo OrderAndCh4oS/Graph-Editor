@@ -4,8 +4,8 @@ import EditNodeInput from './edit-node-input';
 
 export default class EditNodePanel extends Component {
     updateValue = (key, value) => {
-
-        this.props.updateNode(key, value);
+        const {updateNode} = this.props;
+        updateNode(key, value);
     };
 
     render() {
@@ -54,44 +54,53 @@ export default class EditNodePanel extends Component {
                                 this.updateValue(
                                     'equn',
                                     e.target.value)
-                            } className={'node-input--grow'}
+                            }
+                            className={'node-input--grow'}
                         />
                 }
                 <EditNodeInput
-                    label={'Conversion'} value={node.conv}
-                    type='number' handleOnChange={e => this.updateValue(
-                    'conv',
-                    e.target.value,
-                )}
+                    label={'Conversion'}
+                    value={node.conv}
+                    type='number'
+                    handleOnChange={e => this.updateValue(
+                        'conv',
+                        e.target.value,
+                    )}
                 />
                 {node instanceof SeedNode ?
                     <EditNodeInput
                         label={'Minimum'}
                         value={node.min}
-                        type='number' handleOnChange={e => this.updateValue(
-                        'min',
-                        e.target.value,
-                    )} className={'node-input--narrow'}
+                        type='number'
+                        handleOnChange={e => this.updateValue(
+                            'min',
+                            e.target.value,
+                        )}
+                        className={'node-input--narrow'}
                     />
                     : null}
                 {node instanceof SeedNode ?
                     <EditNodeInput
                         label={'Maximum'}
                         value={node.max}
-                        type='number' handleOnChange={e => this.updateValue(
-                        'max',
-                        e.target.value,
-                    )} className={'node-input--narrow'}
+                        type='number'
+                        handleOnChange={e => this.updateValue(
+                            'max',
+                            e.target.value,
+                        )}
+                        className={'node-input--narrow'}
                     />
                     : null}
                 {node instanceof SeedNode ?
                     <EditNodeInput
                         label={'Step'}
                         value={node.step}
-                        type='number' handleOnChange={e => this.updateValue(
-                        'step',
-                        e.target.value,
-                    )} className={'node-input--narrow'}
+                        type='number'
+                        handleOnChange={e => this.updateValue(
+                            'step',
+                            e.target.value,
+                        )}
+                        className={'node-input--narrow'}
                     />
                     : null}
                 <EditNodeInput
@@ -100,7 +109,8 @@ export default class EditNodePanel extends Component {
                     handleOnChange={e => this.updateValue(
                         'prefix',
                         e.target.value,
-                    )} className={'node-input--narrow'}
+                    )}
+                    className={'node-input--narrow'}
                 />
                 <EditNodeInput
                     label={'Suffix'}
@@ -108,7 +118,8 @@ export default class EditNodePanel extends Component {
                     handleOnChange={e => this.updateValue(
                         'suffix',
                         e.target.value,
-                    )} className={'node-input--narrow'}
+                    )}
+                    className={'node-input--narrow'}
                 />
                 <EditNodeInput
                     label={'Colour'}
@@ -116,7 +127,8 @@ export default class EditNodePanel extends Component {
                     handleOnChange={e => this.updateValue(
                         'color',
                         e.target.value,
-                    )} className={'node-input--narrow'}
+                    )}
+                    className={'node-input--narrow'}
                 />
                 <div className={'edit-node--action-column'}>
                     <button
