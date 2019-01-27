@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import * as Papa from 'papaparse';
 
 import Graph from '../graph/graph';
 import GraphView from './graph-view';
@@ -10,31 +9,39 @@ import SeedNode from '../graph/seed-node';
 import Edge from '../graph/edge';
 import cleanValue from '../utility/clean-value';
 import getProperty from '../utility/get-property';
-import { saveAs } from 'file-saver';
+import prettifyValue from '../utility/prettify-value';
+import CsvImport from './csv-import';
+import CsvExport from './csv-export';
 
 class BuildGraph extends Component {
     constructor(props) {
         super(props);
-        this.state = {graph: new Graph()};
+        this.state = {
+            graph: new Graph(),
+            data: {
+                nodes: [],
+                edges: [],
+            },
+        };
     }
 
     buildGraph = () => {
-        const g = this.state.graph;
-        const edges = this.findEdges(g);
+        const graph = this.state.graph;
+        const edges = this.findEdges(graph);
         if(edges.length) {
             try {
-                g.addEdges(edges);
+                graph.addEdges(edges);
             } catch(e) {
                 alert(e.message);
                 return;
             }
         }
 
-        g.populateNodesWithEquationData();
-        g.calculateEquations();
-        this.setState({
-            graph: g,
-        });
+        graph.populateNodesWithEquationData();
+        graph.calculateEquations();
+
+        const data = this.transformForGraphView(graph);
+        this.setState({graph, data});
     };
 
     findEdges = (graph) => {
@@ -55,11 +62,11 @@ class BuildGraph extends Component {
 
     updateGraph = () => {
         // Todo: The graph should be immutable.
-        const g = this.state.graph;
-        g._hydrated = false;
-        this.setState({
-            graph: g,
-        });
+        const graph = this.state.graph;
+        graph.populateNodesWithEquationData();
+        graph.calculateEquations();
+        const data = this.transformForGraphView(graph);
+        this.setState({graph, data});
     };
 
     updateNodeValue = (uuid, value) => {
@@ -73,10 +80,10 @@ class BuildGraph extends Component {
 
             this.state.graph.calculateEquations();
         }
-        const g = this.state.graph;
-        this.setState({
-            graph: g,
-        });
+
+        const graph = this.state.graph;
+        const data = this.transformForGraphView(graph);
+        this.setState({graph, data});
     };
 
     updateNodeKey = (uuid) => (key, value) => {
@@ -86,9 +93,31 @@ class BuildGraph extends Component {
         this.updateGraph();
     };
 
-    createGraph = (data) => {
-        const g = new Graph();
+    createGraph = (nodes) => {
+        const graph = new Graph();
         const connections = [];
+
+        this.processNodes(nodes, connections, graph);
+        this.processConnections(connections, graph);
+
+        graph.populateNodesWithEquationData();
+        graph.calculateEquations();
+
+        const data = this.transformForGraphView(graph);
+
+        this.setState({graph, data});
+    };
+
+    processConnections(connections, graph) {
+        for(let connection of connections) {
+            graph.addEdge(
+                new Edge(graph.getNodeById(connection[0]),
+                    graph.getNodeById(connection[1])));
+        }
+    }
+
+    processNodes(data, connections, graph) {
+        // Todo: find out why data is coming in with an extra row of empty data.
         data.data.pop();
         for(let nodeData of data.data) {
             let node;
@@ -102,42 +131,50 @@ class BuildGraph extends Component {
             } else {
                 node = new SeedNode(Math.random().toString(), nodeData);
             }
-            g.addNode(node);
+            graph.addNode(node);
         }
+    }
 
-        for(let connection of connections) {
-            g.addEdge(
-                new Edge(g.getNodeById(connection[0]),
-                    g.getNodeById(connection[1])));
+    transformForGraphView = (graph) => {
+        const data = {nodes: [], links: []};
+        for(const edge of graph.edges) {
+            data.nodes.push({
+                id: edge.node.uuid,
+                label: edge.node.id || '',
+                color: edge.node.color,
+                value: prettifyValue(
+                    edge.node.value,
+                    edge.node.conv,
+                    edge.node.prefix,
+                    edge.node.suffix,
+                ) || '',
+            });
+            data.links = [
+                ...data.links,
+                ...edge.edges.map(node => ({
+                        source: edge.node.uuid,
+                        target: node.uuid,
+                    }),
+                )];
         }
-
-        g.populateNodesWithEquationData();
-        g.calculateEquations();
-
-        this.setState({graph: g});
+        return data;
     };
 
-    handleCSVImport = (event) => {
-        Papa.parse(event.target.files[0], {
-            header: true,
-            complete: this.createGraph,
-            transform: (value, header) => {
-                switch(header) {
-                    case 'value':
-                    case 'conv':
-                    case 'min':
-                    case 'max':
-                    case 'step':
-                        return value !== '' ? parseFloat(value) : null;
-                    default:
-                        return value !== '' ? value : null;
-                }
-            },
-        });
+    transformCsvImportData = (value, header) => {
+        switch(header) {
+            case 'value':
+            case 'conv':
+            case 'min':
+            case 'max':
+            case 'step':
+                return value !== '' ? parseFloat(value) : null;
+            default:
+                return value !== '' ? value : null;
+        }
     };
 
-    handleCSVExport = () => {
-        const data = this.state.graph.edges.map(n => {
+    transformCsvExportData = (graph) =>
+        graph.edges.map(n => {
             return {
                 id: n.node.id,
                 label: n.node.label,
@@ -154,34 +191,21 @@ class BuildGraph extends Component {
             };
         });
 
-        const blob = new Blob([Papa.unparse(data)],
-            {type: 'text/plain;charset=utf-8'});
-
-        saveAs(blob, 'data.csv');
-    };
-
     render() {
         return (
             <div className="app">
                 <div className="top-tool-bar row">
-                    <div className={'tool-bar-item import-csv'}>
-                        <label>
-                            <span>Import CSV</span>
-                            <input
-                                type='file' onChange={this.handleCSVImport}
-                            />
-                        </label>
-                    </div>
-                    <div className={'tool-bar-item export-csv'}>
-                        <button
-                            className={'button'} onClick={this.handleCSVExport}
-                        >
-                            Export CSV
-                        </button>
-                    </div>
+                    <CsvImport
+                        complete={this.createGraph}
+                        transform={this.transformCsvImportData}
+                    />
+                    <CsvExport
+                        data={this.state.graph}
+                        transform={this.transformCsvExportData}
+                    />
                 </div>
                 <div className="row">
-                    <GraphView graph={this.state.graph}/>
+                    <GraphView data={this.state.data}/>
                     <ConnectionList
                         graph={this.state.graph}
                         updateNodeValue={this.updateNodeValue}
