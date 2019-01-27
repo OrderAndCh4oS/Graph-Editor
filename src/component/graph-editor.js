@@ -7,24 +7,16 @@ import EquationNode from '../graph/equation-node';
 export default class GraphEditor extends Component {
 
     makeSeedNode = () => {
-        // Todo: use UUIDs for this
-
-        const uuid = Math.random().toString();
-        const node = new SeedNode(uuid);
-
-        this.addNode(uuid, node);
+        const node = new SeedNode();
+        this.addNode(node);
     };
 
     makeEquationNode = () => {
-
-        const uuid = Math.random().toString();
-        const node = new EquationNode(uuid);
-
-        this.addNode(uuid, node);
+        const node = new EquationNode();
+        this.addNode(node);
     };
 
-    addNode(uuid, node) {
-
+    addNode(node) {
         const {graph, updateGraph} = this.props;
         try {
             graph.addNode(node);
@@ -47,7 +39,6 @@ export default class GraphEditor extends Component {
         const {graph, updateNodeKey} = this.props;
         return graph.edges.map(
             node => {
-
                 return <EditNodePanel
                     key={node.node.uuid}
                     node={node.node}
@@ -67,7 +58,7 @@ export default class GraphEditor extends Component {
                         <button
                             className={'button'} onClick={() => buildGraph()}
                         >
-                            Update Graph
+                            Build Graph
                         </button>
                     </p>
                 </div>

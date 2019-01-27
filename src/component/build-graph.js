@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 
-import Graph from '../graph/graph';
 import GraphView from './graph-view';
 import ConnectionList from './connection-list';
 import GraphEditor from './graph-editor';
@@ -8,16 +7,21 @@ import EquationNode from '../graph/equation-node';
 import SeedNode from '../graph/seed-node';
 import Edge from '../graph/edge';
 import cleanValue from '../utility/clean-value';
-import getProperty from '../utility/get-property';
-import prettifyValue from '../utility/prettify-value';
 import CsvImport from './csv-import';
 import CsvExport from './csv-export';
+import Digraph from '../graph/digraph';
+import transformGraphToGraphView
+    from '../transform/transform-graph-to-graph-view';
+import transformCsvImportToGraphData
+    from '../transform/transform-csv-import-to-graph-data';
+import transformGraphToCsvExport
+    from '../transform/transform-graph-to-csv-export';
 
 class BuildGraph extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            graph: new Graph(),
+            graph: new Digraph(),
             data: {
                 nodes: [],
                 edges: [],
@@ -40,8 +44,7 @@ class BuildGraph extends Component {
         graph.populateNodesWithEquationData();
         graph.calculateEquations();
 
-        const data = this.transformForGraphView(graph);
-        this.setState({graph, data});
+        this.updateState(graph);
     };
 
     findEdges = (graph) => {
@@ -63,10 +66,8 @@ class BuildGraph extends Component {
     updateGraph = () => {
         // Todo: The graph should be immutable.
         const graph = this.state.graph;
-        graph.populateNodesWithEquationData();
         graph.calculateEquations();
-        const data = this.transformForGraphView(graph);
-        this.setState({graph, data});
+        this.setState({graph});
     };
 
     updateNodeValue = (uuid, value) => {
@@ -77,24 +78,26 @@ class BuildGraph extends Component {
         }
         node.value = value === 0 ? 0 : value / node.conv;
         if(!isNaN(node.value)) {
-
             this.state.graph.calculateEquations();
         }
 
         const graph = this.state.graph;
-        const data = this.transformForGraphView(graph);
-        this.setState({graph, data});
+        this.updateState(graph);
     };
+
+    updateState(graph) {
+        const data = transformGraphToGraphView(graph);
+        this.setState({graph, data});
+    }
 
     updateNodeKey = (uuid) => (key, value) => {
         const node = this.state.graph.getNodeByUuid(uuid);
-
         node[key] = value;
         this.updateGraph();
     };
 
-    createGraph = (nodes) => {
-        const graph = new Graph();
+    createGraphFromCsvNodes = (nodes) => {
+        const graph = new Digraph();
         const connections = [];
 
         this.processNodes(nodes, connections, graph);
@@ -103,9 +106,7 @@ class BuildGraph extends Component {
         graph.populateNodesWithEquationData();
         graph.calculateEquations();
 
-        const data = this.transformForGraphView(graph);
-
-        this.setState({graph, data});
+        this.updateState(graph);
     };
 
     processConnections(connections, graph) {
@@ -127,81 +128,25 @@ class BuildGraph extends Component {
                     const id = join.replace(/^[{]|[}]+$/g, '');
                     connections.push([id, nodeData.id]);
                 }
-                node = new EquationNode(Math.random().toString(), nodeData);
+                node = new EquationNode(nodeData);
             } else {
-                node = new SeedNode(Math.random().toString(), nodeData);
+                node = new SeedNode(nodeData);
             }
             graph.addNode(node);
         }
     }
-
-    transformForGraphView = (graph) => {
-        const data = {nodes: [], links: []};
-        for(const edge of graph.edges) {
-            data.nodes.push({
-                id: edge.node.uuid,
-                label: edge.node.id || '',
-                color: edge.node.color,
-                value: prettifyValue(
-                    edge.node.value,
-                    edge.node.conv,
-                    edge.node.prefix,
-                    edge.node.suffix,
-                ) || '',
-            });
-            data.links = [
-                ...data.links,
-                ...edge.edges.map(node => ({
-                        source: edge.node.uuid,
-                        target: node.uuid,
-                    }),
-                )];
-        }
-        return data;
-    };
-
-    transformCsvImportData = (value, header) => {
-        switch(header) {
-            case 'value':
-            case 'conv':
-            case 'min':
-            case 'max':
-            case 'step':
-                return value !== '' ? parseFloat(value) : null;
-            default:
-                return value !== '' ? value : null;
-        }
-    };
-
-    transformCsvExportData = (graph) =>
-        graph.edges.map(n => {
-            return {
-                id: n.node.id,
-                label: n.node.label,
-                title: n.node.title,
-                prefix: n.node.prefix,
-                value: n.node.value,
-                suffix: n.node.suffix,
-                conv: n.node.conv,
-                equn: getProperty(n.node.equn),
-                min: n.node.min,
-                max: n.node.max,
-                step: n.node.step,
-                color: n.node.color,
-            };
-        });
 
     render() {
         return (
             <div className="app">
                 <div className="top-tool-bar row">
                     <CsvImport
-                        complete={this.createGraph}
-                        transform={this.transformCsvImportData}
+                        complete={this.createGraphFromCsvNodes}
+                        transform={transformCsvImportToGraphData}
                     />
                     <CsvExport
                         data={this.state.graph}
-                        transform={this.transformCsvExportData}
+                        transform={transformGraphToCsvExport}
                     />
                 </div>
                 <div className="row">

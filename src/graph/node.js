@@ -1,7 +1,11 @@
+const uuidv4 = require('uuid/v4');
+
+
 export default class Node {
 
-    constructor(uuid, nodeData) {
-        this._uuid = uuid;
+    constructor(nodeData) {
+        this._uuid = uuidv4();
+        console.log('nd: ', nodeData);
         if(nodeData) {
             this._id = nodeData.id;
             this._value = nodeData.value;
@@ -19,6 +23,10 @@ export default class Node {
 
     get uuid() {
         return this._uuid;
+    }
+
+    set uuid(value) {
+        this._uuid = value;
     }
 
     get id() {

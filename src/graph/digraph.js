@@ -1,21 +1,32 @@
 /* eslint no-eval: 0 */
 import EquationNode from './equation-node';
 import Edge from './edge';
+import SeedNode from './seed-node';
 
 // Todo: handle catching the errors thrown in Digraphs methods
 
 export default class Digraph {
     _hydrated = false;
-
-    get hydrated() {
-        return this._hydrated;
-    }
     edges = [];
     _nodesWithEquationData = [];
     _orderedNodeEquation = [];
 
+    get hydrated() {
+        return this._hydrated;
+    }
+
     set hydrated(value) {
         this._hydrated = value;
+    }
+
+    clone(otherGraph) {
+        for (const edge of otherGraph.edges) {
+            const node = edge instanceof SeedNode
+            ? new SeedNode(edge.node)
+            : new EquationNode(edge.node);
+            node.uuid = edge.node.uuid;
+            this.addNode(node)
+        }
     }
 
     addNode(node) {
@@ -42,7 +53,6 @@ export default class Digraph {
     }
 
     addEdges(connections) {
-
         for(let connection of connections) {
             this.addEdge(
                 new Edge(
