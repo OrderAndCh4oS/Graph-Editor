@@ -31,7 +31,7 @@ class BuildGraph extends Component {
 
     buildGraph = () => {
         const graph = this.state.graph;
-        const edges = this.findEdges(graph);
+        const edges = this.findEdgesFromEquationNodes(graph.edges);
         if(edges.length) {
             try {
                 graph.addEdges(edges);
@@ -47,41 +47,49 @@ class BuildGraph extends Component {
         this.updateState(graph);
     };
 
-    findEdges = (graph) => {
-        const edges = [];
-        for(let node of graph.edges) {
-            const n = node.node;
-            if(n instanceof EquationNode) {
-                const joins = n.equn.match(/{(.*?)}/g);
-
-                for(let join of joins) {
-                    const id = join.replace(/^[{]|[}]+$/g, '');
-                    edges.push([id, n.id]);
-                }
-            }
+    addNode = (node) => {
+        const graph = this.state.graph;
+        try {
+            graph.addNode(node);
+        } catch(e) {
+            alert(e.message);
         }
-        return edges;
+        this.updateState(graph);
     };
 
-    updateGraph = () => {
-        // Todo: The graph should be immutable.
+    removeNode = (uuid) => () => {
+        // Todo: fix errors this causes with graph-view
         const graph = this.state.graph;
-        graph.calculateEquations();
-        this.setState({graph});
+        graph.removeNodeWithUuid(uuid);
+        this.updateState(graph);
+    };
+
+    findEdgesFromEquationNodes = (edges) => {
+        let connections = [];
+        for(let node of edges) {
+            if(node.node instanceof EquationNode) {
+                connections = [
+                    ...connections,
+                    ...this.generateEdges(node.node)];
+            }
+        }
+
+        return connections;
     };
 
     updateNodeValue = (uuid, value) => {
-        const node = this.state.graph.getNodeByUuid(uuid);
+        const graph = this.state.graph;
+
+        const node = graph.getNodeByUuid(uuid);
         value = cleanValue(value);
         if(isNaN(value)) {
             return;
         }
         node.value = value === 0 ? 0 : value / node.conv;
         if(!isNaN(node.value)) {
-            this.state.graph.calculateEquations();
+            graph.calculateEquations();
         }
 
-        const graph = this.state.graph;
         this.updateState(graph);
     };
 
@@ -91,17 +99,14 @@ class BuildGraph extends Component {
     }
 
     updateNodeKey = (uuid) => (key, value) => {
-        const node = this.state.graph.getNodeByUuid(uuid);
+        const graph = this.state.graph;
+        const node = graph.getNodeByUuid(uuid);
         node[key] = value;
-        this.updateGraph();
+        this.updateState(graph);
     };
 
     createGraphFromCsvNodes = (nodes) => {
-        const graph = new Digraph();
-        const connections = [];
-
-        this.processNodes(nodes, connections, graph);
-        this.processConnections(connections, graph);
+        const graph = this.processEdges(this.processNodes(nodes));
 
         graph.populateNodesWithEquationData();
         graph.calculateEquations();
@@ -109,31 +114,48 @@ class BuildGraph extends Component {
         this.updateState(graph);
     };
 
-    processConnections(connections, graph) {
-        for(let connection of connections) {
-            graph.addEdge(
-                new Edge(graph.getNodeById(connection[0]),
-                    graph.getNodeById(connection[1])));
-        }
-    }
+    processNodes(data) {
+        const graph = new Digraph();
 
-    processNodes(data, connections, graph) {
         // Todo: find out why data is coming in with an extra row of empty data.
         data.data.pop();
+        let edges = [];
         for(let nodeData of data.data) {
-            let node;
-            if(nodeData.equn !== null) {
-                const joins = nodeData.equn.match(/{(.*?)}/g);
-                for(let join of joins) {
-                    const id = join.replace(/^[{]|[}]+$/g, '');
-                    connections.push([id, nodeData.id]);
-                }
-                node = new EquationNode(nodeData);
-            } else {
-                node = new SeedNode(nodeData);
+            const node = this.createNode(nodeData);
+            if(node instanceof EquationNode) {
+                edges = [...edges, ...this.generateEdges(node)];
             }
             graph.addNode(node);
         }
+        return {graph, edges};
+    }
+
+    createNode(nodeData) {
+        if(nodeData.equn) {
+            return new EquationNode(nodeData);
+        } else {
+            return new SeedNode(nodeData);
+        }
+    }
+
+    * generateEdges(node) {
+        const joins = node.equn.match(/{(.*?)}/g);
+        for(let join of joins) {
+            const id = join.replace(/^[{]|[}]+$/g, '');
+            yield [id, node.id];
+        }
+    }
+
+    processEdges({edges, graph}) {
+        for(let edge of edges) {
+            graph.addEdge(
+                new Edge(
+                    graph.getNodeById(edge[0]),
+                    graph.getNodeById(edge[1]),
+                ),
+            );
+        }
+        return graph;
     }
 
     render() {
@@ -159,7 +181,8 @@ class BuildGraph extends Component {
                 <GraphEditor
                     graph={this.state.graph}
                     buildGraph={this.buildGraph}
-                    updateGraph={this.updateGraph}
+                    addNode={this.addNode}
+                    removeNode={this.removeNode}
                     updateNodeKey={this.updateNodeKey}
                 />
             </div>

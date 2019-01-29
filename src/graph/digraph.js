@@ -105,6 +105,7 @@ export default class Digraph {
      * each edge nodes value could appear multiple times in the equation.
      */
     populateNodesWithEquationData() {
+        this._hydrated = false;
         for(let edge of this.edges) {
             const node = edge.node;
             if(!(node instanceof EquationNode)) {
@@ -115,6 +116,7 @@ export default class Digraph {
                 edges.push(this.getNodeById(id));
             }
             this._nodesWithEquationData.push({node, edges});
+            console.log(this._nodesWithEquationData);
         }
     }
 

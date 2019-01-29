@@ -44,7 +44,8 @@ export default class EditNodePanel extends Component {
                             handleOnChange={e =>
                                 this.updateValue(
                                     'value',
-                                    e.target.value)
+                                    e.target.value,
+                                )
                             }
                         />
                         : <EditNodeInput
@@ -53,7 +54,8 @@ export default class EditNodePanel extends Component {
                             handleOnChange={e =>
                                 this.updateValue(
                                     'equn',
-                                    e.target.value)
+                                    e.target.value,
+                                )
                             }
                             className={'node-input--grow'}
                         />

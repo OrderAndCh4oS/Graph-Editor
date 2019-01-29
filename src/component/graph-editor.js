@@ -7,32 +7,11 @@ import EquationNode from '../graph/equation-node';
 export default class GraphEditor extends Component {
 
     makeSeedNode = () => {
-        const node = new SeedNode();
-        this.addNode(node);
+        this.props.addNode(new SeedNode());
     };
 
     makeEquationNode = () => {
-        const node = new EquationNode();
-        this.addNode(node);
-    };
-
-    addNode(node) {
-        const {graph, updateGraph} = this.props;
-        try {
-            graph.addNode(node);
-        } catch(e) {
-
-            alert(e.message);
-            return;
-        }
-        updateGraph();
-    }
-
-    removeNode = (uuid) => () => {
-        // Todo: fix errors this causes with graph-view
-        const {graph, updateGraph} = this.props;
-        graph.removeNodeWithUuid(uuid);
-        updateGraph();
+        this.props.addNode(new EquationNode());
     };
 
     displayEditNodePanels = () => {
@@ -43,7 +22,7 @@ export default class GraphEditor extends Component {
                     key={node.node.uuid}
                     node={node.node}
                     updateNode={updateNodeKey(node.node.uuid)}
-                    removeNode={this.removeNode(node.node.uuid)}
+                    removeNode={this.props.removeNode(node.node.uuid)}
                 />;
             },
         );
@@ -56,7 +35,7 @@ export default class GraphEditor extends Component {
                 <div className={'row'}>
                     <p>
                         <button
-                            className={'button'} onClick={() => buildGraph()}
+                            className={'button'} onClick={buildGraph}
                         >
                             Build Graph
                         </button>
