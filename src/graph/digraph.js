@@ -2,22 +2,15 @@
 import EquationNode from './equation-node';
 import Edge from './edge';
 import SeedNode from './seed-node';
+import extractIdsFromString from '../utility/extractIdsFromText';
 
 // Todo: handle catching the errors thrown in Digraphs methods
 
 export default class Digraph {
-    _hydrated = false;
     edges = [];
+    _hydrated = false;
     _nodesWithEquationData = [];
     _orderedNodeEquation = [];
-
-    get hydrated() {
-        return this._hydrated;
-    }
-
-    set hydrated(value) {
-        this._hydrated = value;
-    }
 
     clone(otherGraph) {
         for (const edge of otherGraph.edges) {
@@ -112,7 +105,7 @@ export default class Digraph {
                 continue;
             }
             let edges = [];
-            for(let id of this.findEquationNodeIds(node.equn)) {
+            for(let id of extractIdsFromString(node.equn)) {
                 edges.push(this.getNodeById(id));
             }
             this._nodesWithEquationData.push({node, edges});
@@ -168,15 +161,5 @@ export default class Digraph {
             }
             nodeToUpdate.node.setValue(eval(equation));
         }
-    }
-
-    findEquationNodeIds(str) {
-        const re = /(?:{)(.*?)(?:})/g;
-        const ids = [];
-        let m;
-        while((m = re.exec(str)) !== null) {
-            ids.push(m[1]);
-        }
-        return ids;
     }
 }

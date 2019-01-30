@@ -85,6 +85,7 @@ class BuildGraph extends Component {
     };
 
     updateState(graph) {
+        // Todo: see if transform can be moved to graph view only
         const data = transformGraphToGraphView(graph);
         this.setState({graph, data});
     }
