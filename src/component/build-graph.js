@@ -31,20 +31,24 @@ class BuildGraph extends Component {
 
     buildGraph = () => {
         const graph = this.state.graph;
-        const edges = this.findEdgesFromEquationNodes(graph.edges);
-        if(edges.length) {
-            try {
-                graph.addEdges(edges);
-            } catch(e) {
-                alert(e.message);
-                return;
-            }
-        }
 
+        this.addEdges(graph);
         graph.populateNodesWithEquationData();
         graph.calculateEquations();
 
         this.updateState(graph);
+    };
+
+    addEdges = (graph) => {
+        for(let node of graph.edges) {
+            if(node.node instanceof EquationNode) {
+                try {
+                    graph.addEdges(this.generateEdges(node.node));
+                } catch(e) {
+                    alert(e.message);
+                }
+            }
+        }
     };
 
     addNode = (node) => {
@@ -62,19 +66,6 @@ class BuildGraph extends Component {
         const graph = this.state.graph;
         graph.removeNodeWithUuid(uuid);
         this.updateState(graph);
-    };
-
-    findEdgesFromEquationNodes = (edges) => {
-        let connections = [];
-        for(let node of edges) {
-            if(node.node instanceof EquationNode) {
-                connections = [
-                    ...connections,
-                    ...this.generateEdges(node.node)];
-            }
-        }
-
-        return connections;
     };
 
     updateNodeValue = (uuid, value) => {
