@@ -1,0 +1,21 @@
+.pagination {
+  margin-bottom: $half-column-gutter;
+
+  span {
+    a {
+      @extend .button;
+      color: $button-color;
+    }
+
+    &.current {
+      @extend .button:hover;
+      padding: $button-padding;
+      display: inline-block;
+      cursor: default;
+    }
+
+    &.disabled {
+      display: none;
+    }
+  }
+}

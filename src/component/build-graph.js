@@ -16,6 +16,7 @@ import transformCsvImportToGraphData
     from '../transform/transform-csv-import-to-graph-data';
 import transformGraphToCsvExport
     from '../transform/transform-graph-to-csv-export';
+import { Column, ContainerPanel, Row } from '../elements/structure';
 
 class BuildGraph extends Component {
     constructor(props) {
@@ -152,32 +153,44 @@ class BuildGraph extends Component {
 
     render() {
         return (
-            <div className="app">
-                <div className="top-tool-bar row">
-                    <CsvImport
-                        complete={this.createGraphFromCsvNodes}
-                        transform={transformCsvImportToGraphData}
-                    />
-                    <CsvExport
-                        data={this.state.graph}
-                        transform={transformGraphToCsvExport}
-                    />
-                </div>
-                <div className="row">
-                    <GraphView data={this.state.data}/>
-                    <ConnectionList
-                        graph={this.state.graph}
-                        updateNodeValue={this.updateNodeValue}
-                    />
-                </div>
-                <GraphEditor
-                    graph={this.state.graph}
-                    buildGraph={this.buildGraph}
-                    addNode={this.addNode}
-                    removeNode={this.removeNode}
-                    updateNodeKey={this.updateNodeKey}
-                />
-            </div>
+            <ContainerPanel>
+                <Row>
+                    <Column span={3}>
+                        <CsvImport
+                            complete={this.createGraphFromCsvNodes}
+                            transform={transformCsvImportToGraphData}
+                        />
+                    </Column>
+                    <Column span={3}>
+                        <CsvExport
+                            data={this.state.graph}
+                            transform={transformGraphToCsvExport}
+                        />
+                    </Column>
+                </Row>
+                <Row>
+                    <Column span={9}>
+                        <GraphView data={this.state.data}/>
+                    </Column>
+                    <Column span={3}>
+                        <ConnectionList
+                            graph={this.state.graph}
+                            updateNodeValue={this.updateNodeValue}
+                        />
+                    </Column>
+                </Row>
+                <Row>
+                    <Column>
+                        <GraphEditor
+                            graph={this.state.graph}
+                            buildGraph={this.buildGraph}
+                            addNode={this.addNode}
+                            removeNode={this.removeNode}
+                            updateNodeKey={this.updateNodeKey}
+                        />
+                    </Column>
+                </Row>
+            </ContainerPanel>
         );
     }
 }

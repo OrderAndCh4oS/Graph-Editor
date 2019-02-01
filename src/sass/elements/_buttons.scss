@@ -1,0 +1,185 @@
+
+a.button,
+button,
+input[type="submit"],
+input[type="reset"],
+input[type="button"] {
+  background: $button-bk-color;
+  border: $button-border;
+  color: $button-color;
+  display: inline-block;
+  font-weight: $font-weight-bold;
+  text-decoration: none;
+  cursor: pointer;
+  line-height: $base-line-height;
+  padding: $button-padding;
+  font-family: $base-font-family;
+  transition: background-color 340ms ease, border-color 340ms ease;
+  border-radius: $global-radius;
+  -webkit-appearance: none;
+}
+
+a.button.active,
+.button:hover,
+button:hover,
+input[type="submit"]:hover,
+input[type="reset"]:hover,
+input[type="button"]:hover {
+  color: $button-color-hover;
+  background: $button-bk-color-hover;
+  border: $button-border-hover;
+}
+
+a.button:focus,
+button:focus,
+input[type="submit"]:focus,
+input[type="reset"]:focus,
+input[type="button"]:focus {
+  @extend .button.active;
+}
+
+a.button:active,
+button:active,
+input[type="submit"]:active,
+input[type="reset"]:active,
+input[type="button"]:active {
+  @extend .button.active;
+}
+
+a.button.full-width,
+button.full-width,
+input[type="submit"].full-width,
+input[type="reset"].full-width,
+input[type="button"].full-width {
+  width: 100%;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  text-align: center;
+}
+
+a.button.disabled,
+button.disabled,
+button:disabled,
+input[type="submit"].disabled,
+input[type="reset"].disabled,
+input[type="button"].disabled {
+  cursor: default;
+  border: $button-border-disabled;
+  color: $button-color-disabled;
+  background-color: $button-bk-disabled;
+
+  &:hover, &:active {
+    cursor: default;
+    border: $button-border-disabled;
+    color: $button-color-disabled;
+    background-color: $button-bk-disabled;
+  }
+}
+
+a.button.destructive,
+button.destructive,
+input[type="submit"].destructive,
+input[type="reset"].destructive,
+input[type="button"].destructive {
+  border-color: $error-color;
+  background-color: $error-color;
+  color: $white;
+
+  &:hover {
+    border-color: $error-color-hover;
+    background-color: $error-color-hover;
+  }
+}
+
+a.button.affirmative,
+button.affirmative,
+input[type="submit"].affirmative,
+input[type="reset"].affirmative,
+input[type="button"].affirmative {
+  border-color: $valid-color;
+  background-color: $valid-color;
+  color: $white;
+
+  &:hover {
+    border-color: $valid-color-hover;
+    background-color: $valid-color-hover;
+  }
+}
+
+/* Fix for odd Mozilla border & padding issues */
+button::-moz-focus-inner,
+input::-moz-focus-inner {
+  border: 0;
+  padding: 0;
+}
+
+button.switch {
+  border: none;
+  height: remCalc(28);
+  width: remCalc(48);
+  border-radius: remCalc(16);
+  background-color: $red;
+  overflow: hidden;
+  position: relative;
+  transition: background-color 100ms ease-in-out;
+
+  &.on {
+    background-color: $green;
+  }
+
+  &:after {
+    content: '';
+    position: absolute;
+    display: block;
+    width: remCalc(26);
+    height: remCalc(26);
+    background-color: $white;
+    top: remCalc(1);
+    left: remCalc(1);
+    border-radius: remCalc(14);
+    transition: left 280ms ease-in-out;
+  }
+
+  &.on:after {
+    left: remCalc(21);
+  }
+}
+
+button.radio-button {
+  background-color: $dark-grey;
+  border-color: $dark-grey;
+  border-right: $border-width $border-stroke $lighter-grey;
+  margin-bottom: 0;
+  border-radius: 0;
+
+  &:hover {
+    border-color: $grey;
+    background-color: $grey;
+    border-right: $border-width $border-stroke $lighter-grey;
+  }
+
+  &:first-of-type {
+    border-top-left-radius: $global-radius;
+    border-bottom-left-radius: $global-radius;
+  }
+
+  &:last-of-type {
+    border-bottom-right-radius: $global-radius;
+    border-top-right-radius: $global-radius;
+    border-right: $border-width $border-stroke $dark-grey;
+
+    &.checked {
+      border-right: $border-width $border-stroke $green;
+    }
+
+    &:hover {
+      border-right: $border-width $border-stroke $lighter-grey;
+    }
+  }
+
+  &.checked {
+    border-color: $green;
+    background-color: $green;
+    border-right: $border-width $border-stroke $lighter-grey;
+  }
+}

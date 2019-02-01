@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import SeedNode from '../graph/seed-node';
 import EditNodeInput from './edit-node-input';
+import { Button } from '../elements/button';
 
 export default class EditNodePanel extends Component {
     updateValue = (key, value) => {
@@ -33,7 +34,7 @@ export default class EditNodePanel extends Component {
                     handleOnChange={e => this.updateValue(
                         'title',
                         e.target.value,
-                    )}
+                    )} className={'node-input--grow'}
                 />
                 {
                     node instanceof SeedNode
@@ -46,7 +47,7 @@ export default class EditNodePanel extends Component {
                                     'value',
                                     e.target.value,
                                 )
-                            }
+                            } className={'node-input--grow'}
                         />
                         : <EditNodeInput
                             label={'Equation'}
@@ -133,11 +134,11 @@ export default class EditNodePanel extends Component {
                     className={'node-input--narrow'}
                 />
                 <div className={'edit-node--action-column'}>
-                    <button
-                        className={'button button--remove-node'}
+                    <Button
+                        type={'destructive'}
                         onClick={removeNode}
                     >x
-                    </button>
+                    </Button>
                 </div>
             </div>
         );

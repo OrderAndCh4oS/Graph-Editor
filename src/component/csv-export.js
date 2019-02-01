@@ -1,6 +1,7 @@
 import React from 'react';
 import * as Papa from 'papaparse';
 import { saveAs } from 'file-saver';
+import { Button } from '../elements/button';
 
 const handleCSVExport = (data, transform) => () => {
     const blob = new Blob([Papa.unparse(transform(data))],
@@ -11,11 +12,11 @@ const handleCSVExport = (data, transform) => () => {
 
 const CsvExport = ({data, transform}) =>
     <div className={'tool-bar-item export-csv'}>
-        <button
-            className={'button'} onClick={handleCSVExport(data, transform)}
+        <Button
+            onClick={handleCSVExport(data, transform)}
         >
             Export CSV
-        </button>
+        </Button>
     </div>;
 
 export default CsvExport;

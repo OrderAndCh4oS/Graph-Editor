@@ -4,7 +4,7 @@ import React from 'react';
 const GraphView = ({data}) => {
 
     const myConfig = {
-        height: 500, width: 800,
+        height: 500, width: 1400,
         maxZoom: 2, minZoom: 0.8, focusZoom: 1.5,
         nodeHighlightBehavior: true,
         directed: true,

@@ -3,6 +3,7 @@ import EditNodePanel from './edit-node-panel';
 import { Scrollbars } from 'react-custom-scrollbars';
 import SeedNode from '../graph/seed-node';
 import EquationNode from '../graph/equation-node';
+import { Button } from '../elements/button';
 
 export default class GraphEditor extends Component {
 
@@ -34,28 +35,27 @@ export default class GraphEditor extends Component {
             <div>
                 <div className={'row'}>
                     <p>
-                        <button
-                            className={'button'} onClick={buildGraph}
+                        <Button
+                            type={'affirmative'} onClick={buildGraph}
                         >
                             Build Graph
-                        </button>
+                        </Button>
                     </p>
                 </div>
                 <div className={'row'}>
                     <div>
                         <p>
-                            <button
-                                className={'button'} onClick={this.makeSeedNode}
+                            <Button
+                                onClick={this.makeSeedNode}
                             >
                                 Add Seed Node
-                            </button>
+                            </Button>
                             {' '}
-                            <button
-                                className={'button'}
+                            <Button
                                 onClick={this.makeEquationNode}
                             >
                                 Add Equation Node
-                            </button>
+                            </Button>
                         </p>
                     </div>
                 </div>

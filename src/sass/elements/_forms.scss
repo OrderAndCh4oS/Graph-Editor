@@ -1,0 +1,121 @@
+form {
+}
+
+fieldset {
+  margin-bottom: $column-gutter;
+}
+
+input,
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="tel"],
+input[type="url"],
+input[type="number"],
+input[type="search"],
+input[type="date"],
+input[type="time"],
+input[type="color"],
+input[type="file"],
+textarea,
+select,
+.read-only {
+  box-sizing: border-box;
+  border: $form-border;
+  padding: $form-padding;
+  outline: none;
+  font-size: $form-font-size;
+  font-family: $base-font-family;
+  font-weight: $font-weight-regular;
+  color: $input-color;
+  width: $form-width;
+  max-width: 100%;
+  display: block;
+  background: $white;
+  border-radius: $global-radius;
+  margin: 0;
+  transition: background-color 280ms ease-in-out, border-color 400ms ease-in-out;
+
+  &.form-error {
+    background-color: #ffe0e8;
+    border-color: $red;
+  }
+}
+
+select {
+  padding: $select-padding;
+}
+
+input:focus,
+input[type="text"]:focus,
+input[type="password"]:focus,
+input[type="email"]:focus,
+input[type="tel"]:focus,
+input[type="url"]:focus,
+input[type="number"]:focus,
+input[type="search"]:focus,
+input[type="date"]:focus,
+input[type="time"]:focus,
+input[type="color"]:focus,
+textarea:focus {
+  border: $form-border-focus;
+  color: $input-focus-color;
+}
+
+textarea, #cke_content {
+  min-height: 60px;
+}
+
+label,
+legend {
+  display: block;
+  font-weight: $font-weight-bold;
+  font-size: $font-minus-one;
+  margin: 0 0 remCalc(6) 0;
+}
+
+select {
+  width: $form-width;
+}
+
+label.inline {
+  display: inline;
+}
+
+input[type="checkbox"],
+input[type="radio"] {
+  display: inline-block;
+  margin-bottom: 0;
+  width: auto;
+}
+
+input:disabled {
+  background-color: $lighter-grey;
+}
+
+legend span {
+  font-weight: normal;
+  font-size: $font-one;
+  color: $text-color;
+}
+
+.input-label {
+  margin-bottom: $half-column-gutter;
+}
+
+.read-only {
+  min-height: remCalc(34);
+  background-color: $lighter-grey;
+}
+
+.form-field {
+  padding-bottom: $column-gutter;
+}
+
+p.form-error, span.form-error {
+  padding-top: $half-column-gutter;
+  padding-bottom: 0;
+  margin-bottom: 0;
+  color: $red;
+  font-style: italic;
+}

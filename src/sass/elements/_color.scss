@@ -1,0 +1,15 @@
+$colorList: "black" $black,
+"grey" $grey,
+"dark-grey" $dark-grey,
+"light-grey" $light-grey,
+"lighter-grey" $lighter-grey,
+"white" $white;
+
+@each $i in $colorList {
+  .bc-#{nth($i,1)} {
+    background-color: #{nth($i,2)};
+  }
+  .color-#{nth($i,1)} {
+    color: #{nth($i,2)};
+  }
+}
