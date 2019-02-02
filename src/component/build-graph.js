@@ -16,7 +16,7 @@ import transformCsvImportToGraphData
     from '../transform/transform-csv-import-to-graph-data';
 import transformGraphToCsvExport
     from '../transform/transform-graph-to-csv-export';
-import { Column, ContainerPanel, Row } from '../elements/structure';
+import { Column, Container, Row } from '../elements/structure';
 
 class BuildGraph extends Component {
     constructor(props) {
@@ -153,7 +153,7 @@ class BuildGraph extends Component {
 
     render() {
         return (
-            <ContainerPanel>
+            <Container>
                 <Row>
                     <Column span={3}>
                         <CsvImport
@@ -169,10 +169,10 @@ class BuildGraph extends Component {
                     </Column>
                 </Row>
                 <Row>
-                    <Column span={9}>
+                    <Column span={9} mSpan={8} sSpan={6}>
                         <GraphView data={this.state.data}/>
                     </Column>
-                    <Column span={3}>
+                    <Column span={3} mSpan={4} sSpan={6}>
                         <ConnectionList
                             graph={this.state.graph}
                             updateNodeValue={this.updateNodeValue}
@@ -190,7 +190,7 @@ class BuildGraph extends Component {
                         />
                     </Column>
                 </Row>
-            </ContainerPanel>
+            </Container>
         );
     }
 }

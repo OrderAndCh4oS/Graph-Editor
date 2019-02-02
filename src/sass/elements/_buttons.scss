@@ -8,7 +8,8 @@ input[type="button"] {
   border: $button-border;
   color: $button-color;
   display: inline-block;
-  font-weight: $font-weight-bold;
+  font-size: $font-minus-one;
+  font-weight: $font-weight-regular;
   text-decoration: none;
   cursor: pointer;
   line-height: $base-line-height;

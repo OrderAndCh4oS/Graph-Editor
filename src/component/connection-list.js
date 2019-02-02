@@ -21,7 +21,7 @@ class ConnectionList extends Component {
 
     render() {
         return (
-            <Scrollbars style={{height: 500}}>
+            <Scrollbars style={{height: 500}} className={'panel'}>
                 <div className={'connection-view'}>
                     {this.displayConnections()}
                 </div>

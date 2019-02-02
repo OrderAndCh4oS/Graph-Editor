@@ -3,13 +3,6 @@
   display: none;
 }
 
-.panel {
-  border: $border-width $border-stroke $light-grey;
-  background-color: $lightest-grey;
-  padding: $column-gutter $column-gutter 0 $column-gutter;
-  border-radius: $global-radius;
-}
-
 .accent {
   color: $accent;
 }
@@ -26,49 +19,106 @@
   margin: 0;
 }
 
+.no-padding {
+  padding: 0;
+}
+
 .no-padding-bottom {
   padding-bottom: 0;
 }
 
-.no-padding {
-  padding-bottom: 0;
+.no-padding-top {
   padding-top: 0;
+}
+
+.half-gutter-padding {
+  padding: $half-column-gutter;
+}
+
+.half-gutter-padding-top {
+  padding-top: $half-column-gutter;
+}
+
+.half-gutter-padding-left {
+  padding-left: $half-column-gutter;
+}
+
+.half-gutter-padding-right {
+  padding-right: $half-column-gutter;
+}
+
+.half-gutter-padding-bottom {
+  padding-right: $half-column-gutter;
+}
+
+.gutter-padding {
+  padding: $column-gutter;
+}
+
+.gutter-padding-top {
+  padding-top: $column-gutter;
+}
+
+.gutter-padding-left {
+  padding-left: $column-gutter;
+}
+
+.gutter-padding-right {
+  padding-right: $column-gutter;
+}
+
+.gutter-padding-bottom {
+  padding-right: $column-gutter;
+}
+
+.half-gutter-margin {
+  margin: $half-column-gutter;
+}
+
+.half-gutter-margin-top {
+  margin-top: $half-column-gutter;
+}
+
+.half-gutter-margin-left {
+  margin-left: $half-column-gutter;
+}
+
+.half-gutter-margin-right {
+  margin-right: $half-column-gutter;
+}
+
+.half-gutter-margin-bottom {
+  margin-right: $half-column-gutter;
+}
+
+.gutter-margin {
+  margin: $column-gutter;
+}
+
+.gutter-margin-top {
+  margin-top: $column-gutter;
+}
+
+.gutter-margin-left {
+  margin-left: $column-gutter;
+}
+
+.gutter-margin-right {
+  margin-right: $column-gutter;
+}
+
+.gutter-margin-bottom {
+  margin-right: $column-gutter;
 }
 
 .align-right {
   text-align: right;
 }
 
-.margin-right {
-  margin-right: $half-column-gutter;
-}
-
-.margin-bottom {
-  margin-bottom: $column-gutter;
-}
-
-.spacer {
-  height: 30vh;
+.align-left {
+  text-align: left;
 }
 
 .bc-transparent {
   background-color: transparent;
-}
-
-.negative {
-  color: $error-color;
-}
-
-.clearfix:before,
-.clearfix:after {
-  content: " ";
-  display: table;
-}
-
-.clearfix:after {
-  clear: both;
-}
-
-.clearfix {
-  *zoom: 1;
 }

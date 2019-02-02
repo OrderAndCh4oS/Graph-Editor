@@ -21,8 +21,9 @@ $lightest-grey: #f7f7f7;
 $lighter-grey: #eeeeee;
 $light-grey: #b3b3b3;
 $grey: #808080;
-$dark-grey: #414141;
-$black: #332f2f;
+$dark-grey: #525252;
+$darker-grey: #414141;
+$black: #242121;
 
 $green: #35c13a;
 $lighter-green: #3be541;
@@ -117,7 +118,7 @@ $form-padding: remCalc(4) remCalc(6);
 $select-padding: remCalc(4) remCalc(6);
 $form-border: $border-width $border-stroke $light-grey;
 $form-border-focus: $border-width $border-stroke $accent;
-$form-font-size: $font-one;
+$form-font-size: $font-minus-one;
 $form-width: 100%;
 
 /**

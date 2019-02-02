@@ -32,7 +32,7 @@ const GraphView = ({data}) => {
     const hash = Buffer.from(combinedNodeIds).toString('base64');
 
     return (
-        <div className={'graph-view'}>
+        <div className={'graph-view panel'}>
             {data.nodes.length ? <Graph
                 key={hash}
                 id="graph-id" // id is mandatory, if no id is defined rd3g will throw an error

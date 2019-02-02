@@ -12,33 +12,39 @@
   }
 }
 
+.panel {
+  box-sizing: border-box;
+  border: $border-width $border-stroke $light-grey;
+  background-color: $lightest-grey;
+  padding: $column-gutter $column-gutter 0 $column-gutter;
+  border-radius: $global-radius;
+}
+
 .graph-view {
-  border: 1px solid #c3c3ca;
-  border-radius: 5px;
   margin-bottom: 20px;
   width: 100%;
-  min-width: 400px;
+  min-width: 360px;
   height: 500px;
+  padding: 0;
   overflow: hidden;
 }
 
 .connection-view {
-  display: inline-block;
-  padding-left: 15px;
+  padding: 8px 15px;
   flex-grow: 1;
 }
 
-.connection {
+.connection-holder {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 3px 0 6px;
-  border-bottom: 1px solid #c3c3ca;
+  padding: 3px 0 6px 0;
+  border-bottom: $border;
 }
 
 .node-view {
   display: block;
-  width: 180px;
+  width: 100%;
   text-align: left;
 }
 
@@ -79,13 +85,19 @@
 }
 
 .edit-node--panel {
+  border-bottom: $border;
+}
+
+.edit-node--column {
   display: flex;
-  border-bottom: 1px solid #c3c3ca;
-  padding-right: 15px;
 }
 
 .edit-node--input-holder {
-  padding: 0 12px 12px 0;
+  padding: 0 12px 0 0;
+
+  &:last-of-type {
+    padding: 0;
+  }
 }
 
 .edit-node--name {
