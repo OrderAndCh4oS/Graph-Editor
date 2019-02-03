@@ -40,7 +40,12 @@
   align-items: center;
   padding: 3px 0 6px 0;
   border-bottom: $border;
+
+  &:last-of-type {
+    border-bottom: none;
+  }
 }
+
 
 .node-view {
   display: block;
@@ -82,6 +87,10 @@
 
 .node-input--grow {
   flex: 1;
+}
+
+.graph-editor .row:last-of-type .edit-node--panel {
+  border-bottom: none;
 }
 
 .edit-node--panel {

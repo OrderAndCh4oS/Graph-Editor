@@ -10,8 +10,6 @@ import cleanValue from '../utility/clean-value';
 import CsvImport from './csv-import';
 import CsvExport from './csv-export';
 import Digraph from '../graph/digraph';
-import transformGraphToGraphView
-    from '../transform/transform-graph-to-graph-view';
 import transformCsvImportToGraphData
     from '../transform/transform-csv-import-to-graph-data';
 import transformGraphToCsvExport
@@ -27,6 +25,7 @@ class BuildGraph extends Component {
                 nodes: [],
                 edges: [],
             },
+            activeNode: null,
         };
     }
 
@@ -63,7 +62,6 @@ class BuildGraph extends Component {
     };
 
     removeNode = (uuid) => () => {
-        // Todo: fix errors this causes with graph-view
         const graph = this.state.graph;
         graph.removeNodeWithUuid(uuid);
         this.updateState(graph);
@@ -85,11 +83,14 @@ class BuildGraph extends Component {
         this.updateState(graph);
     };
 
-    updateState(graph) {
+    updateState = (graph) => {
         // Todo: see if transform can be moved to graph view only
-        const data = transformGraphToGraphView(graph);
-        this.setState({graph, data});
-    }
+        this.setState({graph});
+    };
+
+    displayActiveNodeData = (edge) => {
+        this.setState({activeNode: edge.node});
+    };
 
     updateNodeKey = (uuid) => (key, value) => {
         const graph = this.state.graph;
@@ -170,13 +171,25 @@ class BuildGraph extends Component {
                 </Row>
                 <Row>
                     <Column span={9} mSpan={8} sSpan={6}>
-                        <GraphView data={this.state.data}/>
+                        <GraphView
+                            graph={this.state.graph}
+                            displayActiveNodeData={this.displayActiveNodeData}
+                        />
                     </Column>
                     <Column span={3} mSpan={4} sSpan={6}>
                         <ConnectionList
                             graph={this.state.graph}
                             updateNodeValue={this.updateNodeValue}
                         />
+                    </Column>
+                </Row>
+                <Row>
+                    <Column>
+                        <p className={'font-minus-one no-padding'}>
+                            {this.state.activeNode
+                                ? this.state.activeNode.title
+                                : 'No node highlighted.'}
+                        </p>
                     </Column>
                 </Row>
                 <Row>

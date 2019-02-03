@@ -173,20 +173,35 @@ li {
 
 .font-minus-one {
   font-size: $font-minus-one;
+  line-height: $font-minus-one + remCalc(3px);
 }
 
 .font-one {
   font-size: $font-one;
+  line-height: $font-one + remCalc(3px);
 }
 
 .font-two {
   font-size: $font-two;
+  line-height: $font-two + remCalc(3px);
 }
 
 .font-three {
   font-size: $font-three;
+  line-height: $font-three + remCalc(3px);
 }
 
 .font-four {
   font-size: $font-four;
+  line-height: $font-four + remCalc(3px);
+}
+
+.font-five {
+  font-size: $font-five;
+  line-height: $font-five + remCalc(3px);
+}
+
+.font-six {
+  font-size: $font-six;
+  line-height: $font-six + remCalc(3px);
 }
