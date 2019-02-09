@@ -2,21 +2,21 @@ import React, { Component } from 'react';
 
 import GraphView from './graph-view';
 import ConnectionList from './connection-list';
-import GraphEditor from './graph-editor';
-import EquationNode from '../graph/equation-node';
-import SeedNode from '../graph/seed-node';
-import Edge from '../graph/edge';
-import cleanValue from '../utility/clean-value';
-import CsvImport from './csv-import';
-import CsvExport from './csv-export';
-import Digraph from '../graph/digraph';
+import GraphBuilder from './graph-builder';
+import EquationNode from '../../graph/equation-node';
+import SeedNode from '../../graph/seed-node';
+import Edge from '../../graph/edge';
+import cleanValue from '../../utility/clean-value';
+import CsvImport from '../csv-import';
+import CsvExport from '../csv-export';
+import Digraph from '../../graph/digraph';
 import transformCsvImportToGraphData
-    from '../transform/transform-csv-import-to-graph-data';
+    from '../../transform/transform-csv-import-to-graph-data';
 import transformGraphToCsvExport
-    from '../transform/transform-graph-to-csv-export';
-import { Column, Container, Row } from '../elements/structure';
+    from '../../transform/transform-graph-to-csv-export';
+import { Column, Container, Row } from '../../elements/structure';
 
-class BuildGraph extends Component {
+class GraphEditor extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -194,7 +194,7 @@ class BuildGraph extends Component {
                 </Row>
                 <Row>
                     <Column>
-                        <GraphEditor
+                        <GraphBuilder
                             graph={this.state.graph}
                             buildGraph={this.buildGraph}
                             addNode={this.addNode}
@@ -208,4 +208,4 @@ class BuildGraph extends Component {
     }
 }
 
-export default BuildGraph;
+export default GraphEditor;

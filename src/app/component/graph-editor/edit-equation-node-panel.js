@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import EditNodeInput from './edit-node-input';
-import { Button } from '../elements/button';
-import { Column, Row } from '../elements/structure';
+import { Button } from '../../elements/button';
+import { Column, Row } from '../../elements/structure';
 
-export default class EditSeedNodePanel extends Component {
+export default class EditEquationNodePanel extends Component {
     updateValue = (key, value) => {
         const {updateNode} = this.props;
         updateNode(key, value);
@@ -27,46 +27,15 @@ export default class EditSeedNodePanel extends Component {
                                     )}
                                 />
                                 <EditNodeInput
-                                    label={'Value'}
-                                    value={node.value}
-                                    type='number'
+                                    label={'Equation'}
+                                    value={node.equn}
                                     handleOnChange={e =>
                                         this.updateValue(
-                                            'value',
+                                            'equn',
                                             e.target.value,
                                         )
                                     }
                                     className={'node-input--grow'}
-                                />
-                                <EditNodeInput
-                                    label={'Minimum'}
-                                    value={node.min}
-                                    type='number'
-                                    handleOnChange={e => this.updateValue(
-                                        'min',
-                                        e.target.value,
-                                    )}
-                                    className={'node-input--narrow'}
-                                />
-                                <EditNodeInput
-                                    label={'Maximum'}
-                                    value={node.max}
-                                    type='number'
-                                    handleOnChange={e => this.updateValue(
-                                        'max',
-                                        e.target.value,
-                                    )}
-                                    className={'node-input--narrow'}
-                                />
-                                <EditNodeInput
-                                    label={'Step'}
-                                    value={node.step}
-                                    type='number'
-                                    handleOnChange={e => this.updateValue(
-                                        'step',
-                                        e.target.value,
-                                    )}
-                                    className={'node-input--narrow'}
                                 />
                                 <EditNodeInput
                                     label={'Prefix'}

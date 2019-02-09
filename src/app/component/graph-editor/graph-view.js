@@ -1,7 +1,7 @@
 import { Graph } from 'react-d3-graph';
 import React from 'react';
 import transformGraphToGraphView
-    from '../transform/transform-graph-to-graph-view';
+    from '../../transform/transform-graph-to-graph-view';
 
 const GraphView = ({graph, displayActiveNodeData}) => {
 

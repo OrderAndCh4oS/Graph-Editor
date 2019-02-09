@@ -1,12 +1,12 @@
 import React, { Component, Fragment } from 'react';
 import EditEquationNodePanel from './edit-equation-node-panel';
-import SeedNode from '../graph/seed-node';
-import EquationNode from '../graph/equation-node';
-import { Button } from '../elements/button';
+import SeedNode from '../../graph/seed-node';
+import EquationNode from '../../graph/equation-node';
+import { Button } from '../../elements/button';
 import EditSeedNodePanel from './edit-seed-node-panel';
-import { Column, Panel, Row } from '../elements/structure';
+import { Column, Panel, Row } from '../../elements/structure';
 
-export default class GraphEditor extends Component {
+export default class GraphBuilder extends Component {
 
     makeSeedNode = () => {
         this.props.addNode(new SeedNode());

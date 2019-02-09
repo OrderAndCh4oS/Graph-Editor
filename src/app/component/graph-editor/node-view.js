@@ -1,6 +1,6 @@
 import React from 'react';
-import SeedNode from '../graph/seed-node';
-import prettifyValue from '../utility/prettify-value';
+import SeedNode from '../../graph/seed-node';
+import prettifyValue from '../../utility/prettify-value';
 
 const NodeView = ({node, updateNode}) => {
     return (
