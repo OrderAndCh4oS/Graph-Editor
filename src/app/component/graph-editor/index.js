@@ -7,14 +7,15 @@ import EquationNode from '../../graph/equation-node';
 import SeedNode from '../../graph/seed-node';
 import Edge from '../../graph/edge';
 import cleanValue from '../../utility/clean-value';
-import CsvImport from '../csv-import';
-import CsvExport from '../csv-export';
+import CsvImport from '../csv/csv-import';
+import CsvExport from '../csv/csv-export';
 import Digraph from '../../graph/digraph';
 import transformCsvImportToGraphData
     from '../../transform/transform-csv-import-to-graph-data';
 import transformGraphToCsvExport
     from '../../transform/transform-graph-to-csv-export';
 import { Column, Container, Row } from '../../elements/structure';
+import fetchModel from '../../../api/model';
 
 class GraphEditor extends Component {
     constructor(props) {
@@ -27,6 +28,14 @@ class GraphEditor extends Component {
             },
             activeNode: null,
         };
+    }
+
+    componentDidMount() {
+        const {match} = this.props;
+        if(match.params.hasOwnProperty('slug') && match.params.slug) {
+            fetchModel(match.params.slug)
+                .then(d => this.createGraphFromJson(d));
+        }
     }
 
     buildGraph = () => {
@@ -99,8 +108,8 @@ class GraphEditor extends Component {
         this.updateState(graph);
     };
 
-    createGraphFromCsvNodes = (nodes) => {
-        const graph = this.processEdges(this.processNodes(nodes));
+    createGraphFromJson = (data) => {
+        const graph = this.processGraphData(data);
 
         graph.populateNodesWithEquationData();
         graph.calculateEquations();
@@ -108,13 +117,15 @@ class GraphEditor extends Component {
         this.updateState(graph);
     };
 
+    processGraphData(data) {
+        return this.processEdges(this.processNodes(data));
+    }
+
     processNodes(data) {
         const graph = new Digraph();
 
-        // Todo: find out why data is coming in with an extra row of empty data.
-        data.data.pop();
         let edges = [];
-        for(let nodeData of data.data) {
+        for(let nodeData of data) {
             const node = this.createNode(nodeData);
             if(node instanceof EquationNode) {
                 edges = [...edges, ...this.generateEdges(node)];
@@ -158,7 +169,7 @@ class GraphEditor extends Component {
                 <Row>
                     <Column span={3}>
                         <CsvImport
-                            complete={this.createGraphFromCsvNodes}
+                            complete={this.createGraphFromJson}
                             transform={transformCsvImportToGraphData}
                         />
                     </Column>

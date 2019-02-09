@@ -1,7 +1,7 @@
 import React from 'react';
 import * as Papa from 'papaparse';
 import { saveAs } from 'file-saver';
-import { Button } from '../elements/button';
+import { Button } from '../../elements/button';
 
 const handleCSVExport = (data, transform) => () => {
     const blob = new Blob([Papa.unparse(transform(data))],

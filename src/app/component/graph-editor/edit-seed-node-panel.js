@@ -120,7 +120,7 @@ export default class EditSeedNodePanel extends Component {
                                 />
                                 <EditNodeInput
                                     label={'Colour'}
-                                    value={node.color}
+                                    value={node.color} type={'color'}
                                     handleOnChange={e => this.updateValue(
                                         'color',
                                         e.target.value,

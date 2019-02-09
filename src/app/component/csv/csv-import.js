@@ -4,7 +4,11 @@ import * as Papa from 'papaparse';
 const handleCSVImport = (complete, transform) => (event) => {
     Papa.parse(event.target.files[0], {
         header: true,
-        complete,
+        complete: (data) => {
+            // Todo: find out why data is coming in with an extra row of empty data.
+            data.data.pop();
+            return complete(data.data);
+        },
         transform,
     });
 };
