@@ -2,8 +2,20 @@ import React, { Component } from 'react';
 import { Container, Row } from '../elements/structure';
 import { Title } from '../elements/typography';
 import { Link } from 'react-router-dom';
+import { getModel } from '../../api';
 
 class GraphList extends Component {
+
+    state = {
+        models: [],
+    };
+
+    componentDidMount() {
+        getModel()
+            .then(response => response.json())
+            .then(data => data.data.rows)
+            .then(models => this.setState({models}));
+    }
 
     render() {
         return (
@@ -13,36 +25,15 @@ class GraphList extends Component {
                 </Row>
                 <Row>
                     <ul>
-                        <li>
-                            <Link to="/graph-editor/language-students">
-                                Language Students
-                            </Link>
-                        </li>
-                        <li>
-                            <Link to="/graph-editor/manure">
-                                Manure
-                            </Link>
-                        </li>
-                        <li>
-                            <Link to="/graph-editor/plastics">
-                                Plastics
-                            </Link>
-                        </li>
-                        <li>
-                            <Link to="/graph-editor/rail-neutral">
-                                Rail Fares Neutral
-                            </Link>
-                        </li>
-                        <li>
-                            <Link to="/graph-editor/rail-private">
-                                Rail Fares Private
-                            </Link>
-                        </li>
-                        <li>
-                            <Link to="/graph-editor/rail-public">
-                                Rail Fares Public
-                            </Link>
-                        </li>
+                        {
+                            this.state.models.map(model =>
+                                <li>
+                                    <Link to={'/graph-editor/' + model.id}>
+                                        {model.title}
+                                    </Link>
+                                </li>,
+                            )
+                        }
                     </ul>
                 </Row>
             </Container>

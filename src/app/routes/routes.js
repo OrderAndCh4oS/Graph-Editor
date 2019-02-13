@@ -16,7 +16,7 @@ const Routes = () => {
                     </Column>
                 </Row>
                 <Route path="/" exact component={GraphList}/>
-                <Route path="/graph-editor/:slug?" component={GraphEditor}/>
+                <Route path="/graph-editor/:id?" component={GraphEditor}/>
             </div>
         </Router>
     );

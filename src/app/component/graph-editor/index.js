@@ -15,7 +15,7 @@ import transformCsvImportToGraphData
 import transformGraphToCsvExport
     from '../../transform/transform-graph-to-csv-export';
 import { Column, Container, Row } from '../../elements/structure';
-import fetchModel from '../../../api/model';
+import { getNodes } from '../../../api';
 
 class GraphEditor extends Component {
     constructor(props) {
@@ -32,9 +32,14 @@ class GraphEditor extends Component {
 
     componentDidMount() {
         const {match} = this.props;
-        if(match.params.hasOwnProperty('slug') && match.params.slug) {
-            fetchModel(match.params.slug)
-                .then(d => this.createGraphFromJson(d));
+        if(match.params.hasOwnProperty('id') && match.params.id) {
+            getNodes({params: match.params})
+                .then(response => response.json())
+                .then(data => data.data.rows)
+                .then(d => {
+                    console.log(d);
+                    this.createGraphFromJson(d);
+                });
         }
     }
 
