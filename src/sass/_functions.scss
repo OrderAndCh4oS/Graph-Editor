@@ -1,0 +1,67 @@
+// It strips the unit of measure and returns it
+@function strip-unit($num) {
+  @return $num / ($num * 0 + 1);
+}
+
+// Converts "px" to "em" using the ($)em-base
+@function convert-to-rem($value) {
+  $value: strip-unit($value) / strip-unit($em-base) * 1rem;
+  @if ($value == 0em) {
+    $value: 0;
+  }
+  // Turn 0em into 0
+  @return $value;
+}
+
+// Working in ems is annoying. Think in pixels by using this handy function, remCalc(#)
+// Just enter the number, no need to mention "px"
+@function remCalc($values...) {
+  $max: length($values);
+  // Get the total number of parameters passed
+
+  // If there is only 1 parameter, then return it as an integer.
+  // This is done because a list can't be multiplied or divided even if it contains a single value
+  @if $max == 1 {
+    @return convert-to-rem(nth($values, 1));
+  }
+
+  $emValues: ();
+  // This will eventually store the converted $values in a list
+  @for $i from 1 through $max {
+    $emValues: append($emValues, convert-to-rem(nth($values, $i)));
+  }
+  @return $emValues;
+}
+
+@mixin bg-pattern($name) {
+  background: url('../images/patterns/#{$name}.png') transparent 1px 1px;
+}
+
+@mixin svg-bg($name) {
+  background: url('../images/svg/#{$name}.svg') center center no-repeat;
+}
+
+@mixin svg-bg-center($name) {
+  background: url('../images/svg/#{$name}.svg') center center no-repeat;
+}
+
+@mixin svg-bg-link($name) {
+  background: url('../images/svg/#{$name}.svg') top center no-repeat;
+  &:hover {
+    background-position: bottom center;
+  }
+}
+
+@function lower-bound($range) {
+  @if length($range) <= 0 {
+    @return 0;
+  }
+  @return nth($range, 1);
+}
+
+@function upper-bound($range) {
+  @if length($range) < 2 {
+    @return 999999999999;
+  }
+  @return nth($range, 2);
+}

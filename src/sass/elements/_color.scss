@@ -1,0 +1,33 @@
+$colorList: "black" $black,
+"darker-grey" $darker-grey,
+"dark-grey" $dark-grey,
+"grey" $grey,
+"light-grey" $light-grey,
+"lighter-grey" $lighter-grey,
+"lightest-grey" $lightest-grey,
+"white" $white;
+
+@each $i in $colorList {
+  .bc-#{nth($i,1)} {
+    background-color: #{nth($i,2)};
+  }
+  .color-#{nth($i,1)} {
+    color: #{nth($i,2)};
+  }
+}
+
+.color-error {
+  color: $error-color;
+}
+
+.color-valid {
+  color: $valid-color;
+}
+
+.bc-error {
+  color: $error-color;
+}
+
+.bc-valid {
+  color: $valid-color;
+}
