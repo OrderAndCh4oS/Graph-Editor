@@ -1,31 +1,34 @@
-import React from 'react';
-import { Redirect, Route } from 'react-router-dom';
+import React, { createContext } from 'react';
 
-const userIsAuthenticated = () => {
-    return true;
-};
+const AuthContext = createContext();
 
-const userIsNotAuthenticated = () => {
-    return false;
-};
+class AuthProvider extends React.Component {
+    state = {isAuth: false};
 
-const PrivateRoute = ({component: Component, ...rest}) => {
-    return (
-        <Route
-            {...rest} render={props =>
-            userIsAuthenticated() ? (
-                <Component {...props} />
-            ) : (
-                <Redirect
-                    to={{
-                        pathname: '/login',
-                        state: {from: props.location},
-                    }}
-                />
-            )
-        }
-        />
-    );
-};
+    login = () => {
+        this.setState({isAuth: true});
+    };
 
-export { userIsAuthenticated, userIsNotAuthenticated, PrivateRoute };
+    logout = () => {
+        this.setState({isAuth: false});
+    };
+
+    render() {
+        const {Provider} = AuthContext;
+        return (
+            <Provider
+                value={{
+                    isAuth: this.state.isAuth,
+                    login: this.login,
+                    logout: this.logout,
+                }}
+            >
+                {this.props.children}
+            </Provider>
+        );
+    }
+}
+
+const AuthConsumer = AuthContext.Consumer;
+
+export { AuthProvider, AuthConsumer };
