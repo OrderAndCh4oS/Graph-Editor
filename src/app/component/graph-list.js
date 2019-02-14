@@ -3,18 +3,18 @@ import { Container, Row } from '../elements/structure';
 import { Title } from '../elements/typography';
 import { Link } from 'react-router-dom';
 import { getModel } from '../../api';
+import request from '../../api/request';
 
 class GraphList extends Component {
 
     state = {
         models: [],
+        count: 0,
     };
 
     componentDidMount() {
-        getModel()
-            .then(response => response.json())
-            .then(data => data.data.rows)
-            .then(models => this.setState({models}));
+        request(getModel)
+            .then(({rows, count}) => this.setState({models: rows, count}));
     }
 
     render() {
