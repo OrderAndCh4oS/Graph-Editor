@@ -1,0 +1,207 @@
+h1, h2, h3, h4, h5, h6, p, ul, ol, dl, input, .header-one {
+  margin-top: 0;
+  margin-bottom: $column-gutter;
+}
+
+h1, h2, h3, h4, h5, h6, .header-one {
+  color: $header-color;
+  font-weight: $font-weight-bold;
+  font-family: $base-font-family;
+}
+
+h1, .header-one {
+  font-size: $font-five;
+  line-height: 1.1;
+  margin-bottom: $half-column-gutter;
+}
+
+h2, .header-two {
+  font-size: $font-four;
+  margin-bottom: $half-column-gutter;
+}
+
+h3, .header-three {
+  font-size: $font-three;
+  margin-bottom: $half-column-gutter;
+}
+
+h4, h5, h6 {
+  font-size: $font-one;
+}
+
+.pretitle {
+  font-size: $font-one;
+  margin-bottom: 0;
+}
+
+p {
+  color: $text-color;
+  font-size: $font-one;
+  font-weight: $font-weight-regular;
+  font-family: $base-font-family;
+}
+
+.intro-text {
+  font-size: $font-two;
+}
+
+a, a:visited {
+  color: $link-color;
+  font-weight: $font-weight-regular;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  outline: 0;
+  text-decoration: none;
+}
+
+a:hover, a:focus, a.active {
+  color: $link-hover-color;
+  text-decoration: $link-decoration;
+}
+
+p a, p a:visited {
+  line-height: inherit;
+}
+
+menu,
+ol,
+ul {
+  padding: 0;
+}
+
+nav ul,
+nav ol {
+  list-style: none;
+}
+
+input {
+
+}
+
+b,
+strong,
+.bold {
+  font-weight: $font-weight-bold;
+}
+
+i,
+em,
+.italic {
+  font-style: $font-style;
+}
+
+blockquote {
+  margin: 0 0 $column-gutter;
+  padding: 0 $column-gutter;
+  border-left: 3px solid $accent;
+}
+
+blockquote p:first-of-type:before {
+  content: "\201C";
+}
+
+blockquote p:last-of-type:after {
+  content: "\201D";
+}
+
+blockquote cite {
+  font-style: normal;
+
+  &:before {
+    content: "\2014\2009";
+  }
+}
+
+q {
+  font-style: italic;
+}
+
+hr {
+  border: solid $border-color;
+  border-width: 3px 0 0;
+  clear: both;
+  margin: 0 0 $column-gutter;
+  height: 0;
+}
+
+/* #Lists
+  ================================================== */
+ul, ol {
+  margin-left: $half-column-gutter;
+  padding-left: $half-column-gutter;
+  margin-bottom: $column-gutter;
+}
+
+ul {
+  list-style: disc outside;
+}
+
+ol {
+  list-style: decimal;
+}
+
+ul.none {
+  list-style: none;
+}
+
+ul.square {
+  list-style: square outside;
+}
+
+ul.circle {
+  list-style: circle outside;
+}
+
+ul.disc {
+  list-style: disc outside;
+}
+
+ul ul, ul ol,
+ol ol, ol ul {
+  margin: 0 0 0 $column-gutter;
+  font-size: $base-font-size;
+}
+
+li {
+  line-height: $base-line-height;
+  margin-bottom: 0;
+}
+
+.font-minus-two {
+  font-size: $font-minus-two;
+}
+
+.font-minus-one {
+  font-size: $font-minus-one;
+  line-height: $font-minus-one + remCalc(3px);
+}
+
+.font-one {
+  font-size: $font-one;
+  line-height: $font-one + remCalc(3px);
+}
+
+.font-two {
+  font-size: $font-two;
+  line-height: $font-two + remCalc(3px);
+}
+
+.font-three {
+  font-size: $font-three;
+  line-height: $font-three + remCalc(3px);
+}
+
+.font-four {
+  font-size: $font-four;
+  line-height: $font-four + remCalc(3px);
+}
+
+.font-five {
+  font-size: $font-five;
+  line-height: $font-five + remCalc(3px);
+}
+
+.font-six {
+  font-size: $font-six;
+  line-height: $font-six + remCalc(3px);
+}

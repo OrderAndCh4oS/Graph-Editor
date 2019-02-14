@@ -1,0 +1,10 @@
+id,label,suffix,title,color,value,conv,min,max,step,equn,prefix
+SperY,Students/Y,k,SperY 'Students per year',pink,15000,0.001,5,25,0.1,,
+PWL,% Language,%,PWL '% wanting a language job',pink,0.6,100,30,90,1,,
+LJ18,Lan. Jobs 2018,k,LJ18 'Number of language-based jobs in 2018',pink,10000,0.001,10,20,0.1,,
+PCYS,% change students/year,%,PCYS '% change in language students per year',pink,-0.01,100,-5,5,0.1,,
+PCYJ,% change jobs/year,%,PCYJ '% change in language jobs per year',pink,0.01,100,-5,5,0.1,,
+EndY,End Year,,EndY 'Year for forecast',pink,2022,1,2019,2025,1,,
+NS,Students end year,k,"NS 'Number of students in end year' = SperY*PWL*Math.pow(1+PCYS,EndY-2018)",salmon,8645.36409,0.001,,,,"{SperY}*{PWL}*Math.pow(1+{PCYS},{EndY}-2018)",
+NJ,Jobs end year,k,"NJ 'Number of jobs in end year' = LJ18*Math.pow(1+PCYJ,EndY-2018)",salmon,10406.0401,0.001,,,,"{LJ18}*Math.pow(1+{PCYJ},{EndY}-2018)",
+Gap,Gap,k,Gap 'Gap between students & jobs' = NS-NJ,yellow,-1760.67601,0.001,,,,{NS}-{NJ},
