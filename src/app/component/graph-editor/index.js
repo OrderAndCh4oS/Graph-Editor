@@ -94,12 +94,7 @@ class GraphEditor extends Component {
     };
 
     updateState = (graph) => {
-        // Todo: see if transform can be moved to graph view only
         this.setState({graph});
-    };
-
-    displayActiveNodeData = (edge) => {
-        this.setState({activeNode: edge.node});
     };
 
     updateNodeKey = (uuid) => (key, value) => {
@@ -185,7 +180,6 @@ class GraphEditor extends Component {
                     <Column span={9} mSpan={8} sSpan={6}>
                         <GraphView
                             graph={this.state.graph}
-                            displayActiveNodeData={this.displayActiveNodeData}
                         />
                     </Column>
                     <Column span={3} mSpan={4} sSpan={6}>
@@ -193,15 +187,6 @@ class GraphEditor extends Component {
                             graph={this.state.graph}
                             updateNodeValue={this.updateNodeValue}
                         />
-                    </Column>
-                </Row>
-                <Row>
-                    <Column>
-                        <p className={'font-minus-one no-padding'}>
-                            {this.state.activeNode
-                                ? this.state.activeNode.title
-                                : 'No node highlighted.'}
-                        </p>
                     </Column>
                 </Row>
                 <Row>

@@ -17,26 +17,24 @@ const AuthButton = () =>
     </AuthConsumer>
 ;
 
-const Routes = () => {
-    return (
-        <Router>
-            <div>
-                <Row>
-                    <Column span={6}>
-                        <Link to="/">Model List</Link>
-                        {' | '}
-                        <Link to="/graph-editor">Model Editor</Link>
-                    </Column>
-                    <Column span={6}>
-                        <AuthButton/>
-                    </Column>
-                </Row>
-                <Route path="/" exact component={GraphList}/>
-                <Route path="/login" component={Login}/>
-                <Route path="/graph-editor/:id?" component={GraphEditor}/>
-            </div>
-        </Router>
-    );
-};
+const Routes = () =>
+    <Router>
+        <div>
+            <Row>
+                <Column span={6}>
+                    <Link to="/">Model List</Link>
+                    {' | '}
+                    <Link to="/graph-editor">Model Editor</Link>
+                </Column>
+                <Column span={6}>
+                    <AuthButton/>
+                </Column>
+            </Row>
+            <Route path="/" exact component={GraphList}/>
+            <Route path="/login" component={Login}/>
+            <Route path="/graph-editor/:id?" component={GraphEditor}/>
+        </div>
+    </Router>
+;
 
 export default Routes;

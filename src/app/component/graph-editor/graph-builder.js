@@ -5,6 +5,7 @@ import EquationNode from '../../graph/equation-node';
 import { Button } from '../../elements/button';
 import EditSeedNodePanel from './edit-seed-node-panel';
 import { Column, Panel, Row } from '../../elements/structure';
+import { AuthConsumer } from '../../authentication';
 
 export default class GraphBuilder extends Component {
 
@@ -65,6 +66,16 @@ export default class GraphBuilder extends Component {
                         >
                             Build Graph
                         </Button>
+                        <AuthConsumer>
+                            {(isAuth) => isAuth
+                                ? <Button
+                                    type={'affirmative'}
+                                    onClick={this.saveGraph}
+                                >
+                                    Save Graph
+                                </Button>
+                                : null}
+                        </AuthConsumer>
                     </Column>
                 </Row>
                 <Row>
@@ -77,4 +88,8 @@ export default class GraphBuilder extends Component {
             </Fragment>
         );
     }
+
+    saveGraph = () => {
+        console.log('Saved');
+    };
 }
