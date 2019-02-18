@@ -14,7 +14,8 @@ class GraphList extends Component {
 
     componentDidMount() {
         request(getModel)
-            .then(({rows, count}) => this.setState({models: rows, count}));
+            .then(({rows, count}) =>
+                this.setState({models: rows, count}));
     }
 
     render() {

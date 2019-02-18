@@ -28,12 +28,13 @@ const myConfig = {
 class GraphView extends Component {
     render() {
         const {graph} = this.props;
+        const data = transformGraphToGraphView(graph);
+        console.log(data);
         return (
             <div className={'graph-view panel'}>
                 {graph.edges.length ? <Graph
                     id="graph-id"
-                    className={'graph-visual'}
-                    data={transformGraphToGraphView(graph)}
+                    className={'graph-visual'} data={data}
                     config={myConfig}
                 /> : null}
             </div>

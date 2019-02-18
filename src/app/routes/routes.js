@@ -1,5 +1,10 @@
 import React from 'react';
-import { BrowserRouter as Router, Link, Route } from 'react-router-dom';
+import {
+    BrowserRouter as Router,
+    Link,
+    Redirect,
+    Route,
+} from 'react-router-dom';
 import GraphEditor from '../component/graph-editor';
 import GraphList from '../component/graph-list';
 import { Column, Row } from '../elements/structure';
@@ -21,17 +26,31 @@ const Routes = () =>
     <Router>
         <div>
             <Row>
-                <Column span={6}>
-                    <Link to="/">Model List</Link>
-                    {' | '}
-                    <Link to="/graph-editor">Model Editor</Link>
-                </Column>
-                <Column span={6}>
-                    <AuthButton/>
+                <Column>
+                    <div className={'main-header'}>
+                        <Row className={'border-bottom'}>
+                            <Column span={6}>
+                                <Link to="/">Model List</Link>
+                                {' | '}
+                                <Link to="/graph-editor">Model Editor</Link>
+                            </Column>
+                            <Column span={6} className={'align-right'}>
+                                <AuthButton/>
+                            </Column>
+                        </Row>
+                    </div>
                 </Column>
             </Row>
             <Route path="/" exact component={GraphList}/>
-            <Route path="/login" component={Login}/>
+            <Route
+                path="/login" render={() =>
+                <AuthConsumer>
+                    {({isAuth}) => isAuth ?
+                        <Redirect to="/"/>
+                        : <Login/>
+                    }
+                </AuthConsumer>}
+            />
             <Route path="/graph-editor/:id?" component={GraphEditor}/>
         </div>
     </Router>

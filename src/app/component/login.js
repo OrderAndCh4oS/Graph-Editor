@@ -61,33 +61,41 @@ export default class Login extends Component {
     }
 
     submit = (login) => {
-        console.log('Login!');
-        this.setState({
+        this.setState(prevState => ({
             username: {
+                ...prevState.username,
                 touched: false,
             },
             password: {
+                ...prevState.password,
                 touched: false,
             },
-        });
+        }));
         request(postLogin, null, {
             username: this.state.username.value,
             password: this.state.password.value,
         }).then(result => {
-            console.log(result);
-            login();
+            if(result.id) {
+                login();
+            } else {
+                console.log(result);
+            }
         });
     };
 
     setUsername = (e) => this.setState({
-        username: e.target.value,
-        touched: true,
-        error: false,
+        username: {
+            value: e.target.value,
+            touched: true,
+            error: false,
+        },
     });
 
     setPassword = (e) => this.setState({
-        password: e.target.value,
-        touched: true,
-        error: false,
+        password: {
+            value: e.target.value,
+            touched: true,
+            error: false,
+        },
     });
 }

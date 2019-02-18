@@ -11,7 +11,7 @@ const handleCSVExport = (data, transform) => () => {
 };
 
 const CsvExport = ({data, transform}) =>
-    <div className={'tool-bar-item export-csv'}>
+    <div className={'tool-bar-item tool-bar--button export-csv'}>
         <Button
             onClick={handleCSVExport(data, transform)}
         >

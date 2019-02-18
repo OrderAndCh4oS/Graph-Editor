@@ -5,7 +5,6 @@ import EquationNode from '../../graph/equation-node';
 import { Button } from '../../elements/button';
 import EditSeedNodePanel from './edit-seed-node-panel';
 import { Column, Panel, Row } from '../../elements/structure';
-import { AuthConsumer } from '../../authentication';
 
 export default class GraphBuilder extends Component {
 
@@ -20,8 +19,7 @@ export default class GraphBuilder extends Component {
     displayEditNodePanels = () => {
         const {graph, updateNodeKey} = this.props;
         if(!graph.edges.length) {
-            return <p className={'font-minus-one italic'}>Add nodes or import a
-                                                          csv to begin.</p>;
+            return this.displayNoNodesMessage();
         }
         return graph.edges.map(
             node => {
@@ -41,6 +39,10 @@ export default class GraphBuilder extends Component {
             },
         );
     };
+
+    displayNoNodesMessage = () =>
+        <p className={'font-minus-one italic'}>
+            Add nodes or import a csv to begin. </p>;
 
     render() {
         const {buildGraph} = this.props;
@@ -66,16 +68,6 @@ export default class GraphBuilder extends Component {
                         >
                             Build Graph
                         </Button>
-                        <AuthConsumer>
-                            {(isAuth) => isAuth
-                                ? <Button
-                                    type={'affirmative'}
-                                    onClick={this.saveGraph}
-                                >
-                                    Save Graph
-                                </Button>
-                                : null}
-                        </AuthConsumer>
                     </Column>
                 </Row>
                 <Row>
@@ -88,8 +80,4 @@ export default class GraphBuilder extends Component {
             </Fragment>
         );
     }
-
-    saveGraph = () => {
-        console.log('Saved');
-    };
 }

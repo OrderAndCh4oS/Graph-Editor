@@ -4,24 +4,27 @@ import GraphView from './graph-view';
 import ConnectionList from './connection-list';
 import GraphBuilder from './graph-builder';
 import EquationNode from '../../graph/equation-node';
-import SeedNode from '../../graph/seed-node';
-import Edge from '../../graph/edge';
 import cleanValue from '../../utility/clean-value';
 import CsvImport from '../csv/csv-import';
 import CsvExport from '../csv/csv-export';
 import Digraph from '../../graph/digraph';
 import transformCsvImportToGraphData
     from '../../transform/transform-csv-import-to-graph-data';
-import transformGraphToCsvExport
-    from '../../transform/transform-graph-to-csv-export';
+import transformGraphNodesToJson
+    from '../../transform/transform-graph-nodes-to-json';
 import { Column, Container, Row } from '../../elements/structure';
-import { getNodes } from '../../../api';
+import { getNodes, postNode } from '../../../api';
 import request from '../../../api/request';
+import { Button } from '../../elements/button';
+import { AuthConsumer } from '../../authentication';
+import TransformJsonToGraph from '../../transform/transform-json-to-graph';
+import generateEdges from '../../utility/generate-edges';
 
 class GraphEditor extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            id: null,
             graph: new Digraph(),
             data: {
                 nodes: [],
@@ -34,14 +37,16 @@ class GraphEditor extends Component {
     componentDidMount() {
         const {match} = this.props;
         if(match.params.hasOwnProperty('id') && match.params.id) {
+            this.setState({id: match.params.id});
             request(getNodes, match.params)
-                .then(({rows, count}) => this.createGraphFromJson(rows));
+                .then(({rows, count}) =>
+                    this.createGraphFromJson(rows),
+                );
         }
     }
 
     buildGraph = () => {
         const graph = this.state.graph;
-
         this.addEdges(graph);
         graph.populateNodesWithEquationData();
         graph.calculateEquations();
@@ -53,9 +58,9 @@ class GraphEditor extends Component {
         for(let node of graph.edges) {
             if(node.node instanceof EquationNode) {
                 try {
-                    graph.addEdges(this.generateEdges(node.node));
+                    graph.addEdges(generateEdges(node.node));
                 } catch(e) {
-                    alert(e.message);
+                    alert('Message: ' + e.message);
                 }
             }
         }
@@ -105,59 +110,13 @@ class GraphEditor extends Component {
     };
 
     createGraphFromJson = (data) => {
-        const graph = this.processGraphData(data);
+        const graph = (new TransformJsonToGraph()).process(data);
 
         graph.populateNodesWithEquationData();
         graph.calculateEquations();
 
         this.updateState(graph);
     };
-
-    processGraphData(data) {
-        return this.processEdges(this.processNodes(data));
-    }
-
-    processNodes(data) {
-        const graph = new Digraph();
-
-        let edges = [];
-        for(let nodeData of data) {
-            const node = this.createNode(nodeData);
-            if(node instanceof EquationNode) {
-                edges = [...edges, ...this.generateEdges(node)];
-            }
-            graph.addNode(node);
-        }
-        return {graph, edges};
-    }
-
-    createNode(nodeData) {
-        if(nodeData.equn) {
-            return new EquationNode(nodeData);
-        } else {
-            return new SeedNode(nodeData);
-        }
-    }
-
-    * generateEdges(node) {
-        const joins = node.equn.match(/{(.*?)}/g);
-        for(let join of joins) {
-            const id = join.replace(/^[{]|[}]+$/g, '');
-            yield [id, node.id];
-        }
-    }
-
-    processEdges({edges, graph}) {
-        for(let edge of edges) {
-            graph.addEdge(
-                new Edge(
-                    graph.getNodeById(edge[0]),
-                    graph.getNodeById(edge[1]),
-                ),
-            );
-        }
-        return graph;
-    }
 
     render() {
         return (
@@ -172,15 +131,18 @@ class GraphEditor extends Component {
                     <Column span={3}>
                         <CsvExport
                             data={this.state.graph}
-                            transform={transformGraphToCsvExport}
+                            transform={transformGraphNodesToJson}
                         />
+                    </Column>
+                    <Column span={6} className={'align-right'}>
+                        <AuthConsumer>
+                            {this.authButtons()}
+                        </AuthConsumer>
                     </Column>
                 </Row>
                 <Row>
                     <Column span={9} mSpan={8} sSpan={6}>
-                        <GraphView
-                            graph={this.state.graph}
-                        />
+                        <GraphView graph={this.state.graph}/>
                     </Column>
                     <Column span={3} mSpan={4} sSpan={6}>
                         <ConnectionList
@@ -192,6 +154,7 @@ class GraphEditor extends Component {
                 <Row>
                     <Column>
                         <GraphBuilder
+                            id={this.state.id}
                             graph={this.state.graph}
                             buildGraph={this.buildGraph}
                             addNode={this.addNode}
@@ -203,6 +166,28 @@ class GraphEditor extends Component {
             </Container>
         );
     }
+
+    authButtons() {
+        return ({isAuth}) => isAuth
+            ? <Button
+                className={'tool-bar--button'}
+                type={'affirmative'}
+                onClick={this.saveGraph}
+            >
+                Save Graph
+            </Button>
+            : null;
+    }
+
+    saveGraph = () => {
+        const data = transformGraphNodesToJson(this.state.graph);
+        request(
+            postNode,
+            {id: this.state.id},
+            data,
+        )
+            .then(result => console.log(result));
+    };
 }
 
 export default GraphEditor;

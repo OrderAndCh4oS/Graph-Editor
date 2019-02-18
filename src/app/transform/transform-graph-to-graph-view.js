@@ -3,6 +3,7 @@ import prettifyValue from '../utility/prettify-value';
 const transformGraphToGraphView = (graph) => {
     const data = {nodes: [], links: []};
     for(const edge of graph.edges) {
+        console.log(edge.node);
         data.nodes.push({
             id: edge.node.uuid,
             label: edge.node.id || '',
