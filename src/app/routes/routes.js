@@ -19,6 +19,7 @@ const AuthButton = () =>
             ({isAuth, logout}) => !isAuth
                 ? <Fragment>
                     <LinkButton to="/register">Register</LinkButton>
+                    {' '}
                     <LinkButton to="/login">Login</LinkButton>
                 </Fragment>
                 : <Button onClick={logout}>Logout</Button>
