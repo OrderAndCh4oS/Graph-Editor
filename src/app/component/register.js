@@ -14,11 +14,6 @@ export default class Register extends Component {
     initialState = () => {
         return {
             message: '',
-            email: {
-                value: '',
-                touched: false,
-                error: null,
-            },
             username: {
                 value: '',
                 touched: false,
@@ -60,10 +55,6 @@ export default class Register extends Component {
                 ...prevState.username,
                 touched: false,
             },
-            email: {
-                ...prevState.email,
-                touched: false,
-            },
             password: {
                 ...prevState.password,
                 touched: false,
@@ -75,7 +66,6 @@ export default class Register extends Component {
         }));
         request(postRegister, null, {
             username: this.state.username.value,
-            email: this.state.email.value,
             password: this.state.password.value,
             confirmPassword: this.state.confirmPassword.value,
         }).then(result => {
@@ -114,15 +104,6 @@ export default class Register extends Component {
                                     error={this.state.username.error}
                                     touched={this.state.username.touched}
                                     onChange={this.setField('username')}
-                                />
-                                <Input
-                                    label={'Email'}
-                                    name={'email'}
-                                    type={'text'}
-                                    value={this.state.email.value}
-                                    error={this.state.email.error}
-                                    touched={this.state.email.touched}
-                                    onChange={this.setField('email')}
                                 />
                                 <Input
                                     label={'Password'}
