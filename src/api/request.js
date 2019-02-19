@@ -38,7 +38,7 @@ const handleNotFoundResponse = (response) => response.json()
     .then(data => data);
 
 const handleInvalidDataResponse = (response) => response.json()
-    .then(data => ({error: data}));
+    .then(data => data.errors);
 
 const handleErrorResponse = (response) => response.json()
     .then(data => data);

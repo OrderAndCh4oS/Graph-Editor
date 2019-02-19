@@ -1,7 +1,7 @@
 /* eslint-disable indent */
 
-const baseURL = 'https://devthree.orderandchaoscreative.com';
-// const baseURL = 'http://localhost:4000';
+// const baseURL = 'https://devthree.orderandchaoscreative.com';
+const baseURL = 'http://localhost:4000';
 
 export const postRegister = ({values: {username, password}}) => {
     return postFetch(makeUrl('/register'), {username, password});

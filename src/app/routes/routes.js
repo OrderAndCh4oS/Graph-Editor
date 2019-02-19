@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import {
     BrowserRouter as Router,
     Link,
@@ -11,12 +11,16 @@ import { Column, Row } from '../elements/structure';
 import { AuthConsumer } from '../authentication';
 import { Button, LinkButton } from '../elements/button';
 import Login from '../component/login';
+import Register from '../component/register';
 
 const AuthButton = () =>
     <AuthConsumer>
         {
             ({isAuth, logout}) => !isAuth
-                ? <LinkButton to="/login">Login</LinkButton>
+                ? <Fragment>
+                    <LinkButton to="/register">Register</LinkButton>
+                    <LinkButton to="/login">Login</LinkButton>
+                </Fragment>
                 : <Button onClick={logout}>Logout</Button>
         }
     </AuthConsumer>
@@ -51,6 +55,7 @@ const Routes = () =>
                     }
                 </AuthConsumer>}
             />
+            <Route path="/register" component={Register}/>
             <Route path="/graph-editor/:id?" component={GraphEditor}/>
         </div>
     </Router>
