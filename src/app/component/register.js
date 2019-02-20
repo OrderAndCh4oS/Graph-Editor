@@ -75,17 +75,21 @@ export default class Register extends Component {
             } else {
                 this.setState(prevState => ({
                     ...prevState,
-                    ...result.reduce((obj, error) => ({
-                        ...obj,
-                        [error.field]: {
-                            ...prevState[error.field],
-                            error: error.message,
-                        },
-                    }), {}),
+                    ...this.updateFieldErrors(result, prevState),
                 }));
             }
         });
     };
+
+    updateFieldErrors(result, prevState) {
+        return result.reduce((obj, error) => ({
+            ...obj,
+            [error.field]: {
+                ...prevState[error.field],
+                error: error.message,
+            },
+        }), {});
+    }
 
     render() {
         return (
@@ -116,7 +120,7 @@ export default class Register extends Component {
                                 />
                                 <Input
                                     label={'Confirm Password'}
-                                    name={'confirm-password'}
+                                    name={'confirm_password'}
                                     type={'password'}
                                     value={this.state.confirmPassword.value}
                                     error={this.state.confirmPassword.error}

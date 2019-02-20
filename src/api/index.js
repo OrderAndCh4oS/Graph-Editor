@@ -3,8 +3,8 @@
 // const baseURL = 'https://devthree.orderandchaoscreative.com';
 const baseURL = 'http://localhost:4000';
 
-export const postRegister = ({values: {username, password}}) => {
-    return postFetch(makeUrl('/register'), {username, password});
+export const postRegister = ({values}) => {
+    return postFetch(makeUrl('/register'), values);
 };
 
 export const postLogin = ({values: {username, password}}) => {
