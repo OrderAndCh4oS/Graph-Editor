@@ -31,6 +31,10 @@ export const getModel = () => {
     return getFetch(makeUrl('/model'));
 };
 
+export const postModel = ({values}) => {
+    return postFetch(makeUrl('/model'), values);
+};
+
 export const putModel = ({params, values}) => {
     return putFetch(makeUrl('/model/' + params.id, values));
 };

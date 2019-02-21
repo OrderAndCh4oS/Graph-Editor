@@ -15,16 +15,21 @@ import transformGraphNodesToJson
 import { Column, Container, Row } from '../../elements/structure';
 import { getNodes, postNode } from '../../../api';
 import request from '../../../api/request';
-import { Button } from '../../elements/button';
 import { AuthConsumer } from '../../authentication';
 import TransformJsonToGraph from '../../transform/transform-json-to-graph';
 import generateEdges from '../../utility/generate-edges';
+import SaveButton from './save-button';
+import ModelForm from './model-form';
 
 class GraphEditor extends Component {
     constructor(props) {
         super(props);
         this.state = {
             id: null,
+            model: {
+                title: '',
+                description: '',
+            },
             graph: new Digraph(),
             data: {
                 nodes: [],
@@ -134,9 +139,14 @@ class GraphEditor extends Component {
                             transform={transformGraphNodesToJson}
                         />
                     </Column>
-                    <Column span={6} className={'align-right'}>
+                </Row>
+                <Row>
+                    <Column span={8}>
+                        <ModelForm/>
+                    </Column>
+                    <Column span={4} className={'align-right'}>
                         <AuthConsumer>
-                            {this.authButtons()}
+                            {this.saveGraphButtons}
                         </AuthConsumer>
                     </Column>
                 </Row>
@@ -167,19 +177,11 @@ class GraphEditor extends Component {
         );
     }
 
-    authButtons() {
-        return ({isAuth}) => isAuth
-            ? <Button
-                className={'tool-bar--button'}
-                type={'affirmative'}
-                onClick={this.saveGraph}
-            >
-                Save Graph
-            </Button>
+    saveGraphButtons = ({isAuth}) => isAuth
+        ? <SaveButton handleSave={this.saveNodes}>Save Nodes</SaveButton>
             : null;
-    }
 
-    saveGraph = () => {
+    saveNodes = () => {
         const data = transformGraphNodesToJson(this.state.graph);
         request(
             postNode,
