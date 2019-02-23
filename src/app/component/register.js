@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import { Input } from '../elements/form';
-import request from '../../api/request';
-import { postRegister } from '../../api';
+import request from '../api/request';
+import { postRegister } from '../api';
 import { AuthConsumer } from '../authentication';
 
 export default class Register extends Component {

@@ -13,8 +13,8 @@ import transformCsvImportToGraphData
 import transformGraphNodesToJson
     from '../../transform/transform-graph-nodes-to-json';
 import { Column, Container, Row } from '../../elements/structure';
-import { getNodes, postNode } from '../../../api';
-import request from '../../../api/request';
+import { getModel, postNode } from '../../api';
+import request from '../../api/request';
 import { AuthConsumer } from '../../authentication';
 import TransformJsonToGraph from '../../transform/transform-json-to-graph';
 import generateEdges from '../../utility/generate-edges';
@@ -25,8 +25,8 @@ class GraphEditor extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            id: null,
             model: {
+                id: null,
                 title: '',
                 description: '',
             },
@@ -42,10 +42,11 @@ class GraphEditor extends Component {
     componentDidMount() {
         const {match} = this.props;
         if(match.params.hasOwnProperty('id') && match.params.id) {
-            this.setState({id: match.params.id});
-            request(getNodes, match.params)
-                .then(({rows, count}) =>
-                    this.createGraphFromJson(rows),
+            this.setState({model: {id: match.params.id}});
+            const params = {scope: 'withNodes', id: match.params.id};
+            request(getModel, params)
+                .then((model) =>
+                    this.createGraphFromJson(model.nodes),
                 );
         }
     }
@@ -142,7 +143,7 @@ class GraphEditor extends Component {
                 </Row>
                 <Row>
                     <Column span={8}>
-                        <ModelForm/>
+                        <ModelForm model={this.state.model}/>
                     </Column>
                     <Column span={4} className={'align-right'}>
                         <AuthConsumer>

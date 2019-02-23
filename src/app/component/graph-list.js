@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import { Container, Row } from '../elements/structure';
 import { Title } from '../elements/typography';
 import { Link } from 'react-router-dom';
-import { getModel } from '../../api';
-import request from '../../api/request';
+import { getModel } from '../api';
+import request from '../api/request';
 
 class GraphList extends Component {
 

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Input } from '../elements/form';
-import request from '../../api/request';
-import { postLogin } from '../../api';
+import request from '../api/request';
+import { postLogin } from '../api';
 import { AuthConsumer } from '../authentication';
 
 export default class Login extends Component {

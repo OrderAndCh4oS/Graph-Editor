@@ -1,7 +1,7 @@
 /* eslint no-eval: 0 */
 import EquationNode from './equation-node';
 import Edge from './edge';
-import extractIdsFromString from '../utility/extractIdsFromText';
+import extractIdsFromString from '../utility/extract-ids-from-text';
 
 // Todo: handle catching the errors thrown in Digraphs methods
 
