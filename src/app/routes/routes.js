@@ -10,7 +10,7 @@ import GraphList from '../component/graph-list';
 import { Column, Row } from '../elements/structure';
 import { AuthConsumer } from '../authentication';
 import { Button, LinkButton } from '../elements/button';
-import Login from '../component/login';
+import LoginWithMessage from '../component/login';
 import Register from '../component/register';
 
 const AuthButton = () =>
@@ -52,7 +52,7 @@ const Routes = () =>
                 <AuthConsumer>
                     {({isAuth}) => isAuth ?
                         <Redirect to="/"/>
-                        : <Login/>
+                        : <LoginWithMessage/>
                     }
                 </AuthConsumer>}
             />

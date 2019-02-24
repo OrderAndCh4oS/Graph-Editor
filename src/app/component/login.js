@@ -3,8 +3,10 @@ import { Input } from '../elements/form';
 import { postLogin } from '../api';
 import { AuthConsumer } from '../authentication';
 import ResponseType from '../api/response-type';
+import withMessage from './message/with-message';
+import MessageType from './message/message-type';
 
-export default class Login extends Component {
+class Login extends Component {
 
     state = {
         username: {
@@ -19,41 +21,6 @@ export default class Login extends Component {
         },
     };
 
-    render() {
-        return (
-            <AuthConsumer>
-                {
-                    ({isAuth, login}) => isAuth
-                        ? <div>Redirecting...</div>
-                        : <div>
-                            <Input
-                                label={'Username'}
-                                name={'username'}
-                                type={'text'}
-                                value={this.state.username.value}
-                                error={this.state.username.error}
-                                touched={this.state.username.touched}
-                                onChange={this.setUsername}
-                            />
-                            <Input
-                                label={'Password'}
-                                name={'password'}
-                                type={'password'}
-                                value={this.state.password.value}
-                                error={this.state.password.error}
-                                touched={this.state.password.touched}
-                                onChange={this.setPassword}
-                            />
-                            <button
-                                onClick={() => this.submit(login)}
-                            >Login
-                            </button>
-                        </div>
-                }
-            </AuthConsumer>
-        );
-    }
-
     submit = (login) => {
         this.resetFormTouched();
         // Todo: disable button on submit.
@@ -66,12 +33,16 @@ export default class Login extends Component {
                     login();
                     break;
                 case ResponseType.AUTHENTICATION_FAILURE:
-                    // Todo: Handle auth failure
-                    console.log('Unhandled Auth Failure');
+                    this.props.setMessage('Invalid Credentials',
+                        MessageType.ERROR);
+                    this.props.showMessage();
                     break;
                 default:
                     // Todo: Handle error
-                    console.log('Unhandled Error');
+                    this.props.setMessage(
+                        'An error occurred while attempting to login. Please try again.',
+                        MessageType.ERROR);
+                    this.props.showMessage();
             }
         });
     };
@@ -104,4 +75,45 @@ export default class Login extends Component {
             error: false,
         },
     });
+
+    render() {
+        const {message} = this.props;
+        return (
+            <AuthConsumer>
+                {
+                    ({isAuth, login}) => isAuth
+                        ? <div>Redirecting...</div>
+                        : <div>
+                            <Input
+                                label={'Username'}
+                                name={'username'}
+                                type={'text'}
+                                value={this.state.username.value}
+                                error={this.state.username.error}
+                                touched={this.state.username.touched}
+                                onChange={this.setUsername}
+                            />
+                            <Input
+                                label={'Password'}
+                                name={'password'}
+                                type={'password'}
+                                value={this.state.password.value}
+                                error={this.state.password.error}
+                                touched={this.state.password.touched}
+                                onChange={this.setPassword}
+                            />
+                            <button
+                                onClick={() => this.submit(login)}
+                            >Login
+                            </button>
+                            {message()}
+                        </div>
+                }
+            </AuthConsumer>
+        );
+    }
 }
+
+const LoginWithMessage = withMessage(Login);
+
+export default LoginWithMessage;
