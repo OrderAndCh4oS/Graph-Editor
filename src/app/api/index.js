@@ -1,9 +1,9 @@
 /* eslint-disable indent */
 
 import { makeEndpoint } from './url';
-import HttpClient from './http-client';
+import Request from './request';
 
-const request = new HttpClient();
+const request = new Request();
 
 export function postRegister(values) {
     return request.post('/register', values);
@@ -55,9 +55,7 @@ export function getNode(params = null) {
 }
 
 export function postNode(values, params = null) {
-    console.log(params);
     const modelEndpoint = makeEndpoint('/model', params, 'modelId');
-    console.log('E:', modelEndpoint);
     return request.post(modelEndpoint + '/node', values);
 }
 

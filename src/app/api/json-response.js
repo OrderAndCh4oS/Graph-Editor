@@ -1,5 +1,7 @@
+import ResponseType from './response-types';
+
 export default class JsonResponse {
-    parse = response => {
+    handleResponse = response => {
         switch(response.status) {
             case 200:
             case 304:
@@ -20,21 +22,43 @@ export default class JsonResponse {
         }
     };
 
+    handleErrorResponse = error => {
+        error.json();
+    };
+
     handleSuccessful = response => response.json()
-        .then(data => data.data);
+        .then(json => ({
+            type: ResponseType.SUCCESS,
+            data: json.data,
+        }));
 
     handleAuthenticationError = response => response.json()
-        .then(data => data);
+        .then(json => ({
+            type: ResponseType.AUTHENTICATION_FAILURE,
+            message: json,
+        }));
 
     handleUnauthorised = response => response.json()
-        .then(data => data);
+        .then(json => ({
+            type: ResponseType.UNAUTHORIZED,
+            message: json,
+        }));
 
     handleNotFound = response => response.json()
-        .then(data => data);
+        .then(json => ({
+            type: ResponseType.NOT_FOUND,
+            message: json,
+        }));
 
     handleInvalidData = response => response.json()
-        .then(data => data.errors);
+        .then(json => ({
+            type: ResponseType.INVALID,
+            errors: json.errors,
+        }));
 
     handleError = response => response.json()
-        .then(data => data);
+        .then(json => ({
+            type: ResponseType.ERROR,
+            errors: json,
+        }));
 }

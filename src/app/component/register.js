@@ -68,13 +68,13 @@ export default class Register extends Component {
             password: this.state.password.value,
             confirmPassword: this.state.confirmPassword.value,
         }).then(result => {
-            if(result.id) {
+            if(!result.invalid) {
                 this.setState(
                     {...this.initialState(), message: 'Registered!!'});
             } else {
                 this.setState(prevState => ({
                     ...prevState,
-                    ...this.updateFieldErrors(result, prevState),
+                    ...this.updateFieldErrors(result.invalid, prevState),
                 }));
             }
         });
