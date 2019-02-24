@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Input } from '../elements/form';
 import { postLogin } from '../api';
 import { AuthConsumer } from '../authentication';
+import ResponseType from '../api/response-type';
 
 export default class Login extends Component {
 
@@ -53,13 +54,29 @@ export default class Login extends Component {
         );
     }
 
-    handleUsernameError() {
-        return this.state.errors.hasOwnProperty('username')
-            ? this.state.errors.username
-            : null;
-    }
-
     submit = (login) => {
+        this.resetFormTouched();
+        // Todo: disable button on submit.
+        postLogin(
+            this.state.username.value,
+            this.state.password.value,
+        ).then(result => {
+            switch(result.type) {
+                case ResponseType.SUCCESS:
+                    login();
+                    break;
+                case ResponseType.AUTHENTICATION_FAILURE:
+                    // Todo: Handle auth failure
+                    console.log('Unhandled Auth Failure');
+                    break;
+                default:
+                    // Todo: Handle error
+                    console.log('Unhandled Error');
+            }
+        });
+    };
+
+    resetFormTouched() {
         this.setState(prevState => ({
             username: {
                 ...prevState.username,
@@ -70,17 +87,7 @@ export default class Login extends Component {
                 touched: false,
             },
         }));
-        postLogin(
-            this.state.username.value,
-            this.state.password.value,
-        ).then(result => {
-            if(result.id) {
-                login();
-            } else {
-                console.log(result);
-            }
-        });
-    };
+    }
 
     setUsername = (e) => this.setState({
         username: {

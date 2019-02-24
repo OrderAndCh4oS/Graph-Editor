@@ -19,6 +19,7 @@ import TransformJsonToGraph from '../../transform/transform-json-to-graph';
 import generateEdges from '../../utility/generate-edges';
 import SaveButton from './save-button';
 import ModelForm from './model-form';
+import ResponseType from '../../api/response-type';
 
 class GraphEditor extends Component {
     constructor(props) {
@@ -43,15 +44,23 @@ class GraphEditor extends Component {
         if(match.params.hasOwnProperty('id') && match.params.id) {
             this.setState({model: {id: match.params.id}});
             getModel({scope: 'withNodes', id: match.params.id})
-                .then((model) => {
-                    this.setState({
-                        model: {
-                            id: model.id,
-                            title: model.title,
-                            description: model.description,
-                        },
-                    });
-                        this.createGraphFromJson(model.nodes);
+                .then((result) => {
+                    switch(result.type) {
+                        case ResponseType.SUCCESS:
+                            const model = result.data;
+                            this.setState({
+                                model: {
+                                    id: model.id,
+                                    title: model.title,
+                                    description: model.description,
+                                },
+                            });
+                            this.createGraphFromJson(model.nodes);
+                            break;
+                        default:
+                            console.log('Unhandled error');
+                    }
+
                     },
                 );
         }
@@ -130,6 +139,31 @@ class GraphEditor extends Component {
         this.updateState(graph);
     };
 
+    saveGraphButtons = ({isAuth}) => isAuth
+        ? <SaveButton handleSave={this.saveNodes}>Save Nodes</SaveButton>
+        : null;
+
+    saveNodes = () => {
+        const data = transformGraphNodesToJson(this.state.graph);
+        postNode(data, {modelId: this.state.model.id})
+            .then(result => {
+                switch(result.type) {
+                    case ResponseType.SUCCESS:
+                        // Todo: handle invalid error
+                        console.log('Unhandled Success');
+                        break;
+                    case ResponseType.INVALID:
+                        // Todo: handle invalid error
+                        console.log('Unhandled Invalid Error');
+                        break;
+                    default:
+                        // Todo: handle error
+                        console.log('Unhandled Error');
+
+                }
+            });
+    };
+
     render() {
         return (
             <Container>
@@ -183,17 +217,6 @@ class GraphEditor extends Component {
             </Container>
         );
     }
-
-    saveGraphButtons = ({isAuth}) => isAuth
-        ? <SaveButton handleSave={this.saveNodes}>Save Nodes</SaveButton>
-        : null;
-
-    saveNodes = () => {
-        const data = transformGraphNodesToJson(this.state.graph);
-        //Todo: Handle post success and errors
-        postNode(data, {modelId: this.state.model.id})
-            .then(result => console.log(result));
-    };
 }
 
 export default GraphEditor;

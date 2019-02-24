@@ -1,4 +1,4 @@
-import ResponseType from './response-types';
+import ResponseType from './response-type';
 
 export default class JsonResponse {
     handleResponse = response => {

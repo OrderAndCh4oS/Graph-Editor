@@ -1,6 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import { Input } from '../elements/form';
 import { postRegister } from '../api';
+import ResponseType from '../api/response-type';
 import { AuthConsumer } from '../authentication';
 
 export default class Register extends Component {
@@ -68,14 +69,24 @@ export default class Register extends Component {
             password: this.state.password.value,
             confirmPassword: this.state.confirmPassword.value,
         }).then(result => {
-            if(!result.invalid) {
-                this.setState(
-                    {...this.initialState(), message: 'Registered!!'});
-            } else {
-                this.setState(prevState => ({
-                    ...prevState,
-                    ...this.updateFieldErrors(result.invalid, prevState),
-                }));
+            switch(result.type) {
+                case ResponseType.SUCCESS:
+                    this.setState(
+                        {
+                            ...this.initialState(),
+                            message: 'Your account has been registered',
+                        });
+                    break;
+                case ResponseType.INVALID:
+                    this.setState(prevState => ({
+                        ...prevState,
+                        ...this.updateFieldErrors(result.invalid, prevState),
+                    }));
+                    break;
+                default:
+                    this.setState({
+                        message: 'The was an error registering your account',
+                    });
             }
         });
     };

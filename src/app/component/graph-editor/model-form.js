@@ -4,6 +4,7 @@ import { Input } from '../../elements/form';
 import { AuthConsumer } from '../../authentication';
 import { Column, Row } from '../../elements/structure';
 import { Button } from '../../elements/button';
+import ResponseType from '../../api/response-type';
 
 export default class ModelForm extends Component {
 
@@ -83,16 +84,22 @@ export default class ModelForm extends Component {
     }
 
     handleResult(result) {
-        if(result.id) {
-            this.setState({
-                ...this.initialState(result),
-                message: 'Model Saved',
-            });
-        } else {
-            this.setState(prevState => ({
-                ...prevState,
-                ...this.updateFieldErrors(result, prevState),
-            }));
+        switch(result.type) {
+            case ResponseType.SUCCESS:
+                this.setState({
+                    ...this.initialState(result),
+                    message: 'Model Saved',
+                });
+                break;
+            case ResponseType.INVALID:
+                this.setState(prevState => ({
+                    ...prevState,
+                    ...this.updateFieldErrors(result, prevState),
+                }));
+                break;
+            default:
+                // Todo: Handle error
+                console.log('Unhandled Error');
         }
     }
 
