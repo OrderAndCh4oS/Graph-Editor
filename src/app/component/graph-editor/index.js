@@ -44,14 +44,14 @@ class GraphEditor extends Component {
             this.setState({model: {id: match.params.id}});
             getModel({scope: 'withNodes', id: match.params.id})
                 .then((model) => {
+                    this.setState({
+                        model: {
+                            id: model.id,
+                            title: model.title,
+                            description: model.description,
+                        },
+                    });
                         this.createGraphFromJson(model.nodes);
-                        this.setState({
-                            model: {
-                                id: model.id,
-                                title: model.title,
-                                description: model.description,
-                            },
-                        });
                     },
                 );
         }
@@ -190,6 +190,7 @@ class GraphEditor extends Component {
 
     saveNodes = () => {
         const data = transformGraphNodesToJson(this.state.graph);
+        //Todo: Handle post success and errors
         postNode(data, {modelId: this.state.model.id})
             .then(result => console.log(result));
     };
