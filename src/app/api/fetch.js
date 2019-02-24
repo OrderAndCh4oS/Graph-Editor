@@ -1,43 +1,63 @@
-export function getFetch(url) {
-    return fetch(url, {
-        method: 'get',
-        credentials: 'include',
-        headers: {
-            'Accept': 'application/json; charset=utf-8',
-        },
-    });
-}
+export default class Fetch {
 
-export function deleteFetch(url) {
-    return fetch(url, {
-        method: 'delete',
-        credentials: 'include',
-        headers: {
+    constructor(headers, options) {
+        this._headers = headers || {
             'Accept': 'application/json; charset=utf-8',
-        },
-    });
-}
+        };
+        this._options = options || {
+            credentials: 'include',
+        };
+    }
 
-export function postFetch(url, data) {
-    return fetch(url, {
-        method: 'post',
-        credentials: 'include',
-        headers: {
-            'Accept': 'application/json; charset=utf-8',
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-    });
-}
+    get(url, headers, options) {
+        return fetch(url, {
+            method: 'get',
+            headers: {
+                ...this._headers,
+                ...headers,
+            },
+            ...this._options,
+            ...options,
+        });
+    }
 
-export function putFetch(url, data) {
-    return fetch(url, {
-        method: 'put',
-        credentials: 'include',
-        headers: {
-            'Accept': 'application/json; charset=utf-8',
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-    });
+    delete(url, headers, options) {
+        return fetch(url, {
+            method: 'delete',
+            headers: {
+                ...this._headers,
+                ...headers,
+            },
+            ...this._options,
+            ...options,
+        });
+    }
+
+    post(url, data, headers, options) {
+        return fetch(url, {
+            method: 'post',
+            headers: {
+                'Content-Type': 'application/json',
+                ...this._headers,
+                ...headers,
+            },
+            body: JSON.stringify(data),
+            ...this._options,
+            ...options,
+        });
+    }
+
+    put(url, data, headers, options) {
+        return fetch(url, {
+            method: 'put',
+            headers: {
+                'Content-Type': 'application/json',
+                ...this._headers,
+                ...headers,
+            },
+            body: JSON.stringify(data),
+            ...this._options,
+            ...options,
+        });
+    }
 }

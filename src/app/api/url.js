@@ -14,6 +14,7 @@ export function makeUrl(endpoint, params) {
 
 export function makeEndpoint(endpoint, params, key = 'id') {
     const item = extractKey(params, key);
+    console.log('I:', item);
     return item ? endpoint + '/' + item : endpoint;
 }
 

@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { Input } from '../elements/form';
-import request from '../api/request';
 import { postLogin } from '../api';
 import { AuthConsumer } from '../authentication';
 
@@ -71,10 +70,10 @@ export default class Login extends Component {
                 touched: false,
             },
         }));
-        request(postLogin, null, {
-            username: this.state.username.value,
-            password: this.state.password.value,
-        }).then(result => {
+        postLogin(
+            this.state.username.value,
+            this.state.password.value,
+        ).then(result => {
             if(result.id) {
                 login();
             } else {

@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import { postModel } from '../../api';
-import request from '../../api/request';
+import { postModel, putModel } from '../../api';
 import { Input } from '../../elements/form';
 import { AuthConsumer } from '../../authentication';
 import { Column, Row } from '../../elements/structure';
@@ -50,7 +49,7 @@ export default class ModelForm extends Component {
     });
 
     save = () => {
-        console.log(this.state);
+        const {model} = this.props;
         this.setState(prevState => ({
             title: {
                 ...prevState.title,
@@ -61,23 +60,41 @@ export default class ModelForm extends Component {
                 touched: false,
             },
         }));
-        request(postModel, null, {
+
+        model.hasOwnProperty('id') ? this.put() : this.post();
+    };
+
+    post() {
+        postModel({
             title: this.state.title.value,
             description: this.state.description.value,
         }).then(result => {
-            if(result.id) {
-                this.setState({
-                    ...this.initialState(result),
-                    message: 'Model Saved',
-                });
-            } else {
-                this.setState(prevState => ({
-                    ...prevState,
-                    ...this.updateFieldErrors(result, prevState),
-                }));
-            }
+            this.handleResult(result);
         });
-    };
+    }
+
+    put() {
+        putModel({
+            title: this.state.title.value,
+            description: this.state.description.value,
+        }, {id: this.props.model.id}).then(result => {
+            this.handleResult(result);
+        });
+    }
+
+    handleResult(result) {
+        if(result.id) {
+            this.setState({
+                ...this.initialState(result),
+                message: 'Model Saved',
+            });
+        } else {
+            this.setState(prevState => ({
+                ...prevState,
+                ...this.updateFieldErrors(result, prevState),
+            }));
+        }
+    }
 
     updateFieldErrors(result, prevState) {
         return result.reduce((obj, error) => ({
@@ -90,6 +107,7 @@ export default class ModelForm extends Component {
     }
 
     render() {
+        const {model} = this.props;
         return (
             <div className={'model-form'}>
                 <AuthConsumer>
@@ -100,7 +118,8 @@ export default class ModelForm extends Component {
                                     label={'Title'}
                                     name={'title'}
                                     type={'text'}
-                                    value={this.state.title.value}
+                                    value={this.state.title.value ||
+                                    model.title}
                                     error={this.state.title.error}
                                     touched={this.state.title.touched}
                                     onChange={this.setField('title')}
@@ -111,7 +130,8 @@ export default class ModelForm extends Component {
                                     label={'Description'}
                                     name={'description'}
                                     type={'description'}
-                                    value={this.state.description.value}
+                                    value={this.state.description.value ||
+                                    model.description}
                                     error={this.state.description.error}
                                     touched={this.state.description.touched}
                                     onChange={this.setField('description')}

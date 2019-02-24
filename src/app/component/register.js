@@ -1,6 +1,5 @@
 import React, { Component, Fragment } from 'react';
 import { Input } from '../elements/form';
-import request from '../api/request';
 import { postRegister } from '../api';
 import { AuthConsumer } from '../authentication';
 
@@ -64,7 +63,7 @@ export default class Register extends Component {
                 touched: false,
             },
         }));
-        request(postRegister, null, {
+        postRegister({
             username: this.state.username.value,
             password: this.state.password.value,
             confirmPassword: this.state.confirmPassword.value,

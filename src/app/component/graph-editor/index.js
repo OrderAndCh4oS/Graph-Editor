@@ -14,7 +14,6 @@ import transformGraphNodesToJson
     from '../../transform/transform-graph-nodes-to-json';
 import { Column, Container, Row } from '../../elements/structure';
 import { getModel, postNode } from '../../api';
-import request from '../../api/request';
 import { AuthConsumer } from '../../authentication';
 import TransformJsonToGraph from '../../transform/transform-json-to-graph';
 import generateEdges from '../../utility/generate-edges';
@@ -43,10 +42,17 @@ class GraphEditor extends Component {
         const {match} = this.props;
         if(match.params.hasOwnProperty('id') && match.params.id) {
             this.setState({model: {id: match.params.id}});
-            const params = {scope: 'withNodes', id: match.params.id};
-            request(getModel, params)
-                .then((model) =>
-                    this.createGraphFromJson(model.nodes),
+            getModel({scope: 'withNodes', id: match.params.id})
+                .then((model) => {
+                        this.createGraphFromJson(model.nodes);
+                        this.setState({
+                            model: {
+                                id: model.id,
+                                title: model.title,
+                                description: model.description,
+                            },
+                        });
+                    },
                 );
         }
     }
@@ -180,15 +186,11 @@ class GraphEditor extends Component {
 
     saveGraphButtons = ({isAuth}) => isAuth
         ? <SaveButton handleSave={this.saveNodes}>Save Nodes</SaveButton>
-            : null;
+        : null;
 
     saveNodes = () => {
         const data = transformGraphNodesToJson(this.state.graph);
-        request(
-            postNode,
-            {id: this.state.id},
-            data,
-        )
+        postNode(data, {modelId: this.state.model.id})
             .then(result => console.log(result));
     };
 }

@@ -1,65 +1,71 @@
 /* eslint-disable indent */
 
-import { makeEndpoint, makeRoute, makeUrl } from './make-url';
-import { deleteFetch, getFetch, postFetch, putFetch } from './fetch';
+import { makeEndpoint } from './url';
+import HttpClient from './http-client';
 
-export function postRegister({values}) {
-    return postFetch(makeRoute('/register'), values);
+const request = new HttpClient();
+
+export function postRegister(values) {
+    return request.post('/register', values);
 }
 
-export function postLogin({values: {username, password}}) {
-    return postFetch(makeRoute('/login'), {username, password});
+export function postLogin(username, password) {
+    return request.post('/login', {username, password});
 }
 
 export function getLogout() {
-    return getFetch(makeRoute('/logout'));
+    return request.get('/logout');
 }
 
-export function getUser({params}) {
-    return getFetch(makeRoute('/user', params));
+export function getUser(params = null) {
+    return request.get('/user', params);
 }
 
-export function putUser({params, values}) {
-    return putFetch(makeRoute('/user', params));
+export function putUser(values, params = null) {
+    return request.put('/user', values, params);
 }
 
-export function deleteUser({params}) {
-    return deleteFetch(makeRoute('/user', params));
+export function deleteUser(params = null) {
+    return request.delete('/user', params);
 }
 
-export function getModel({params}) {
-    return getFetch(makeRoute('/model', params));
+export function getModel(params = null) {
+    return request.get('/model', params);
 }
 
-export function postModel({values}) {
-    return postFetch(makeRoute('/model'), values);
+export function postModel(values, params = null) {
+    return request.post('/model', values, params);
 }
 
-export function putModel({params, values}) {
-    return putFetch(makeRoute('/model', params), values);
+export function putModel(values, params = null) {
+    return request.put('/model', values, params);
 }
 
-export function deleteModel({params}) {
-    return deleteFetch(makeRoute('/model', params));
+export function deleteModel(params = null) {
+    return request.delete('/model', params);
 }
 
-export function getNodes({params}) {
-    return getFetch(makeUrl(makeEndpoint('/model', params) + '/node'));
+export function getNodes(params = null) {
+    const modelEndpoint = makeEndpoint('/model', params, 'modelId');
+    return request.get(modelEndpoint + '/node');
 }
 
-export function getNode({params}) {
-    return getFetch(makeRoute('/model', params));
+export function getNode(params = null) {
+    return request.get('/node', params);
 }
 
-export function postNode({params, values}) {
-    return postFetch(makeUrl(makeEndpoint('/model', params) + '/node'), values);
+export function postNode(values, params = null) {
+    console.log(params);
+    const modelEndpoint = makeEndpoint('/model', params, 'modelId');
+    console.log('E:', modelEndpoint);
+    return request.post(modelEndpoint + '/node', values);
 }
 
-export function putNode({params, values}) {
-    return putFetch(makeRoute('/node/', params), values);
+export function putNode(values, params = null) {
+    return request.put('/node', values, params);
 }
 
-export function deleteNode({params}) {
-    return deleteFetch(makeRoute('/node/', params));
+export function deleteNode(params = null) {
+    return request.delete('/node', params);
 }
 
