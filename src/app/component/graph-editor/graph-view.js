@@ -1,7 +1,5 @@
 import { Graph } from 'react-d3-graph';
 import React, { Component } from 'react';
-import transformGraphToGraphView
-    from '../../transform/transform-graph-to-graph-view';
 
 const myConfig = {
     height: 500, width: 1400,
@@ -27,12 +25,11 @@ const myConfig = {
 
 class GraphView extends Component {
     render() {
-        const {graph} = this.props;
-        const data = transformGraphToGraphView(graph);
-        console.log(data);
+        const {data} = this.props;
         return (
             <div className={'graph-view panel'}>
-                {graph.edges.length ? <Graph
+                {data.nodes.length ? <Graph
+                    key={data.hash}
                     id="graph-id"
                     className={'graph-visual'} data={data}
                     config={myConfig}

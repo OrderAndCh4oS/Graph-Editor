@@ -66,7 +66,7 @@ export default class Digraph {
                 return n.node;
             }
         }
-
+        // Todo: catch error after invalid id is typed in equation
         throw Error('This is no node with this ID in the graph: ' + id);
     }
 

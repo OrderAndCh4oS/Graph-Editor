@@ -5,19 +5,64 @@ import EquationNode from '../../graph/equation-node';
 import { Button } from '../../elements/button';
 import EditSeedNodePanel from './edit-seed-node-panel';
 import { Column, Panel, Row } from '../../elements/structure';
+import generateEdges from '../../utility/generate-edges';
 
 export default class GraphBuilder extends Component {
 
+    buildGraph = () => {
+        const graph = this.props.graph;
+        this._addEdges(graph);
+        graph.populateNodesWithEquationData();
+        graph.calculateEquations();
+
+        this.props.updateData(graph);
+    };
+
+    addNode = (node) => {
+        const graph = this.props.graph;
+        try {
+            graph.addNode(node);
+        } catch(e) {
+            alert(e.message);
+        }
+        this.props.updateData(graph);
+    };
+
+    _addEdges = (graph) => {
+        for(let node of graph.edges) {
+            if(node.node instanceof EquationNode) {
+                try {
+                    graph.addEdges(generateEdges(node.node));
+                } catch(e) {
+                    alert('Message: ' + e.message);
+                }
+            }
+        }
+    };
+
+    updateNodeByKey = (uuid) => (key, value) => {
+        const graph = this.props.graph;
+        const node = graph.getNodeByUuid(uuid);
+        node[key] = value;
+        this.props.updateGraph(graph);
+    };
+
+    removeNode = (uuid) => () => {
+        const graph = this.props.graph;
+        graph.removeNodeWithUuid(uuid);
+        this.props.updateData(graph);
+    };
+
     makeSeedNode = () => {
-        this.props.addNode(new SeedNode());
+        this.addNode(new SeedNode());
     };
 
     makeEquationNode = () => {
-        this.props.addNode(new EquationNode());
+        this.addNode(new EquationNode());
     };
 
     displayEditNodePanels = () => {
-        const {graph, updateNodeKey} = this.props;
+        const {graph} = this.props;
         if(!graph.edges.length) {
             return this.displayNoNodesMessage();
         }
@@ -27,14 +72,14 @@ export default class GraphBuilder extends Component {
                     ? <EditSeedNodePanel
                         key={node.node.uuid}
                         node={node.node}
-                        updateNode={updateNodeKey(node.node.uuid)}
-                        removeNode={this.props.removeNode(node.node.uuid)}
+                        updateNode={this.updateNodeByKey(node.node.uuid)}
+                        removeNode={this.removeNode(node.node.uuid)}
                     />
                     : <EditEquationNodePanel
                         key={node.node.uuid}
                         node={node.node}
-                        updateNode={updateNodeKey(node.node.uuid)}
-                        removeNode={this.props.removeNode(node.node.uuid)}
+                        updateNode={this.updateNodeByKey(node.node.uuid)}
+                        removeNode={this.removeNode(node.node.uuid)}
                     />;
             },
         );
@@ -45,7 +90,6 @@ export default class GraphBuilder extends Component {
             Add nodes or import a csv to begin. </p>;
 
     render() {
-        const {buildGraph} = this.props;
         return (
             <Fragment>
                 <Row>
@@ -64,7 +108,7 @@ export default class GraphBuilder extends Component {
                     </Column>
                     <Column span={6} sSpan={6} className={'align-right'}>
                         <Button
-                            type={'affirmative'} onClick={buildGraph}
+                            type={'affirmative'} onClick={this.buildGraph}
                         >
                             Build Graph
                         </Button>

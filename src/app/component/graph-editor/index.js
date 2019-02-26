@@ -3,23 +3,17 @@ import React, { Component } from 'react';
 import GraphView from './graph-view';
 import ConnectionList from './connection-list';
 import GraphBuilder from './graph-builder';
-import EquationNode from '../../graph/equation-node';
-import cleanValue from '../../utility/clean-value';
-import CsvImport from '../csv/csv-import';
-import CsvExport from '../csv/csv-export';
 import Digraph from '../../graph/digraph';
-import transformCsvImportToGraphData
-    from '../../transform/transform-csv-import-to-graph-data';
 import transformGraphNodesToJson
     from '../../transform/transform-graph-nodes-to-json';
 import { Column, Container, Row } from '../../elements/structure';
 import { getModel, postNode } from '../../api';
-import { AuthConsumer } from '../../authentication';
 import TransformJsonToGraph from '../../transform/transform-json-to-graph';
-import generateEdges from '../../utility/generate-edges';
-import SaveButton from './save-button';
-import ModelForm from './model-form';
 import ResponseType from '../../api/response-type';
+import CsvRow from '../csv/csv-row';
+import SaveGraphRow from './SaveGraphRow';
+import transformGraphToGraphView
+    from '../../transform/transform-graph-to-graph-view';
 
 class GraphEditor extends Component {
     constructor(props) {
@@ -33,7 +27,8 @@ class GraphEditor extends Component {
             graph: new Digraph(),
             data: {
                 nodes: [],
-                edges: [],
+                links: [],
+                hash: false,
             },
             activeNode: null,
         };
@@ -66,68 +61,15 @@ class GraphEditor extends Component {
         }
     }
 
-    buildGraph = () => {
-        const graph = this.state.graph;
-        this.addEdges(graph);
-        graph.populateNodesWithEquationData();
-        graph.calculateEquations();
-
-        this.updateState(graph);
-    };
-
-    addEdges = (graph) => {
-        for(let node of graph.edges) {
-            if(node.node instanceof EquationNode) {
-                try {
-                    graph.addEdges(generateEdges(node.node));
-                } catch(e) {
-                    alert('Message: ' + e.message);
-                }
-            }
-        }
-    };
-
-    addNode = (node) => {
-        const graph = this.state.graph;
-        try {
-            graph.addNode(node);
-        } catch(e) {
-            alert(e.message);
-        }
-        this.updateState(graph);
-    };
-
-    removeNode = (uuid) => () => {
-        const graph = this.state.graph;
-        graph.removeNodeWithUuid(uuid);
-        this.updateState(graph);
-    };
-
-    updateNodeValue = (uuid, value) => {
-        const graph = this.state.graph;
-
-        const node = graph.getNodeByUuid(uuid);
-        value = cleanValue(value);
-        if(isNaN(value)) {
-            return;
-        }
-        node.value = value === 0 ? 0 : value / node.conv;
-        if(!isNaN(node.value)) {
-            graph.calculateEquations();
-        }
-
-        this.updateState(graph);
-    };
-
-    updateState = (graph) => {
+    updateGraph = (graph) => {
         this.setState({graph});
     };
 
-    updateNodeKey = (uuid) => (key, value) => {
-        const graph = this.state.graph;
-        const node = graph.getNodeByUuid(uuid);
-        node[key] = value;
-        this.updateState(graph);
+    updateData = (graph) => {
+        const data = transformGraphToGraphView(graph);
+        if(this.state.data.hash !== data.hash) {
+            this.setState({graph, data});
+        }
     };
 
     createGraphFromJson = (data) => {
@@ -136,12 +78,8 @@ class GraphEditor extends Component {
         graph.populateNodesWithEquationData();
         graph.calculateEquations();
 
-        this.updateState(graph);
+        this.updateData(graph);
     };
-
-    saveGraphButtons = ({isAuth}) => isAuth
-        ? <SaveButton handleSave={this.saveNodes}>Save Nodes</SaveButton>
-        : null;
 
     saveNodes = () => {
         const data = transformGraphNodesToJson(this.state.graph);
@@ -167,38 +105,21 @@ class GraphEditor extends Component {
     render() {
         return (
             <Container>
-                <Row>
-                    <Column span={3}>
-                        <CsvImport
-                            complete={this.createGraphFromJson}
-                            transform={transformCsvImportToGraphData}
-                        />
-                    </Column>
-                    <Column span={3}>
-                        <CsvExport
-                            data={this.state.graph}
-                            transform={transformGraphNodesToJson}
-                        />
-                    </Column>
-                </Row>
-                <Row>
-                    <Column span={8}>
-                        <ModelForm model={this.state.model}/>
-                    </Column>
-                    <Column span={4} className={'align-right'}>
-                        <AuthConsumer>
-                            {this.saveGraphButtons}
-                        </AuthConsumer>
-                    </Column>
-                </Row>
+                <CsvRow
+                    graph={this.state.graph}
+                    createGraphFromJson={this.createGraphFromJson}
+                />
+                <SaveGraphRow
+                    model={this.state.model}
+                />
                 <Row>
                     <Column span={9} mSpan={8} sSpan={6}>
-                        <GraphView graph={this.state.graph}/>
+                        <GraphView data={this.state.data}/>
                     </Column>
                     <Column span={3} mSpan={4} sSpan={6}>
                         <ConnectionList
                             graph={this.state.graph}
-                            updateNodeValue={this.updateNodeValue}
+                            updateGraph={this.updateGraph}
                         />
                     </Column>
                 </Row>
@@ -207,10 +128,8 @@ class GraphEditor extends Component {
                         <GraphBuilder
                             id={this.state.id}
                             graph={this.state.graph}
-                            buildGraph={this.buildGraph}
-                            addNode={this.addNode}
-                            removeNode={this.removeNode}
-                            updateNodeKey={this.updateNodeKey}
+                            updateGraph={this.updateGraph}
+                            updateData={this.updateData}
                         />
                     </Column>
                 </Row>
