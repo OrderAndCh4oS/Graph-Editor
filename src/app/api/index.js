@@ -64,6 +64,7 @@ export function putNode(values, params = null) {
 }
 
 export function deleteNode(params = null) {
-    return request.delete('/node', params);
+    const nodeEndpoint = makeEndpoint('/node', params, 'uuid');
+    return request.delete(nodeEndpoint, params);
 }
 

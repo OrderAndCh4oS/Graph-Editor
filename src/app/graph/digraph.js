@@ -67,7 +67,7 @@ export default class Digraph {
             }
         }
         // Todo: catch error after invalid id is typed in equation
-        throw Error('This is no node with this ID in the graph: ' + id);
+        throw Error('There is no node with this ID in the graph: ' + id);
     }
 
     getNodeByUuid(uuid) {

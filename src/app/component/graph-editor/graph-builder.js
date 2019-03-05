@@ -6,15 +6,23 @@ import { Button } from '../../elements/button';
 import EditSeedNodePanel from './edit-seed-node-panel';
 import { Column, Panel, Row } from '../../elements/structure';
 import generateEdges from '../../utility/generate-edges';
+import ResponseType from '../../api/response-type';
+import { deleteNode } from '../../api';
+import { AuthContext } from '../../authentication';
+import { withRouter } from 'react-router-dom';
+import SaveButton from './save-button';
 
-export default class GraphBuilder extends Component {
+class GraphBuilder extends Component {
 
     buildGraph = () => {
         const graph = this.props.graph;
-        this._addEdges(graph);
-        graph.populateNodesWithEquationData();
-        graph.calculateEquations();
-
+        try {
+            this._addEdges(graph);
+            graph.populateNodesWithEquationData();
+            graph.calculateEquations();
+        } catch(e) {
+            alert(e.message);
+        }
         this.props.updateData(graph);
     };
 
@@ -31,11 +39,7 @@ export default class GraphBuilder extends Component {
     _addEdges = (graph) => {
         for(let node of graph.edges) {
             if(node.node instanceof EquationNode) {
-                try {
-                    graph.addEdges(generateEdges(node.node));
-                } catch(e) {
-                    alert('Message: ' + e.message);
-                }
+                graph.addEdges(generateEdges(node.node));
             }
         }
     };
@@ -48,9 +52,22 @@ export default class GraphBuilder extends Component {
     };
 
     removeNode = (uuid) => () => {
-        const graph = this.props.graph;
-        graph.removeNodeWithUuid(uuid);
-        this.props.updateData(graph);
+        deleteNode({uuid}).then(result => {
+            switch(result.type) {
+                case ResponseType.SUCCESS:
+                    const graph = this.props.graph;
+                    graph.removeNodeWithUuid(uuid);
+                    this.props.updateData(graph);
+                    break;
+                case ResponseType.AUTHENTICATION_FAILURE:
+                    // Todo: find a better way to handle logout on auth failure
+                    this.context.logout();
+                    this.props.history.push('/login');
+                    break;
+                default:
+                    console.log('Unhandled error');
+            }
+        });
     };
 
     makeSeedNode = () => {
@@ -105,6 +122,8 @@ export default class GraphBuilder extends Component {
                         >
                             Add Equation Node
                         </Button>
+                        {' '}
+                        <SaveButton handleSave={this.props.saveNodes}/>
                     </Column>
                     <Column span={6} sSpan={6} className={'align-right'}>
                         <Button
@@ -125,3 +144,8 @@ export default class GraphBuilder extends Component {
         );
     }
 }
+
+const GraphBuilderWrapped = withRouter(GraphBuilder);
+GraphBuilderWrapped.WrappedComponent.contextType = AuthContext;
+
+export default GraphBuilderWrapped;

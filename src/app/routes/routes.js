@@ -5,7 +5,7 @@ import {
     Redirect,
     Route,
 } from 'react-router-dom';
-import GraphEditor from '../component/graph-editor';
+import GraphEditorWithMessage from '../component/graph-editor';
 import GraphList from '../component/graph-list';
 import { Column, Row } from '../elements/structure';
 import { AuthConsumer } from '../authentication';
@@ -20,7 +20,9 @@ const AuthButton = () =>
                 ? <Fragment>
                     <LinkButton to="/register">Register</LinkButton>
                     {' '}
-                    <LinkButton to="/login">Login</LinkButton>
+                    <LinkButton
+                        type={'affirmative'} to="/login"
+                    >Login</LinkButton>
                 </Fragment>
                 : <Button onClick={logout}>Logout</Button>
         }
@@ -57,7 +59,10 @@ const Routes = () =>
                 </AuthConsumer>}
             />
             <Route path="/register" component={Register}/>
-            <Route path="/graph-editor/:id?" component={GraphEditor}/>
+            <Route
+                path="/graph-editor/:id?"
+                component={GraphEditorWithMessage}
+            />
         </div>
     </Router>
 ;

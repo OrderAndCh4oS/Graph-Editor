@@ -3,14 +3,26 @@ import React, { createContext } from 'react';
 const AuthContext = createContext();
 
 class AuthProvider extends React.Component {
-    state = {isAuth: false};
+
+    constructor(props) {
+        super(props);
+        const authenticated = localStorage.getItem('authenticated');
+
+        if(authenticated === 'true') {
+            this.state = {isAuth: true};
+        } else {
+            this.state = {isAuth: false};
+        }
+    }
 
     login = () => {
         this.setState({isAuth: true});
+        localStorage.setItem('authenticated', 'true');
     };
 
     logout = () => {
         this.setState({isAuth: false});
+        localStorage.setItem('authenticated', 'false');
     };
 
     render() {
@@ -31,4 +43,4 @@ class AuthProvider extends React.Component {
 
 const AuthConsumer = AuthContext.Consumer;
 
-export { AuthProvider, AuthConsumer };
+export { AuthContext, AuthProvider, AuthConsumer };

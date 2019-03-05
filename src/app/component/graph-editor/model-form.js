@@ -1,45 +1,33 @@
 import React, { Component } from 'react';
 import { postModel, putModel } from '../../api';
 import { Input } from '../../elements/form';
-import { AuthConsumer } from '../../authentication';
+import { AuthConsumer, AuthContext } from '../../authentication';
 import { Column, Row } from '../../elements/structure';
 import { Button } from '../../elements/button';
 import ResponseType from '../../api/response-type';
+import { withRouter } from 'react-router-dom';
+import withMessage from '../../context/message/with-message';
+import MessageType from '../../context/message/message-type';
 
-export default class ModelForm extends Component {
+class ModelForm extends Component {
 
     constructor(props) {
         super(props);
-        this.state = this.initialState(props.model);
+        this.state = this.initialState({});
     }
 
-    initialState = ({id, title, description}) => {
-        return {
-            message: '',
-            id: {
-                value: id || null,
-            },
-            title: {
-                value: title || '',
-                touched: false,
-                error: null,
-            },
-            description: {
-                value: description || '',
-                touched: false,
-                error: null,
-            },
-        };
-    };
-
-    displayMessage = () => {
-        const classes = ['message', 'valid-color'].join(' ');
-        return this.state.message
-            ? <div className={classes}>
-                {this.state.message}
-            </div>
-            : null;
-    };
+    initialState = ({title, description}) => ({
+        title: {
+            value: title || null,
+            touched: false,
+            error: null,
+        },
+        description: {
+            value: description || null,
+            touched: false,
+            error: null,
+        },
+    });
 
     setField = (field) => (e) => this.setState({
         [field]: {
@@ -62,13 +50,14 @@ export default class ModelForm extends Component {
             },
         }));
 
-        model.hasOwnProperty('id') ? this.put() : this.post();
+        model.hasOwnProperty('id') && model.id ? this.put() : this.post();
     };
 
     post() {
         postModel({
-            title: this.state.title.value,
-            description: this.state.description.value,
+            title: this.state.title.value || this.props.model.title,
+            description: this.state.description.value ||
+                this.props.model.description,
         }).then(result => {
             this.handleResult(result);
         });
@@ -76,8 +65,9 @@ export default class ModelForm extends Component {
 
     put() {
         putModel({
-            title: this.state.title.value,
-            description: this.state.description.value,
+            title: this.state.title.value || this.props.model.title,
+            description: this.state.description.value ||
+                this.props.model.description,
         }, {id: this.props.model.id}).then(result => {
             this.handleResult(result);
         });
@@ -86,16 +76,27 @@ export default class ModelForm extends Component {
     handleResult(result) {
         switch(result.type) {
             case ResponseType.SUCCESS:
+                this.props.setMessage(
+                    'Model saved',
+                    MessageType.SUCCESS,
+                );
+                this.props.showMessage();
                 this.setState({
-                    ...this.initialState(result),
-                    message: 'Model Saved',
+                    ...this.initialState(result.data),
                 });
+                this.props.updateModel(result.data);
+                this.props.history.push('/graph-editor/' + result.data.id);
                 break;
             case ResponseType.INVALID:
                 this.setState(prevState => ({
                     ...prevState,
                     ...this.updateFieldErrors(result, prevState),
                 }));
+                break;
+            case ResponseType.AUTHENTICATION_FAILURE:
+                // Todo: find a better way to handle logout on auth failure
+                this.context.logout();
+                this.props.history.push('/login');
                 break;
             default:
                 // Todo: Handle error
@@ -104,7 +105,8 @@ export default class ModelForm extends Component {
     }
 
     updateFieldErrors(result, prevState) {
-        return result.reduce((obj, error) => ({
+        console.log(result);
+        return result.errors.reduce((obj, error) => ({
             ...obj,
             [error.field]: {
                 ...prevState[error.field],
@@ -114,9 +116,10 @@ export default class ModelForm extends Component {
     }
 
     render() {
-        const {model} = this.props;
+        const {model, message} = this.props;
         return (
             <div className={'model-form'}>
+                {message()}
                 <AuthConsumer>
                     {({isAuth}) => isAuth
                         ? <Row>
@@ -125,8 +128,9 @@ export default class ModelForm extends Component {
                                     label={'Title'}
                                     name={'title'}
                                     type={'text'}
-                                    value={this.state.title.value ||
-                                    model.title}
+                                    value={this.state.title.value === null
+                                        ? model.title || ''
+                                        : this.state.title.value}
                                     error={this.state.title.error}
                                     touched={this.state.title.touched}
                                     onChange={this.setField('title')}
@@ -137,8 +141,9 @@ export default class ModelForm extends Component {
                                     label={'Description'}
                                     name={'description'}
                                     type={'description'}
-                                    value={this.state.description.value ||
-                                    model.description}
+                                    value={this.state.description.value === null
+                                        ? model.description || ''
+                                        : this.state.description.value}
                                     error={this.state.description.error}
                                     touched={this.state.description.touched}
                                     onChange={this.setField('description')}
@@ -147,11 +152,11 @@ export default class ModelForm extends Component {
                             <Column span={2}>
                                 <Button
                                     className={'gutter-margin-top'}
+                                    type={'affirmative'}
                                     disabled={this.state.title.value === ''}
                                     onClick={this.save}
                                 >Save Model
                                 </Button>
-                                {this.displayMessage()}
                             </Column>
                         </Row>
                         : null}
@@ -160,3 +165,9 @@ export default class ModelForm extends Component {
         );
     }
 }
+
+ModelForm.contextType = AuthContext;
+
+ModelForm = withRouter(withMessage(ModelForm));
+
+export default ModelForm;

@@ -3,8 +3,9 @@ import { Input } from '../elements/form';
 import { postLogin } from '../api';
 import { AuthConsumer } from '../authentication';
 import ResponseType from '../api/response-type';
-import withMessage from './message/with-message';
-import MessageType from './message/message-type';
+import withMessage from '../context/message/with-message';
+import MessageType from '../context/message/message-type';
+import { Button } from '../elements/button';
 
 class Login extends Component {
 
@@ -102,10 +103,11 @@ class Login extends Component {
                                 touched={this.state.password.touched}
                                 onChange={this.setPassword}
                             />
-                            <button
+                            <Button
+                                type={'affirmative'}
                                 onClick={() => this.submit(login)}
                             >Login
-                            </button>
+                            </Button>
                             {message()}
                         </div>
                 }

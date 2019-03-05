@@ -6,7 +6,11 @@ import generateEdges from '../utility/generate-edges';
 
 export default class transformJsonToGraph {
     process(data) {
-        return this.processEdges(this.processNodes(data));
+        try {
+            return this.processEdges(this.processNodes(data));
+        } catch(e) {
+            alert(e);
+        }
     }
 
     processNodes(data) {

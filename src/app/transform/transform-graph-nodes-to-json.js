@@ -1,8 +1,7 @@
 import getProperty from '../utility/get-property';
 
 const transformGraphNodesToJson = (graph) =>
-    graph.edges.map(edge => {
-        return {
+    graph.edges.map(edge => ({
             uuid: edge.node.uuid,
             id: edge.node.id,
             label: edge.node.label,
@@ -16,7 +15,7 @@ const transformGraphNodesToJson = (graph) =>
             max: edge.node.max,
             step: edge.node.step,
             color: edge.node.color,
-        };
-    });
+        }),
+    );
 
 export default transformGraphNodesToJson;

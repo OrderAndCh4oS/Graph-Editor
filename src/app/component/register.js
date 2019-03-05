@@ -1,10 +1,12 @@
 import React, { Component, Fragment } from 'react';
-import { Input } from '../elements/form';
+import { FormError, Input } from '../elements/form';
 import { postRegister } from '../api';
 import ResponseType from '../api/response-type';
 import { AuthConsumer } from '../authentication';
+import MessageType from '../context/message/message-type';
+import withMessage from '../context/message/with-message';
 
-export default class Register extends Component {
+class Register extends Component {
 
     constructor(props) {
         super(props);
@@ -74,42 +76,53 @@ export default class Register extends Component {
                     this.setState(
                         {
                             ...this.initialState(),
-                            message: 'Your account has been registered',
                         });
+                    this.props.setMessage('Registered Successfully',
+                        MessageType.SUCCESS);
+                    this.props.showMessage();
                     break;
                 case ResponseType.INVALID:
                     this.setState(prevState => ({
                         ...prevState,
-                        ...this.updateFieldErrors(result.invalid, prevState),
+                        ...this.updateFieldErrors(result.errors, prevState),
                     }));
                     break;
                 default:
-                    this.setState({
-                        message: 'The was an error registering your account',
-                    });
+                    this.props.setMessage('An Error Occurred.',
+                        MessageType.ERROR);
+                    this.props.showMessage();
             }
         });
     };
 
     updateFieldErrors(result, prevState) {
-        return result.reduce((obj, error) => ({
-            ...obj,
-            [error.field]: {
-                ...prevState[error.field],
-                error: error.message,
-            },
-        }), {});
+        return result.reduce((obj, error) => {
+            if(error.field === 'users_username') {
+                return {
+                    ...obj,
+                    message: 'This username already exists',
+                };
+            }
+            return {
+                ...obj,
+                [error.field]: {
+                    ...prevState[error.field],
+                    error: error.message,
+                },
+            };
+        }, {});
     }
 
     render() {
+        const {message} = this.props;
         return (
             <Fragment>
-                {this.displayMessage()}
                 <AuthConsumer>
                     {
                         ({isAuth}) => isAuth
                             ? <div>Redirecting...</div>
                             : <div>
+                                {message()}
                                 <Input
                                     label={'Username'}
                                     name={'username'}
@@ -141,6 +154,10 @@ export default class Register extends Component {
                                     onClick={() => this.submit()}
                                 >Register
                                 </button>
+                                <FormError
+                                    error={this.state.message}
+                                    touched={this.state.message === ''}
+                                />
                             </div>
                     }
                 </AuthConsumer>
@@ -148,3 +165,7 @@ export default class Register extends Component {
         );
     }
 }
+
+Register = withMessage(Register);
+
+export default Register;

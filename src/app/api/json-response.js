@@ -33,10 +33,13 @@ export default class JsonResponse {
         }));
 
     handleAuthenticationError = response => response.json()
-        .then(json => ({
-            type: ResponseType.AUTHENTICATION_FAILURE,
-            message: json,
-        }));
+        .then(json => {
+            localStorage.setItem('authenticated', 'false');
+            return {
+                type: ResponseType.AUTHENTICATION_FAILURE,
+                message: json,
+            };
+        });
 
     handleUnauthorised = response => response.json()
         .then(json => ({

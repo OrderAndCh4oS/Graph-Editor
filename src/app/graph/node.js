@@ -13,8 +13,8 @@ export default class Node {
             this._min = nodeData.min;
             this._max = nodeData.max;
             this._step = nodeData.step;
-            this._color = nodeData.color || 'blue';
-            this._conv = nodeData.conv || 1;
+            this._color = nodeData.color;
+            this._conv = nodeData.conv;
             this._prefix = nodeData.prefix;
             this._suffix = nodeData.suffix;
         } else {
