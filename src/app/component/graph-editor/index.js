@@ -4,10 +4,8 @@ import GraphView from './graph-view';
 import ConnectionList from './connection-list';
 import GraphBuilderWrapped from './graph-builder';
 import Digraph from '../../graph/digraph';
-import transformGraphNodesToJson
-    from '../../transform/transform-graph-nodes-to-json';
 import { Column, Container, Row } from '../../elements/structure';
-import { getModel, postNode } from '../../api';
+import { getModel } from '../../api';
 import TransformJsonToGraph from '../../transform/transform-json-to-graph';
 import ResponseType from '../../api/response-type';
 import CsvRow from '../csv/csv-row';
@@ -15,7 +13,6 @@ import SaveGraphRow from './save-graph-row';
 import transformGraphToGraphView
     from '../../transform/transform-graph-to-graph-view';
 import withMessage from '../../context/message/with-message';
-import MessageType from '../../context/message/message-type';
 import { AuthContext } from '../../authentication';
 
 class GraphEditor extends Component {
@@ -91,41 +88,6 @@ class GraphEditor extends Component {
         this.updateData(graph);
     };
 
-    saveNodes = () => {
-        const data = transformGraphNodesToJson(this.state.graph);
-        data.forEach(d => {
-            postNode(d, {modelId: this.state.model.id})
-                .then(result => {
-                    switch(result.type) {
-                        case ResponseType.SUCCESS:
-                            // Todo: handle validation
-                            this.props.setMessage(
-                                'Nodes saved',
-                                MessageType.SUCCESS);
-                            this.props.showMessage();
-                            break;
-                        case ResponseType.INVALID:
-                            // Todo: handle marking form errors
-                            this.props.setMessage(
-                                'Invalid node data',
-                                MessageType.ERROR);
-                            this.props.showMessage();
-                            break;
-                        case ResponseType.AUTHENTICATION_FAILURE:
-                            this.context.logout();
-                            this.props.history.push('/login');
-                            break;
-                        default:
-                            this.props.setMessage(
-                                'Failed to save nodes',
-                                MessageType.ERROR);
-                            this.props.showMessage();
-
-                    }
-                });
-        });
-    };
-
     render() {
         const {message} = this.props;
         return (
@@ -147,6 +109,7 @@ class GraphEditor extends Component {
                             <ConnectionList
                                 graph={this.state.graph}
                                 updateGraph={this.updateGraph}
+                                updateData={this.updateData}
                             />
                         </Column>
                     </Row>
@@ -155,7 +118,7 @@ class GraphEditor extends Component {
                             <GraphBuilderWrapped
                                 id={this.state.id}
                                 graph={this.state.graph}
-                                saveNodes={this.saveNodes}
+                                model={this.state.model}
                                 updateGraph={this.updateGraph}
                                 updateData={this.updateData}
                             />

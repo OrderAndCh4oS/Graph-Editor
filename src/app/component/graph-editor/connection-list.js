@@ -18,7 +18,7 @@ class ConnectionList extends Component {
             graph.calculateEquations();
         }
 
-        this.props.updateGraph(graph);
+        this.props.updateData(graph);
     };
 
     displayConnections() {
