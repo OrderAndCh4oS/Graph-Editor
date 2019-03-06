@@ -190,7 +190,7 @@ class GraphBuilder extends Component {
     }
 }
 
+GraphBuilder.contextType = AuthContext;
 const GraphBuilderWrapped = withRouter(withMessage(GraphBuilder));
-GraphBuilderWrapped.WrappedComponent.contextType = AuthContext;
 
 export default GraphBuilderWrapped;

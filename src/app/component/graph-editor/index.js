@@ -71,9 +71,7 @@ class GraphEditor extends Component {
 
     updateData = (graph) => {
         const data = transformGraphToGraphView(graph);
-        if(this.state.data.hash !== data.hash) {
-            this.setState({graph, data});
-        }
+        this.setState({graph, data});
     };
 
     createGraphFromJson = (data) => {

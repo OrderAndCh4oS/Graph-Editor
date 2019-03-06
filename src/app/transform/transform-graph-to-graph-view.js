@@ -11,7 +11,7 @@ const transformGraphToGraphView = (graph) => {
         };
     };
     for(const edge of graph.edges) {
-        nodesAndConnections += edge.node.uuid + edge.node.value;
+        nodesAndConnections += edge.node.uuid;
         data.nodes.push({
             id: edge.node.uuid,
             label: edge.node.id || '',

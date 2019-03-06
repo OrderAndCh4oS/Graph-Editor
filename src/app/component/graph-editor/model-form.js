@@ -105,7 +105,6 @@ class ModelForm extends Component {
     }
 
     updateFieldErrors(result, prevState) {
-        console.log(result);
         return result.errors.reduce((obj, error) => ({
             ...obj,
             [error.field]: {
