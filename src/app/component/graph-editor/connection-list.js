@@ -2,11 +2,10 @@ import React, { Component } from 'react';
 import { Scrollbars } from 'react-custom-scrollbars';
 import ConnectionView from './connection-view';
 import cleanValue from '../../utility/clean-value';
-import { debounce } from 'lodash';
 
 class ConnectionList extends Component {
 
-    updateNodeValue = debounce((uuid, value) => {
+    updateNodeValue = (uuid, value) => {
         const {graph} = this.props;
 
         const node = graph.getNodeByUuid(uuid);
@@ -20,7 +19,7 @@ class ConnectionList extends Component {
         }
 
         this.props.updateData(graph);
-    }, 180);
+    };
 
     displayConnections() {
         const {graph} = this.props;

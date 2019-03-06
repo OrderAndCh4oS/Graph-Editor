@@ -28,12 +28,11 @@ class GraphView extends Component {
         const {data} = this.props;
         return (
             <div className={'graph-view panel'}>
-                {data.nodes.length ? <Graph
+                <Graph
                     key={data.hash}
-                    id="graph-id"
-                    className={'graph-visual'} data={data}
+                    id="graph-id" className={'graph-visual'} data={data}
                     config={myConfig}
-                /> : null}
+                />
             </div>
         );
     }

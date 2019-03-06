@@ -1,6 +1,5 @@
 import React, { Component, Fragment } from 'react';
 
-import GraphView from './graph-view';
 import ConnectionList from './connection-list';
 import GraphBuilderWrapped from './graph-builder';
 import Digraph from '../../graph/digraph';
@@ -10,10 +9,11 @@ import TransformJsonToGraph from '../../transform/transform-json-to-graph';
 import ResponseType from '../../api/response-type';
 import CsvRow from '../csv/csv-row';
 import SaveGraphRow from './save-graph-row';
-import transformGraphToGraphView
-    from '../../transform/transform-graph-to-graph-view';
 import withMessage from '../../context/message/with-message';
 import { AuthContext } from '../../authentication';
+import transformGraphToGraphViewVis
+    from '../../transform/transform-graph-to-graph-view-vis';
+import GraphViewVis from './graph-view-vis';
 
 class GraphEditor extends Component {
     constructor(props) {
@@ -27,8 +27,7 @@ class GraphEditor extends Component {
             graph: new Digraph(),
             data: {
                 nodes: [],
-                links: [],
-                hash: false,
+                edges: [],
             },
             activeNode: null,
         };
@@ -70,7 +69,7 @@ class GraphEditor extends Component {
     };
 
     updateData = (graph) => {
-        const data = transformGraphToGraphView(graph);
+        const data = transformGraphToGraphViewVis(graph);
         this.setState({graph, data});
     };
 
@@ -101,7 +100,7 @@ class GraphEditor extends Component {
                     />
                     <Row>
                         <Column span={9} mSpan={8} sSpan={6}>
-                            <GraphView data={this.state.data}/>
+                            <GraphViewVis data={this.state.data}/>
                         </Column>
                         <Column span={3} mSpan={4} sSpan={6}>
                             <ConnectionList
