@@ -6,8 +6,15 @@ class GraphViewVis extends Component {
         layout: {
             hierarchical: false,
         },
+        nodes: {
+            mass: 1.2,
+            shape: 'box',
+            fontColor: 'white',
+            fontFace: 'Tahoma',
+        },
         edges: {
             color: '#000000',
+            arrowScaleFactor: 1.4,
         },
         height: '500px',
     };
