@@ -1,10 +1,11 @@
 import prettifyValue from '../utility/prettify-value';
 
-// function fontColor(color) {
-//     const hexNumber = parseInt(color.substr(1), 16);
-//     const midHexValue = (255*255*255) / 2;
-//     return parseInt(hexNumber > midHexValue ? 'black' : 'white');
-// }
+function fontColor(color) {
+    const hexNumber = parseInt(color.substr(1), 16);
+    const midHexValue = (255 * 255 * 255) / 2;
+    console.log(hexNumber > midHexValue ? '#222' : '#ddd');
+    return parseInt(hexNumber > midHexValue ? '#222' : '#ddd');
+}
 
 const transformGraphToGraphViewVis = (graph) => {
     const data = {nodes: [], edges: []};
@@ -24,16 +25,12 @@ const transformGraphToGraphViewVis = (graph) => {
                 edge.node.suffix,
             )}`) || '',
             title: edge.node.title || '',
-            fontColor: 'white',
-            fontFace: 'Tahoma',
+            font: {
+                color: fontColor(edge.node.color),
+            },
             color: {
                 background: edge.node.color,
                 border: edge.node.color,
-                highlight: {
-                    background: '#a9daac',
-                    border: '#a9daac',
-                },
-
             },
         });
         data.edges = [

@@ -93,6 +93,13 @@ class ModelForm extends Component {
                     ...this.updateFieldErrors(result, prevState),
                 }));
                 break;
+            case ResponseType.UNAUTHORIZED:
+                this.props.setMessage(
+                    result.message,
+                    MessageType.ERROR,
+                );
+                this.props.showMessage();
+                break;
             case ResponseType.AUTHENTICATION_FAILURE:
                 // Todo: find a better way to handle logout on auth failure
                 this.context.logout();

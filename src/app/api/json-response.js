@@ -44,7 +44,7 @@ export default class JsonResponse {
     handleUnauthorised = response => response.json()
         .then(json => ({
             type: ResponseType.UNAUTHORIZED,
-            message: json,
+            message: json.message,
         }));
 
     handleNotFound = response => response.json()

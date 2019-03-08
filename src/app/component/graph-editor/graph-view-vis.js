@@ -6,17 +6,43 @@ class GraphViewVis extends Component {
         layout: {
             hierarchical: false,
         },
+        physics: {
+            enabled: true,
+            barnesHut: {
+                gravitationalConstant: -1700,
+                centralGravity: 0.2,
+                springLength: 110,
+                springConstant: 0.08,
+                damping: 0.08,
+                avoidOverlap: 0.1,
+            },
+            maxVelocity: 50,
+            minVelocity: 0.1,
+            solver: 'barnseHut',
+            timestep: 0.5,
+            adaptiveTimestep: true,
+        },
         nodes: {
-            mass: 1.2,
-            shape: 'box',
-            fontColor: 'white',
-            fontFace: 'Tahoma',
+            mass: 1.8,
+            shape: 'dot',
+            size: 9,
+            font: {
+                face: 'verdana',
+                size: 14,
+                strokeWidth: 2,
+                strokeColor: '#efefef',
+            },
+            color: {
+                highlight: {
+                    background: '#a9daac',
+                    border: '#a9daac',
+                },
+            },
         },
         edges: {
-            color: '#000000',
-            arrowScaleFactor: 1.4,
+            color: 'green',
         },
-        height: '500px',
+        height: '640px',
     };
 
     render() {
