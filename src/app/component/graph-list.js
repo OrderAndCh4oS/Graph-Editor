@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Container, Row } from '../elements/structure';
+import { Column, Container, Row } from '../elements/structure';
 import { Title } from '../elements/typography';
 import { Link } from 'react-router-dom';
 import { getModel } from '../../api';
@@ -21,7 +21,9 @@ class GraphList extends Component {
         return (
             <Container>
                 <Row>
-                    <Title>Model List</Title>
+                    <Column>
+                        <Title>Model List</Title>
+                    </Column>
                 </Row>
                 <Row>
                     <ul>
