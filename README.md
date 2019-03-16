@@ -8,4 +8,4 @@ install with `npm run install` or `yarn install`
 
 run with `npm run start` or `yarn start`
 
-Demo: https://devtwo.orderandchaoscreative.com
+Site: https://grapheditor.orderandchaoscreative.com
