@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import { Container, Row } from '../elements/structure';
 import { Title } from '../elements/typography';
 import { Link } from 'react-router-dom';
-import { getModel } from '../../api';
-import request from '../../api/request';
+import { getModel } from '../api';
+import ResponseType from '../api/response-type';
 
 class GraphList extends Component {
 
@@ -13,8 +13,20 @@ class GraphList extends Component {
     };
 
     componentDidMount() {
-        request(getModel)
-            .then(({rows, count}) => this.setState({models: rows, count}));
+        getModel().then((result) => {
+            switch(result.type) {
+                case ResponseType.SUCCESS:
+                    this.setState({
+                        models: result.data.rows,
+                        count: result.data.count,
+                    });
+                    break;
+                default:
+                    // Todo: handle error messages
+                    console.log(result);
+            }
+
+        });
     }
 
     render() {

@@ -1,8 +1,7 @@
 /* eslint no-eval: 0 */
 import EquationNode from './equation-node';
 import Edge from './edge';
-import SeedNode from './seed-node';
-import extractIdsFromString from '../utility/extractIdsFromText';
+import extractIdsFromString from '../utility/extract-ids-from-text';
 
 // Todo: handle catching the errors thrown in Digraphs methods
 
@@ -11,16 +10,6 @@ export default class Digraph {
     _hydrated = false;
     _nodesWithEquationData = [];
     _orderedNodeEquation = [];
-
-    clone(otherGraph) {
-        for (const edge of otherGraph.edges) {
-            const node = edge instanceof SeedNode
-            ? new SeedNode(edge.node)
-            : new EquationNode(edge.node);
-            node.uuid = edge.node.uuid;
-            this.addNode(node)
-        }
-    }
 
     addNode(node) {
         if(this.edges.includes(node)) {
@@ -77,8 +66,8 @@ export default class Digraph {
                 return n.node;
             }
         }
-
-        throw Error('This is no node with this ID in the graph: ' + id);
+        // Todo: catch error after invalid id is typed in equation
+        throw Error('There is no node with this ID in the graph: ' + id);
     }
 
     getNodeByUuid(uuid) {
@@ -109,7 +98,6 @@ export default class Digraph {
                 edges.push(this.getNodeById(id));
             }
             this._nodesWithEquationData.push({node, edges});
-            console.log(this._nodesWithEquationData);
         }
     }
 
