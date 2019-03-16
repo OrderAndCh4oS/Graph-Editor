@@ -27,6 +27,15 @@ export default class EditSeedNodePanel extends Component {
                                     )}
                                 />
                                 <EditNodeInput
+                                    label={'Prefix'}
+                                    value={node.prefix}
+                                    handleOnChange={e => this.updateValue(
+                                        'prefix',
+                                        e.target.value,
+                                    )}
+                                    className={'node-input--narrow'}
+                                />
+                                <EditNodeInput
                                     label={'Value'}
                                     value={node.value}
                                     type='number'
@@ -64,15 +73,6 @@ export default class EditSeedNodePanel extends Component {
                                     type='number'
                                     handleOnChange={e => this.updateValue(
                                         'step',
-                                        e.target.value,
-                                    )}
-                                    className={'node-input--narrow'}
-                                />
-                                <EditNodeInput
-                                    label={'Prefix'}
-                                    value={node.prefix}
-                                    handleOnChange={e => this.updateValue(
-                                        'prefix',
                                         e.target.value,
                                     )}
                                     className={'node-input--narrow'}
