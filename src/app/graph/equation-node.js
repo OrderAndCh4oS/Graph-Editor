@@ -7,8 +7,9 @@ export default class EquationNode extends Node {
             const {equn, ...rest} = nodeData;
             super(rest);
             this._equn = equn;
+        } else {
+            super();
         }
-        super();
     }
 
     get equn() {

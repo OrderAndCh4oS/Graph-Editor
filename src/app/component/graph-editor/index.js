@@ -1,27 +1,29 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 
-import GraphView from './graph-view';
 import ConnectionList from './connection-list';
-import GraphBuilder from './graph-builder';
-import EquationNode from '../../graph/equation-node';
-import SeedNode from '../../graph/seed-node';
-import Edge from '../../graph/edge';
-import cleanValue from '../../utility/clean-value';
-import CsvImport from '../csv/csv-import';
-import CsvExport from '../csv/csv-export';
+import GraphBuilderWrapped from './graph-builder';
 import Digraph from '../../graph/digraph';
-import transformCsvImportToGraphData
-    from '../../transform/transform-csv-import-to-graph-data';
-import transformGraphToCsvExport
-    from '../../transform/transform-graph-to-csv-export';
 import { Column, Container, Row } from '../../elements/structure';
-import { getNodes } from '../../../api';
-import request from '../../../api/request';
+import { getModel } from '../../api';
+import TransformJsonToGraph from '../../transform/transform-json-to-graph';
+import ResponseType from '../../api/response-type';
+import CsvRow from '../csv/csv-row';
+import SaveGraphRow from './save-graph-row';
+import withMessage from '../../context/message/with-message';
+import { AuthContext } from '../../authentication';
+import transformGraphToGraphViewVis
+    from '../../transform/transform-graph-to-graph-view-vis';
+import GraphViewVis from './graph-view-vis';
 
 class GraphEditor extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            model: {
+                id: null,
+                title: '',
+                description: '',
+            },
             graph: new Digraph(),
             data: {
                 nodes: [],
@@ -34,190 +36,98 @@ class GraphEditor extends Component {
     componentDidMount() {
         const {match} = this.props;
         if(match.params.hasOwnProperty('id') && match.params.id) {
-            request(getNodes, match.params)
-                .then(({rows, count}) => this.createGraphFromJson(rows));
+            this.setState({model: {id: match.params.id}});
+            getModel({scope: 'withNodes', id: match.params.id})
+                .then((result) => {
+                    switch(result.type) {
+                        case ResponseType.SUCCESS:
+                            const model = result.data;
+                            this.setState({
+                                model: {
+                                    id: model.id,
+                                    title: model.title,
+                                    description: model.description,
+                                },
+                            });
+                            this.createGraphFromJson(model.nodes);
+                            break;
+                        default:
+                            console.log('Unhandled error');
+                    }
+
+                    },
+                );
         }
     }
 
-    buildGraph = () => {
-        const graph = this.state.graph;
-
-        this.addEdges(graph);
-        graph.populateNodesWithEquationData();
-        graph.calculateEquations();
-
-        this.updateState(graph);
+    updateModel = (model) => {
+        this.setState({model});
     };
 
-    addEdges = (graph) => {
-        for(let node of graph.edges) {
-            if(node.node instanceof EquationNode) {
-                try {
-                    graph.addEdges(this.generateEdges(node.node));
-                } catch(e) {
-                    alert(e.message);
-                }
-            }
-        }
-    };
-
-    addNode = (node) => {
-        const graph = this.state.graph;
-        try {
-            graph.addNode(node);
-        } catch(e) {
-            alert(e.message);
-        }
-        this.updateState(graph);
-    };
-
-    removeNode = (uuid) => () => {
-        const graph = this.state.graph;
-        graph.removeNodeWithUuid(uuid);
-        this.updateState(graph);
-    };
-
-    updateNodeValue = (uuid, value) => {
-        const graph = this.state.graph;
-
-        const node = graph.getNodeByUuid(uuid);
-        value = cleanValue(value);
-        if(isNaN(value)) {
-            return;
-        }
-        node.value = value === 0 ? 0 : value / node.conv;
-        if(!isNaN(node.value)) {
-            graph.calculateEquations();
-        }
-
-        this.updateState(graph);
-    };
-
-    updateState = (graph) => {
-        // Todo: see if transform can be moved to graph view only
+    updateGraph = (graph) => {
         this.setState({graph});
     };
 
-    displayActiveNodeData = (edge) => {
-        this.setState({activeNode: edge.node});
-    };
-
-    updateNodeKey = (uuid) => (key, value) => {
-        const graph = this.state.graph;
-        const node = graph.getNodeByUuid(uuid);
-        node[key] = value;
-        this.updateState(graph);
+    updateData = (graph) => {
+        const data = transformGraphToGraphViewVis(graph);
+        this.setState({graph, data});
     };
 
     createGraphFromJson = (data) => {
-        const graph = this.processGraphData(data);
-
-        graph.populateNodesWithEquationData();
-        graph.calculateEquations();
-
-        this.updateState(graph);
+        const graph = (new TransformJsonToGraph()).process(data);
+        try {
+            graph.populateNodesWithEquationData();
+            graph.calculateEquations();
+        } catch(e) {
+            this.props.setMessage('Error Creating Graph: ' + e.message);
+            this.props.showMessage();
+        }
+        this.updateData(graph);
     };
 
-    processGraphData(data) {
-        return this.processEdges(this.processNodes(data));
-    }
-
-    processNodes(data) {
-        const graph = new Digraph();
-
-        let edges = [];
-        for(let nodeData of data) {
-            const node = this.createNode(nodeData);
-            if(node instanceof EquationNode) {
-                edges = [...edges, ...this.generateEdges(node)];
-            }
-            graph.addNode(node);
-        }
-        return {graph, edges};
-    }
-
-    createNode(nodeData) {
-        if(nodeData.equn) {
-            return new EquationNode(nodeData);
-        } else {
-            return new SeedNode(nodeData);
-        }
-    }
-
-    * generateEdges(node) {
-        const joins = node.equn.match(/{(.*?)}/g);
-        for(let join of joins) {
-            const id = join.replace(/^[{]|[}]+$/g, '');
-            yield [id, node.id];
-        }
-    }
-
-    processEdges({edges, graph}) {
-        for(let edge of edges) {
-            graph.addEdge(
-                new Edge(
-                    graph.getNodeById(edge[0]),
-                    graph.getNodeById(edge[1]),
-                ),
-            );
-        }
-        return graph;
-    }
-
     render() {
+        const {message} = this.props;
         return (
-            <Container>
-                <Row>
-                    <Column span={3}>
-                        <CsvImport
-                            complete={this.createGraphFromJson}
-                            transform={transformCsvImportToGraphData}
-                        />
-                    </Column>
-                    <Column span={3}>
-                        <CsvExport
-                            data={this.state.graph}
-                            transform={transformGraphToCsvExport}
-                        />
-                    </Column>
-                </Row>
-                <Row>
-                    <Column span={9} mSpan={8} sSpan={6}>
-                        <GraphView
-                            graph={this.state.graph}
-                            displayActiveNodeData={this.displayActiveNodeData}
-                        />
-                    </Column>
-                    <Column span={3} mSpan={4} sSpan={6}>
-                        <ConnectionList
-                            graph={this.state.graph}
-                            updateNodeValue={this.updateNodeValue}
-                        />
-                    </Column>
-                </Row>
-                <Row>
-                    <Column>
-                        <p className={'font-minus-one no-padding'}>
-                            {this.state.activeNode
-                                ? this.state.activeNode.title
-                                : 'No node highlighted.'}
-                        </p>
-                    </Column>
-                </Row>
-                <Row>
-                    <Column>
-                        <GraphBuilder
-                            graph={this.state.graph}
-                            buildGraph={this.buildGraph}
-                            addNode={this.addNode}
-                            removeNode={this.removeNode}
-                            updateNodeKey={this.updateNodeKey}
-                        />
-                    </Column>
-                </Row>
-            </Container>
+            <Fragment>
+                {message()}
+                <Container>
+                    <CsvRow
+                        graph={this.state.graph}
+                        createGraphFromJson={this.createGraphFromJson}
+                    />
+                    <SaveGraphRow
+                        model={this.state.model} updateModel={this.updateModel}
+                    />
+                    <Row>
+                        <Column span={9} mSpan={8} sSpan={6}>
+                            <GraphViewVis data={this.state.data}/>
+                        </Column>
+                        <Column span={3} mSpan={4} sSpan={6}>
+                            <ConnectionList
+                                graph={this.state.graph}
+                                updateGraph={this.updateGraph}
+                                updateData={this.updateData}
+                            />
+                        </Column>
+                    </Row>
+                    <Row>
+                        <Column>
+                            <GraphBuilderWrapped
+                                id={this.state.id}
+                                graph={this.state.graph}
+                                model={this.state.model}
+                                updateGraph={this.updateGraph}
+                                updateData={this.updateData}
+                            />
+                        </Column>
+                    </Row>
+                </Container>
+            </Fragment>
         );
     }
 }
+
+GraphEditor.contextType = AuthContext;
+GraphEditor = withMessage(GraphEditor);
 
 export default GraphEditor;

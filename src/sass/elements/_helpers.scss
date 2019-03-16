@@ -7,6 +7,14 @@
   color: $accent;
 }
 
+.valid-color {
+  color: $valid-color;
+}
+
+.error-color {
+  color: $error-color;
+}
+
 .relative {
   position: relative;
 }
@@ -48,7 +56,7 @@
 }
 
 .half-gutter-padding-bottom {
-  padding-right: $half-column-gutter;
+  padding-bottom: $half-column-gutter;
 }
 
 .gutter-padding {
@@ -68,7 +76,7 @@
 }
 
 .gutter-padding-bottom {
-  padding-right: $column-gutter;
+  padding-bottom: $column-gutter;
 }
 
 .half-gutter-margin {
@@ -88,7 +96,7 @@
 }
 
 .half-gutter-margin-bottom {
-  margin-right: $half-column-gutter;
+  margin-bottom: $half-column-gutter;
 }
 
 .gutter-margin {
@@ -108,7 +116,7 @@
 }
 
 .gutter-margin-bottom {
-  margin-right: $column-gutter;
+  margin-bottom: $column-gutter;
 }
 
 .align-right {

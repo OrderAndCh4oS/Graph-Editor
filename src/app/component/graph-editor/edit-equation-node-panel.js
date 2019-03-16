@@ -27,6 +27,15 @@ export default class EditEquationNodePanel extends Component {
                                     )}
                                 />
                                 <EditNodeInput
+                                    label={'Prefix'}
+                                    value={node.prefix}
+                                    handleOnChange={e => this.updateValue(
+                                        'prefix',
+                                        e.target.value,
+                                    )}
+                                    className={'node-input--narrow'}
+                                />
+                                <EditNodeInput
                                     label={'Equation'}
                                     value={node.equn}
                                     handleOnChange={e =>
@@ -36,15 +45,6 @@ export default class EditEquationNodePanel extends Component {
                                         )
                                     }
                                     className={'node-input--grow'}
-                                />
-                                <EditNodeInput
-                                    label={'Prefix'}
-                                    value={node.prefix}
-                                    handleOnChange={e => this.updateValue(
-                                        'prefix',
-                                        e.target.value,
-                                    )}
-                                    className={'node-input--narrow'}
                                 />
                                 <EditNodeInput
                                     label={'Suffix'}

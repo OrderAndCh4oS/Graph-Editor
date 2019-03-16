@@ -1,0 +1,31 @@
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1000;
+  background-color: $modal-overlay-bk;
+}
+
+.modal {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.modal-header {
+  padding-bottom: $half-column-gutter;
+  margin-bottom: $half-column-gutter;
+  border-bottom: $border;
+}
+
+.modal-body {
+}
+
+.modal-footer {
+  margin-top: $half-column-gutter;
+  padding-top: $half-column-gutter;
+  border-top: $border;
+}
