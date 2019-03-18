@@ -121,6 +121,13 @@
   margin-top: 17px;
 }
 
+.selected-node {
+  font-size: $font-minus-one;
+  span {
+    font-style: $font-style;
+  }
+}
+
 @media #{$small-up} {
 
 }

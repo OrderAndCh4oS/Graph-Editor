@@ -15,6 +15,7 @@ import transformGraphToGraphViewVis
     from '../../transform/transform-graph-to-graph-view-vis';
 import GraphViewVis from './graph-view-vis';
 import getProperty from '../../utility/get-property';
+import EquationNode from '../../graph/equation-node';
 
 // ToDo: Reset Graph Button
 // ToDo: Clone Graph Button
@@ -34,7 +35,8 @@ class GraphEditor extends Component {
                 nodes: [],
                 edges: [],
             },
-            clearedNodes: []
+            clearedNodes: [],
+            selectedEdge: null,
         };
     }
 
@@ -73,8 +75,8 @@ class GraphEditor extends Component {
                 nodes: [],
                 edges: [],
             },
-            clearedNodes: prevState.graph.edges.map(edge => edge.node.uuid)
-        }))
+            clearedNodes: prevState.graph.edges.map(edge => edge.node.uuid),
+        }));
     };
 
     updateModel = (model) => {
@@ -113,12 +115,29 @@ class GraphEditor extends Component {
                         createGraphFromJson={this.createGraphFromJson}
                     />
                     <SaveGraphRow
-                        model={this.state.model}
-                        updateModel={this.updateModel}
+                        model={this.state.model} updateModel={this.updateModel}
                     />
                     <Row>
                         <Column span={9} mSpan={8} sSpan={6}>
-                            <GraphViewVis data={this.state.data}/>
+                            <GraphViewVis
+                                data={this.state.data}
+                                displaySelectedNode={this.displaySelectedNode}
+                            />
+                            <p className={'selected-node'}>
+                                <span>{
+                                    this.state.selectedEdge
+                                        ? this.state.selectedEdge.node.label
+                                        : 'No Node Selected'
+                                }</span>
+                                <br/>
+                                {
+                                    this.state.selectedEdge &&
+                                    this.state.selectedEdge.node instanceof
+                                    EquationNode
+                                        ? this.state.selectedEdge.node.equn
+                                        : null
+                                }
+                            </p>
                         </Column>
                         <Column span={3} mSpan={4} sSpan={6}>
                             <ConnectionList
@@ -144,6 +163,17 @@ class GraphEditor extends Component {
         );
     }
 
+    displaySelectedNode = (uuid) => {
+        this.setState(prevState => ({
+            selectedEdge: this.findNodeByUuid(prevState.graph, uuid),
+        }));
+    };
+
+    findNodeByUuid(graph, uuid) {
+        return graph.edges.find(edge => edge.node.uuid === uuid) || null;
+    }
+
+// Todo: move to component
     graphEditorRow = () =>
         <Row>
             <Column>

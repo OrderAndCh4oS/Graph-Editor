@@ -45,9 +45,14 @@ class GraphViewVis extends Component {
         height: '640px',
     };
 
+    events = {
+        click: ({nodes, edges}) => {
+            this.props.displaySelectedNode(nodes[0])
+        },
+    };
+
     render() {
         const {data} = this.props;
-        console.log('DATA: ', data);
         return (
             <div className={'graph-view panel'}>
                 <Graph
@@ -55,6 +60,7 @@ class GraphViewVis extends Component {
                     className={'graph-visual'}
                     options={this.options}
                     graph={data}
+                    events={this.events}
                 />
             </div>
         );
