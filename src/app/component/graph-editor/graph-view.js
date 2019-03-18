@@ -23,15 +23,26 @@ const myConfig = {
     },
 };
 
+const events = {
+    click: function(event) {
+        var { nodes, edges } = event;
+        console.log("Selected nodes:");
+        console.log(nodes);
+        console.log("Selected edges:");
+        console.log(edges);
+    }
+};
+
 class GraphView extends Component {
+
     render() {
         const {data} = this.props;
         return (
             <div className={'graph-view panel'}>
                 <Graph
-                    key={data.hash}
                     id="graph-id" className={'graph-visual'} data={data}
                     config={myConfig}
+                    events={events}
                 />
             </div>
         );

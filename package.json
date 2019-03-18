@@ -22,10 +22,9 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build && npm run copy-scripts",
+    "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "copy-scripts": "cp ~/WebstormProjects/markov-chain/src/.htaccess ~/WebstormProjects/markov-chain/build"
+    "eject": "react-scripts eject"
   },
   "eslintConfig": {
     "extends": "react-app"

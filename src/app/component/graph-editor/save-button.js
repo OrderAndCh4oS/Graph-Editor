@@ -2,13 +2,13 @@ import { Button } from '../../elements/button';
 import React from 'react';
 import { AuthConsumer } from '../../authentication';
 
-const SaveButton = ({handleSave}) =>
+const SaveButton = ({handleSave, isSaved}) =>
     <AuthConsumer>
         {({isAuth}) => isAuth
             ? <Button
                 type={'affirmative'} onClick={handleSave}
             >
-                Save Nodes
+                Save Nodes {isSaved ? '' : '*'}
             </Button>
             : null}
     </AuthConsumer>

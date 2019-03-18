@@ -31,7 +31,7 @@ class Login extends Component {
         ).then(result => {
             switch(result.type) {
                 case ResponseType.SUCCESS:
-                    login();
+                    login(result.data);
                     break;
                 case ResponseType.AUTHENTICATION_FAILURE:
                     this.props.setMessage('Invalid Credentials',

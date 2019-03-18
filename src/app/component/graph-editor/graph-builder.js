@@ -19,6 +19,10 @@ import getProperty from '../../utility/get-property';
 
 class GraphBuilder extends Component {
 
+    state = {
+        isSaved: true
+    };
+
     buildGraph = () => {
         const graph = this.props.graph;
         try {
@@ -33,6 +37,7 @@ class GraphBuilder extends Component {
 
     addNode = (node) => {
         const graph = this.props.graph;
+        this.setState({isSaved: false});
         try {
             graph.addNode(node);
         } catch(e) {
@@ -50,6 +55,7 @@ class GraphBuilder extends Component {
     };
 
     updateNodeByKey = (uuid) => (key, value) => {
+        this.setState({isSaved: false});
         const graph = this.props.graph;
         const node = graph.getNodeByUuid(uuid);
         node[key] = value;
@@ -57,7 +63,16 @@ class GraphBuilder extends Component {
     };
 
     saveNodes = () => {
-        const {graph, model} = this.props;
+        const {graph, model, clearedNodes} = this.props;
+        Promise.all(
+            clearedNodes.map(async uuid =>
+                await deleteNode({uuid}),
+            ),
+        ).then(results => {
+            results.map(
+                result => this.handleDeleteClearedNodeResponse(result),
+            );
+        });
         const data = transformGraphNodesToJson(graph);
         data.forEach(d => {
             postNode(d, {modelId: model.id})
@@ -65,6 +80,7 @@ class GraphBuilder extends Component {
                     switch(result.type) {
                         case ResponseType.SUCCESS:
                             // Todo: handle validation
+                            this.setState({isSaved: true});
                             this.props.setMessage(
                                 'Nodes saved',
                                 MessageType.SUCCESS);
@@ -93,23 +109,44 @@ class GraphBuilder extends Component {
     };
 
     removeNode = (uuid) => () => {
+        this.setState({isSaved: false});
         deleteNode({uuid}).then(result => {
-            switch(result.type) {
-                case ResponseType.SUCCESS:
-                    const graph = this.props.graph;
-                    graph.removeNodeWithUuid(uuid);
-                    this.props.updateData(graph);
-                    break;
-                case ResponseType.AUTHENTICATION_FAILURE:
-                    // Todo: find a better way to handle logout on auth failure
-                    this.context.logout();
-                    this.props.history.push('/login');
-                    break;
-                default:
-                    console.log('Unhandled error');
-            }
+            this.handleDeleteNodeResponse(result, uuid);
         });
     };
+
+    handleDeleteNodeResponse(result, uuid) {
+        switch(result.type) {
+            case ResponseType.SUCCESS:
+                this.setState({isSaved: true});
+                const graph = this.props.graph;
+                graph.removeNodeWithUuid(uuid);
+                this.props.updateData(graph);
+                break;
+            case ResponseType.AUTHENTICATION_FAILURE:
+                // Todo: find a better way to handle logout on auth failure
+                this.context.logout();
+                this.props.history.push('/login');
+                break;
+            default:
+                console.log('Unhandled error');
+        }
+    }
+
+    handleDeleteClearedNodeResponse(result) {
+        switch(result.type) {
+            case ResponseType.SUCCESS:
+                this.setState({isSaved: true});
+                break;
+            case ResponseType.AUTHENTICATION_FAILURE:
+                // Todo: find a better way to handle logout on auth failure
+                this.context.logout();
+                this.props.history.push('/login');
+                break;
+            default:
+                console.log('Unhandled error');
+        }
+    }
 
     makeSeedNode = () => {
         this.addNode(new SeedNode());
@@ -148,7 +185,7 @@ class GraphBuilder extends Component {
             Add nodes or import a csv to begin.</p>;
 
     render() {
-        const {model, message} = this.props;
+        const {model, message, reset} = this.props;
         return (
             <Fragment>
                 {message()}
@@ -168,9 +205,11 @@ class GraphBuilder extends Component {
                         {' '}
                         {getProperty(model.id) ? <SaveButton
                             handleSave={this.saveNodes}
+                            isSaved={this.state.isSaved}
                         /> : null}
                     </Column>
                     <Column span={6} sSpan={6} className={'align-right'}>
+                        {' '}
                         <Button
                             type={'affirmative'} onClick={this.buildGraph}
                         >
@@ -183,6 +222,18 @@ class GraphBuilder extends Component {
                         <Panel className={'graph-editor'}>
                             {this.displayEditNodePanels()}
                         </Panel>
+                    </Column>
+                </Row>
+                <Row>
+                    <Column className={'align-right'}>
+                        <Button
+                            type={'destructive'} onClick={() => {
+                                reset()
+                                this.setState({isSaved: false});
+                        }}
+                        >
+                            Clear Graph
+                        </Button>
                     </Column>
                 </Row>
             </Fragment>

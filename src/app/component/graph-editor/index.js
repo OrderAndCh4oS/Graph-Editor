@@ -14,22 +14,27 @@ import { AuthContext } from '../../authentication';
 import transformGraphToGraphViewVis
     from '../../transform/transform-graph-to-graph-view-vis';
 import GraphViewVis from './graph-view-vis';
+import getProperty from '../../utility/get-property';
 
+// ToDo: Reset Graph Button
+// ToDo: Clone Graph Button
 class GraphEditor extends Component {
     constructor(props) {
         super(props);
+        this.user = JSON.parse(localStorage.getItem('user')) || {};
         this.state = {
             model: {
                 id: null,
                 title: '',
                 description: '',
+                userId: null,
             },
             graph: new Digraph(),
             data: {
                 nodes: [],
                 edges: [],
             },
-            activeNode: null,
+            clearedNodes: []
         };
     }
 
@@ -39,26 +44,38 @@ class GraphEditor extends Component {
             this.setState({model: {id: match.params.id}});
             getModel({scope: 'withNodes', id: match.params.id})
                 .then((result) => {
-                    switch(result.type) {
-                        case ResponseType.SUCCESS:
-                            const model = result.data;
-                            this.setState({
-                                model: {
-                                    id: model.id,
-                                    title: model.title,
-                                    description: model.description,
-                                },
-                            });
-                            this.createGraphFromJson(model.nodes);
-                            break;
-                        default:
-                            console.log('Unhandled error');
-                    }
+                        switch(result.type) {
+                            case ResponseType.SUCCESS:
+                                const model = result.data;
+                                this.setState({
+                                    model: {
+                                        id: model.id,
+                                        title: model.title,
+                                        description: model.description,
+                                        userId: model.userId,
+                                    },
+                                });
+                                this.createGraphFromJson(model.nodes);
+                                break;
+                            default:
+                                console.log('Unhandled error');
+                        }
 
                     },
                 );
         }
     }
+
+    reset = () => {
+        this.setState(prevState => ({
+            graph: new Digraph(),
+            data: {
+                nodes: [],
+                edges: [],
+            },
+            clearedNodes: prevState.graph.edges.map(edge => edge.node.uuid)
+        }))
+    };
 
     updateModel = (model) => {
         this.setState({model});
@@ -96,7 +113,8 @@ class GraphEditor extends Component {
                         createGraphFromJson={this.createGraphFromJson}
                     />
                     <SaveGraphRow
-                        model={this.state.model} updateModel={this.updateModel}
+                        model={this.state.model}
+                        updateModel={this.updateModel}
                     />
                     <Row>
                         <Column span={9} mSpan={8} sSpan={6}>
@@ -110,21 +128,36 @@ class GraphEditor extends Component {
                             />
                         </Column>
                     </Row>
-                    <Row>
-                        <Column>
-                            <GraphBuilderWrapped
-                                id={this.state.id}
-                                graph={this.state.graph}
-                                model={this.state.model}
-                                updateGraph={this.updateGraph}
-                                updateData={this.updateData}
-                            />
-                        </Column>
-                    </Row>
+                    {this.showEditor() ? this.graphEditorRow() : null}
                 </Container>
             </Fragment>
         );
     }
+
+    showEditor() {
+        const userId = getProperty(this.user.id, null);
+        const modelUserId = this.state.model.userId;
+        return (
+            (userId && !modelUserId)
+            ||
+            (userId === modelUserId)
+        );
+    }
+
+    graphEditorRow = () =>
+        <Row>
+            <Column>
+                <GraphBuilderWrapped
+                    id={this.state.id}
+                    graph={this.state.graph}
+                    model={this.state.model}
+                    clearedNodes={this.state.clearedNodes}
+                    updateGraph={this.updateGraph}
+                    updateData={this.updateData}
+                    reset={this.reset}
+                />
+            </Column>
+        </Row>;
 }
 
 GraphEditor.contextType = AuthContext;

@@ -26,11 +26,11 @@ const transformGraphToGraphViewVis = (graph) => {
             )}`) || '',
             title: edge.node.title || '',
             font: {
-                color: fontColor(edge.node.color),
+                color: fontColor(edge.node.color || '#437396'),
             },
             color: {
-                background: edge.node.color,
-                border: edge.node.color,
+                background: edge.node.color || '#437396',
+                border: edge.node.color || '#437396',
             },
         });
         data.edges = [

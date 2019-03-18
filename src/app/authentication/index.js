@@ -15,15 +15,16 @@ class AuthProvider extends React.Component {
         }
     }
 
-    login = () => {
+    login = (user) => {
         this.setState({isAuth: true});
-        // Todo: store user data
+        localStorage.setItem('user', JSON.stringify(user));
         localStorage.setItem('authenticated', 'true');
     };
 
     logout = () => {
         this.setState({isAuth: false});
         localStorage.setItem('authenticated', 'false');
+        localStorage.removeItem('user');
     };
 
     render() {

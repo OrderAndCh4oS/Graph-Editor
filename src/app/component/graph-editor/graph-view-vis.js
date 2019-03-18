@@ -18,7 +18,7 @@ class GraphViewVis extends Component {
             },
             maxVelocity: 50,
             minVelocity: 0.1,
-            solver: 'barnseHut',
+            solver: 'barnesHut',
             timestep: 0.5,
             adaptiveTimestep: true,
         },
