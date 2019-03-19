@@ -16,6 +16,8 @@ import transformGraphToGraphViewVis
 import GraphViewVis from './graph-view-vis';
 import getProperty from '../../utility/get-property';
 import EquationNode from '../../graph/equation-node';
+import MarkdownEditor from '../markdown-editor/markdown-editor';
+import 'draft-js/dist/Draft.css';
 
 // ToDo: Reset Graph Button
 // ToDo: Clone Graph Button
@@ -148,6 +150,11 @@ class GraphEditor extends Component {
                         </Column>
                     </Row>
                     {this.showEditor() ? this.graphEditorRow() : null}
+                    <Row>
+                        <Column>
+                            <MarkdownEditor/>
+                        </Column>
+                    </Row>
                 </Container>
             </Fragment>
         );
