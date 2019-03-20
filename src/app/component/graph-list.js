@@ -38,12 +38,12 @@ class GraphList extends Component {
                     </Column>
                 </Row>
                 <Row>
-                    <ul>
+                    <ul className={'graph-list'}>
                         {
                             this.state.models.map(model =>
-                                <li>
+                                <li className={'graph-list-item'}>
                                     <Link to={'/graph-editor/' + model.id}>
-                                        {model.title}
+                                        {model.title}<br/><em>{model.description}</em>
                                     </Link>
                                 </li>,
                             )

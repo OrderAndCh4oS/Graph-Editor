@@ -22,6 +22,7 @@ import MarkdownViewer from '../markdown/markdown-viewer';
 import { stateToMarkdown } from 'draft-js-export-markdown';
 import { convertFromRaw, EditorState } from 'draft-js';
 import { Button } from '../../elements/button';
+import MessageType from '../../context/message/message-type';
 
 // ToDo: Reset Graph Button
 // ToDo: Clone Graph Button
@@ -117,6 +118,109 @@ class GraphEditor extends Component {
         this.updateData(graph);
     };
 
+    saveMarkdown = (draftRaw) => {
+        const serializedDraft = JSON.stringify(draftRaw);
+        putModel({fullText: serializedDraft}, {id: this.state.model.id})
+            .then((result) => {
+                    switch(result.type) {
+                        case ResponseType.SUCCESS:
+                            const model = result.data;
+                            this.setState(prevState => ({
+                                model: {
+                                    ...prevState.model,
+                                    fullText: model.fullText,
+                                },
+                                editorState: this.getEditorStateFromRaw(
+                                    model.fullText),
+                            }));
+                            this.props.setMessage(
+                                'Full text saved',
+                                MessageType.SUCCESS);
+                            this.props.showMessage();
+                            break;
+                        default:
+                            console.log('Unhandled error');
+                    }
+                },
+            );
+    };
+
+    markdownEditorRow = () =>
+        <Row>
+            <Column>
+                <MarkdownEditor
+                    editorState={this.state.editorState}
+                    updateEditorState={this.updateEditorState}
+                    save={this.saveMarkdown}
+                />
+            </Column>
+        </Row>;
+
+    showEditor = () => {
+        const userId = getProperty(this.user.id, null);
+        const modelUserId = this.state.model.userId;
+        return (userId !== null && userId === modelUserId) ||
+            !this.state.model.id;
+    };
+
+    parseDraftMarkdown = () => {
+        try {
+            return stateToMarkdown(
+                convertFromRaw(JSON.parse(this.state.model.fullText)));
+        } catch(e) {
+            return '';
+        }
+    };
+
+    getEditorStateFromRaw = (fullText) => {
+        try {
+            const contentState = convertFromRaw(JSON.parse(fullText));
+            return EditorState.createWithContent(contentState);
+        } catch(e) {
+            return EditorState.createEmpty();
+        }
+    };
+
+    displaySelectedNode = (uuid) => {
+        this.setState(prevState => ({
+            selectedEdge: this.findNodeByUuid(prevState.graph, uuid),
+        }));
+    };
+
+    findNodeByUuid(graph, uuid) {
+        return graph.edges.find(edge => edge.node.uuid === uuid) || null;
+    }
+
+    // Todo: move to component
+    graphEditorRow = () =>
+        <Row>
+            <Column>
+                <GraphBuilderWrapped
+                    id={this.state.id}
+                    graph={this.state.graph}
+                    model={this.state.model}
+                    clearedNodes={this.state.clearedNodes}
+                    updateGraph={this.updateGraph}
+                    updateData={this.updateData}
+                    reset={this.reset}
+                />
+            </Column>
+        </Row>;
+
+    updateEditorState = (editorState) => {
+        this.setState({editorState});
+    };
+
+    showPreview() {
+        return this.state.showMarkdownPreview;
+    }
+
+    togglePreview = () => {
+        this.setState(
+            prevState => ({showMarkdownPreview: !prevState.showMarkdownPreview}),
+        );
+    };
+
     render() {
         const {message} = this.props;
         return (
@@ -162,14 +266,15 @@ class GraphEditor extends Component {
                     </Row>
                     {this.showEditor() ? this.graphEditorRow() : null}
                     {
-                        this.showEditor() && !this.showPreview()
+                        this.showEditor() && !this.showPreview() &&
+                        this.state.model.id
                             ? this.markdownEditorRow()
                             : <MarkdownViewer
                                 markdown={this.parseDraftMarkdown()}
                             />
                     }
                     {
-                        this.showEditor()
+                        this.showEditor() && this.state.model.id
                             ? <Row>
                                 <Column>
                                     <Button
@@ -183,104 +288,6 @@ class GraphEditor extends Component {
             </Fragment>
         );
     }
-
-    saveMarkdown = (draftRaw) => {
-        const serializedDraft = JSON.stringify(draftRaw);
-        putModel({fullText: serializedDraft}, {id: this.state.model.id})
-            .then((result) => {
-                    switch(result.type) {
-                        case ResponseType.SUCCESS:
-                            const model = result.data;
-                            this.setState(prevState => ({
-                                model: {
-                                    ...prevState.model,
-                                    fullText: model.fullText,
-                                },
-                                editorState: this.getEditorStateFromRaw(
-                                    model.fullText),
-                            }));
-                            break;
-                        default:
-                            console.log('Unhandled error');
-                    }
-                },
-            );
-    };
-
-    markdownEditorRow = () =>
-        <Row>
-            <Column>
-                <MarkdownEditor
-                    editorState={this.state.editorState}
-                    updateEditorState={this.updateEditorState}
-                    save={this.saveMarkdown}
-                />
-            </Column>
-        </Row>;
-
-    showEditor() {
-        const userId = getProperty(this.user.id, null);
-        const modelUserId = this.state.model.userId;
-        return userId !== null && userId === modelUserId;
-    }
-
-    parseDraftMarkdown = () => {
-        try {
-            return stateToMarkdown(
-                convertFromRaw(JSON.parse(this.state.model.fullText)));
-        } catch(e) {
-            return '';
-        }
-    };
-
-    getEditorStateFromRaw = (fullText) => {
-        try {
-            const contentState = convertFromRaw(JSON.parse(fullText));
-            return EditorState.createWithContent(contentState);
-        } catch(e) {
-            return EditorState.createEmpty();
-        }
-    };
-
-    displaySelectedNode = (uuid) => {
-        this.setState(prevState => ({
-            selectedEdge: this.findNodeByUuid(prevState.graph, uuid),
-        }));
-    };
-
-    findNodeByUuid(graph, uuid) {
-        return graph.edges.find(edge => edge.node.uuid === uuid) || null;
-    }
-
-// Todo: move to component
-    graphEditorRow = () =>
-        <Row>
-            <Column>
-                <GraphBuilderWrapped
-                    id={this.state.id}
-                    graph={this.state.graph}
-                    model={this.state.model}
-                    clearedNodes={this.state.clearedNodes}
-                    updateGraph={this.updateGraph}
-                    updateData={this.updateData}
-                    reset={this.reset}
-                />
-            </Column>
-        </Row>;
-
-    showPreview() {
-        return this.state.showMarkdownPreview;
-    }
-
-    togglePreview = () => {
-        this.setState(
-            prevState => ({showMarkdownPreview: !prevState.showMarkdownPreview}),
-        );
-    };
-
-    updateEditorState = (editorState) => {
-        this.setState({editorState});
-    };
 }
 
 GraphEditor.contextType = AuthContext;

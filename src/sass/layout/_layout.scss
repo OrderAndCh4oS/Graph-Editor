@@ -128,6 +128,23 @@
   }
 }
 
+.graph-list {
+  list-style: none;
+}
+
+.graph-list-item {
+  padding-bottom: $half-column-gutter;
+  letter-spacing: 1px;
+  border-bottom: $border;
+  margin-bottom: $half-column-gutter;
+
+  em {
+    letter-spacing: normal;
+    text-transform: none;
+    padding-left: $column-gutter;
+  }
+}
+
 @media #{$small-up} {
 
 }
