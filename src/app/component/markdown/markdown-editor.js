@@ -1,21 +1,22 @@
 import React from 'react';
 import {
+    ContentState,
+    convertToRaw,
     Editor,
     EditorState,
-    RichUtils,
     getDefaultKeyBinding,
-    convertToRaw,
+    RichUtils,
 } from 'draft-js';
 import './markdown-editor.css';
 import { Button } from '../../elements/button';
 
 export default class MarkdownEditor extends React.Component {
+
     constructor(props) {
         super(props);
-        this.state = {editorState: EditorState.createEmpty()};
         this.focus = () => this.refs.editor.focus();
         this.onChange = (editorState) => {
-            this.setState({editorState});
+            this.props.updateEditorState(editorState);
         };
         this.handleKeyCommand = this._handleKeyCommand.bind(this);
         this.mapKeyToEditorCommand = this._mapKeyToEditorCommand.bind(this);
@@ -36,10 +37,10 @@ export default class MarkdownEditor extends React.Component {
         if(e.keyCode === 9 /* TAB */) {
             const newEditorState = RichUtils.onTab(
                 e,
-                this.state.editorState,
+                this.props.editorState,
                 4, /* maxDepth */
             );
-            if(newEditorState !== this.state.editorState) {
+            if(newEditorState !== this.props.editorState) {
                 this.onChange(newEditorState);
             }
             return;
@@ -50,7 +51,7 @@ export default class MarkdownEditor extends React.Component {
     _toggleBlockType(blockType) {
         this.onChange(
             RichUtils.toggleBlockType(
-                this.state.editorState,
+                this.props.editorState,
                 blockType,
             ),
         );
@@ -59,7 +60,7 @@ export default class MarkdownEditor extends React.Component {
     _toggleInlineStyle(inlineStyle) {
         this.onChange(
             RichUtils.toggleInlineStyle(
-                this.state.editorState,
+                this.props.editorState,
                 inlineStyle,
             ),
         );
@@ -67,11 +68,12 @@ export default class MarkdownEditor extends React.Component {
 
     _save = (raw) => {
         // Todo: Serialize and save to db.
-        console.log(raw);
+        this.props.save(convertToRaw(raw));
     };
 
     render() {
-        const {editorState} = this.state;
+        console.log(this.props);
+        const {editorState} = this.props;
         // If the user changes block type before entering any text, we can
         // either style the placeholder or hide it. Let's just hide it now.
         let className = 'RichEditor-editor';
@@ -106,14 +108,27 @@ export default class MarkdownEditor extends React.Component {
                         />
                     </div>
                 </div>
-                <div className={'half-gutter-padding-top'}>
+                <div className={'half-gutter-padding-top half-gutter-padding-bottom'}>
                     <Button
-                        onClick={() => this._save(convertToRaw(
-                            this.state.editorState.getCurrentContent()))}
+                        className='affirmative' onClick={() => this._save(
+                        this.props.editorState.getCurrentContent(),
+                    )}
                     >Save Text</Button>
                 </div>
             </div>
         );
+    }
+
+    getMarkdownFromJson() {
+        try {
+            const contentState = ContentState.createFromBlockArray(
+                JSON.parse(this.props.model.fullText));
+            const editorState = EditorState.createWithContent(contentState);
+            this.props.updateEditorState(editorState);
+        } catch(e) {
+            const editorState = EditorState.createEmpty();
+            this.props.updateEditorState(editorState);
+        }
     }
 }
 

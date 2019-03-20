@@ -4,7 +4,7 @@ import ConnectionList from './connection-list';
 import GraphBuilderWrapped from './graph-builder';
 import Digraph from '../../graph/digraph';
 import { Column, Container, Row } from '../../elements/structure';
-import { getModel } from '../../api';
+import { getModel, putModel } from '../../api';
 import TransformJsonToGraph from '../../transform/transform-json-to-graph';
 import ResponseType from '../../api/response-type';
 import CsvRow from '../csv/csv-row';
@@ -16,8 +16,12 @@ import transformGraphToGraphViewVis
 import GraphViewVis from './graph-view-vis';
 import getProperty from '../../utility/get-property';
 import EquationNode from '../../graph/equation-node';
-import MarkdownEditor from '../markdown-editor/markdown-editor';
+import MarkdownEditor from '../markdown/markdown-editor';
 import 'draft-js/dist/Draft.css';
+import MarkdownViewer from '../markdown/markdown-viewer';
+import { stateToMarkdown } from 'draft-js-export-markdown';
+import { convertFromRaw, EditorState } from 'draft-js';
+import { Button } from '../../elements/button';
 
 // ToDo: Reset Graph Button
 // ToDo: Clone Graph Button
@@ -30,6 +34,7 @@ class GraphEditor extends Component {
                 id: null,
                 title: '',
                 description: '',
+                fullText: '',
                 userId: null,
             },
             graph: new Digraph(),
@@ -39,6 +44,8 @@ class GraphEditor extends Component {
             },
             clearedNodes: [],
             selectedEdge: null,
+            showMarkdownPreview: false,
+            editorState: EditorState.createEmpty(),
         };
     }
 
@@ -56,8 +63,12 @@ class GraphEditor extends Component {
                                         id: model.id,
                                         title: model.title,
                                         description: model.description,
+                                        fullText: model.fullText,
                                         userId: model.userId,
                                     },
+                                    editorState: this.getEditorStateFromRaw(
+                                        model.fullText,
+                                    ),
                                 });
                                 this.createGraphFromJson(model.nodes);
                                 break;
@@ -150,25 +161,86 @@ class GraphEditor extends Component {
                         </Column>
                     </Row>
                     {this.showEditor() ? this.graphEditorRow() : null}
-                    <Row>
-                        <Column>
-                            <MarkdownEditor/>
-                        </Column>
-                    </Row>
+                    {
+                        this.showEditor() && !this.showPreview()
+                            ? this.markdownEditorRow()
+                            : <MarkdownViewer
+                                markdown={this.parseDraftMarkdown()}
+                            />
+                    }
+                    {
+                        this.showEditor()
+                            ? <Row>
+                                <Column>
+                                    <Button
+                                        onClick={this.togglePreview}
+                                    >Preview</Button>
+                                </Column>
+                            </Row>
+                            : null
+                    }
                 </Container>
             </Fragment>
         );
     }
 
+    saveMarkdown = (draftRaw) => {
+        const serializedDraft = JSON.stringify(draftRaw);
+        putModel({fullText: serializedDraft}, {id: this.state.model.id})
+            .then((result) => {
+                    switch(result.type) {
+                        case ResponseType.SUCCESS:
+                            const model = result.data;
+                            this.setState(prevState => ({
+                                model: {
+                                    ...prevState.model,
+                                    fullText: model.fullText,
+                                },
+                                editorState: this.getEditorStateFromRaw(
+                                    model.fullText),
+                            }));
+                            break;
+                        default:
+                            console.log('Unhandled error');
+                    }
+                },
+            );
+    };
+
+    markdownEditorRow = () =>
+        <Row>
+            <Column>
+                <MarkdownEditor
+                    editorState={this.state.editorState}
+                    updateEditorState={this.updateEditorState}
+                    save={this.saveMarkdown}
+                />
+            </Column>
+        </Row>;
+
     showEditor() {
         const userId = getProperty(this.user.id, null);
         const modelUserId = this.state.model.userId;
-        return (
-            (userId && !modelUserId)
-            ||
-            (userId === modelUserId)
-        );
+        return userId !== null && userId === modelUserId;
     }
+
+    parseDraftMarkdown = () => {
+        try {
+            return stateToMarkdown(
+                convertFromRaw(JSON.parse(this.state.model.fullText)));
+        } catch(e) {
+            return '';
+        }
+    };
+
+    getEditorStateFromRaw = (fullText) => {
+        try {
+            const contentState = convertFromRaw(JSON.parse(fullText));
+            return EditorState.createWithContent(contentState);
+        } catch(e) {
+            return EditorState.createEmpty();
+        }
+    };
 
     displaySelectedNode = (uuid) => {
         this.setState(prevState => ({
@@ -195,6 +267,20 @@ class GraphEditor extends Component {
                 />
             </Column>
         </Row>;
+
+    showPreview() {
+        return this.state.showMarkdownPreview;
+    }
+
+    togglePreview = () => {
+        this.setState(
+            prevState => ({showMarkdownPreview: !prevState.showMarkdownPreview}),
+        );
+    };
+
+    updateEditorState = (editorState) => {
+        this.setState({editorState});
+    };
 }
 
 GraphEditor.contextType = AuthContext;

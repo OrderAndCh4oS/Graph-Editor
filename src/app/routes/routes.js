@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react';
 import {
     BrowserRouter as Router,
-    Link,
+    NavLink,
     Redirect,
     Route,
 } from 'react-router-dom';
@@ -24,7 +24,12 @@ const AuthButton = () =>
                         type={'affirmative'} to="/login"
                     >Login</LinkButton>
                 </Fragment>
-                : <Button onClick={logout}>Logout</Button>
+                : <Button
+                    onClick={() => {
+                        logout();
+                        window.location = '/';
+                    }}
+                >Logout</Button>
         }
     </AuthConsumer>
 ;
@@ -36,12 +41,20 @@ const Routes = () =>
                 <Column>
                     <div className={'main-header'}>
                         <Row className={'border-bottom'}>
-                            <Column span={6}>
-                                <Link to="/">Model List</Link>
+                            <Column span={6} sSpan={7}>
+                                <NavLink to="/" exact activeClassName="active">Model
+                                                                               List</NavLink>
                                 {' | '}
-                                <Link to="/graph-editor">Model Editor</Link>
+                                <NavLink
+                                    to="/graph-editor"
+                                    activeClassName="active"
+                                >Graph Editor</NavLink>
                             </Column>
-                            <Column span={6} className={'align-right'}>
+                            <Column
+                                span={6}
+                                sSpan={5}
+                                className={'align-right'}
+                            >
                                 <AuthButton/>
                             </Column>
                         </Row>
