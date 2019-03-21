@@ -23,6 +23,7 @@ import { stateToMarkdown } from 'draft-js-export-markdown';
 import { convertFromRaw, EditorState } from 'draft-js';
 import { Button } from '../../elements/button';
 import MessageType from '../../context/message/message-type';
+import { Text, Title } from '../../elements/typography';
 
 // ToDo: Reset Graph Button
 // ToDo: Clone Graph Button
@@ -231,9 +232,17 @@ class GraphEditor extends Component {
                         graph={this.state.graph}
                         createGraphFromJson={this.createGraphFromJson}
                     />
-                    <SaveGraphRow
-                        model={this.state.model} updateModel={this.updateModel}
-                    />
+                    {this.showEditor()
+                        ? <SaveGraphRow
+                            model={this.state.model}
+                            updateModel={this.updateModel}
+                        />
+                        : <Row>
+                            <Column>
+                                <Title tag={'h2'}>{this.state.model.title}</Title>
+                                <Text>{this.state.model.description}</Text>
+                            </Column>
+                        </Row>}
                     <Row>
                         <Column span={9} mSpan={8} sSpan={6}>
                             <GraphViewVis
