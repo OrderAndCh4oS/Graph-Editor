@@ -16,6 +16,12 @@ class GraphViewVis extends Component {
                 damping: 0.08,
                 avoidOverlap: 0.1,
             },
+            stabilization: {
+                enabled: true,
+                iterations: 2000,
+                updateInterval: 100,
+                fit: true,
+            },
             maxVelocity: 50,
             minVelocity: 0.1,
             solver: 'barnesHut',

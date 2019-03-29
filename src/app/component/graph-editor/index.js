@@ -4,7 +4,7 @@ import ConnectionList from './connection-list';
 import GraphBuilderWrapped from './graph-builder';
 import Digraph from '../../graph/digraph';
 import { Column, Container, Row } from '../../elements/structure';
-import { getModel, putModel } from '../../api';
+import { getModel, postModel, postNode, putModel } from '../../api';
 import TransformJsonToGraph from '../../transform/transform-json-to-graph';
 import ResponseType from '../../api/response-type';
 import CsvRow from '../csv/csv-row';
@@ -24,9 +24,11 @@ import { convertFromRaw, EditorState } from 'draft-js';
 import { Button } from '../../elements/button';
 import MessageType from '../../context/message/message-type';
 import { Text, Title } from '../../elements/typography';
+import transformGraphNodesToJson
+    from '../../transform/transform-graph-nodes-to-json';
 
-// ToDo: Reset Graph Button
-// ToDo: Clone Graph Button
+const uuidv4 = require('uuid/v4');
+
 class GraphEditor extends Component {
     constructor(props) {
         super(props);
@@ -139,6 +141,11 @@ class GraphEditor extends Component {
                                 MessageType.SUCCESS);
                             this.props.showMessage();
                             break;
+                        case ResponseType.AUTHENTICATION_FAILURE:
+                            // Todo: find a better way to handle logout on auth failure
+                            this.context.logout();
+                            this.props.history.push('/login');
+                            break;
                         default:
                             console.log('Unhandled error');
                     }
@@ -162,6 +169,11 @@ class GraphEditor extends Component {
         const modelUserId = this.state.model.userId;
         return (userId !== null && userId === modelUserId) ||
             !this.state.model.id;
+    };
+
+    showClone = () => {
+        const userId = getProperty(this.user.id, null);
+        return userId !== null && this.state.model.id;
     };
 
     parseDraftMarkdown = () => {
@@ -222,6 +234,64 @@ class GraphEditor extends Component {
         );
     };
 
+    handleClone = () => {
+        const model = Object.assign({}, this.state.model);
+        delete model.id;
+        delete model.userId;
+        model.title = this.updateVersion(model.title);
+        postModel(model).then(result => {
+                switch(result.type) {
+                    case ResponseType.SUCCESS:
+                        this.props.setMessage(
+                            'Model cloned',
+                            MessageType.SUCCESS,
+                        );
+                        this.cloneNodes(result.data.id);
+                        this.props.showMessage();
+                        break;
+                    case ResponseType.AUTHENTICATION_FAILURE:
+                        // Todo: find a better way to handle logout on auth failure
+                        this.context.logout();
+                        this.props.history.push('/login');
+                        break;
+                    default:
+                        console.log('Unhandled error');
+                }
+            },
+        );
+    };
+
+    cloneNodes = (modelId) => {
+        const {graph} = this.state;
+        const data = transformGraphNodesToJson(graph);
+        data.forEach(d => {
+            const clonedD = Object.assign({}, {...d, uuid: uuidv4()});
+            postNode(clonedD, {modelId})
+                .then(result => {
+                    switch(result.type) {
+                        case ResponseType.SUCCESS:
+                            break;
+                        case ResponseType.INVALID:
+                            this.props.setMessage(
+                                'Invalid node data',
+                                MessageType.ERROR);
+                            this.props.showMessage();
+                            break;
+                        case ResponseType.AUTHENTICATION_FAILURE:
+                            this.context.logout();
+                            this.props.history.push('/login');
+                            break;
+                        default:
+                            this.props.setMessage(
+                                'Failed to save nodes',
+                                MessageType.ERROR);
+                            this.props.showMessage();
+
+                    }
+                });
+        });
+    };
+
     render() {
         const {message} = this.props;
         return (
@@ -231,6 +301,8 @@ class GraphEditor extends Component {
                     <CsvRow
                         graph={this.state.graph}
                         createGraphFromJson={this.createGraphFromJson}
+                        cloneModel={this.handleClone}
+                        showClone={this.showClone}
                     />
                     {this.showEditor()
                         ? <SaveGraphRow
@@ -297,6 +369,17 @@ class GraphEditor extends Component {
             </Fragment>
         );
     }
+
+    updateVersion = (title) => {
+        if(title.match(/\s\|\sV\d+$/)) {
+            return title.replace(/\s\|\sV\d+$/,
+                versionPipe =>
+                    versionPipe.replace(/\d+/, (v) =>
+                        parseInt(v, 10) + 1),
+            );
+        }
+        return title + ' | V1';
+    };
 }
 
 GraphEditor.contextType = AuthContext;
