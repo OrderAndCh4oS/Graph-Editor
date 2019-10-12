@@ -8,6 +8,8 @@ install with `npm run install` or `yarn install`
 
 run with `npm run start` or `yarn start`
 
+Requires this API https://github.com/sarcoma/Graph-Editor-Backend
+
 Site: https://grapheditor.orderandchaoscreative.com
 
 ![Screenshot of Graph View](/../screenshots/screenshots/view-panel.png?raw=true "Graph View Panel")
