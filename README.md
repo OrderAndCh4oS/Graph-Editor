@@ -10,6 +10,6 @@ run with `npm run start` or `yarn start`
 
 Site: https://grapheditor.orderandchaoscreative.com
 
-![Screenshot of Graph View](/../screenshot/screenshot/view.png?raw=true "Graph View")
+![Screenshot of Graph View](/../screenshots/screenshots/view.png?raw=true "Graph View")
 
-![Screenshot of Graph Editor](/../screenshot/screenshot/editor.png?raw=true "Graph Editor Panel")
+![Screenshot of Graph Editor](/../screenshots/screenshots/editor.png?raw=true "Graph Editor Panel")
