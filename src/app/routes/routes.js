@@ -61,7 +61,7 @@ const Routes = () =>
             <Route path="/register" component={Register}/>
             <Route
                 path="/graph-editor/:id?"
-                component={GraphEditorWithMessage}
+                render={(props) => <GraphEditorWithMessage {...props} />}
             />
         </div>
     </Router>

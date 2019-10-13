@@ -36,29 +36,55 @@ class GraphEditor extends Component {
     componentDidMount() {
         const {match} = this.props;
         if(match.params.hasOwnProperty('id') && match.params.id) {
-            this.setState({model: {id: match.params.id}});
-            getModel({scope: 'withNodes', id: match.params.id})
-                .then((result) => {
-                    switch(result.type) {
-                        case ResponseType.SUCCESS:
-                            const model = result.data;
-                            this.setState({
-                                model: {
-                                    id: model.id,
-                                    title: model.title,
-                                    description: model.description,
-                                },
-                            });
-                            this.createGraphFromJson(model.nodes);
-                            break;
-                        default:
-                            console.log('Unhandled error');
-                    }
-
-                    },
-                );
+            this.loadModel(match.params.id);
         }
     }
+
+    componentDidUpdate(previousProps, previousState) {
+        const {match} = this.props;
+        if(match.params.hasOwnProperty('id') && match.params.id && previousState.model.id != match.params.id) {
+            this.loadModel(match.params.id);
+        } else if (match.params.id === undefined && previousState.model.id != match.params.id) {
+            this.setState({
+                model: {
+                    id: null,
+                    title: '',
+                    description: '',
+                },
+                graph: new Digraph(),
+                data: {
+                    nodes: [],
+                    edges: [],
+                },
+                activeNode: null,
+            })
+        }
+    }
+
+
+    loadModel = (id) => {
+        this.setState({model: {id: id}});
+        getModel({scope: 'withNodes', id: id})
+            .then((result) => {
+                switch(result.type) {
+                    case ResponseType.SUCCESS:
+                        const model = result.data;
+                        this.setState({
+                            model: {
+                                id: model.id,
+                                title: model.title,
+                                description: model.description,
+                            },
+                        });
+                        this.createGraphFromJson(model.nodes);
+                        break;
+                    default:
+                        console.log('Unhandled error');
+                }
+
+                },
+            );
+    };
 
     updateModel = (model) => {
         this.setState({model});
@@ -86,6 +112,7 @@ class GraphEditor extends Component {
     };
 
     render() {
+        console.log("I rerendered");
         const {message} = this.props;
         return (
             <Fragment>
