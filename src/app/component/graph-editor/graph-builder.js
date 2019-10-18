@@ -7,13 +7,10 @@ import EditSeedNodePanel from './edit-seed-node-panel';
 import { Column, Panel, Row } from '../../elements/structure';
 import generateEdges from '../../utility/generate-edges';
 import ResponseType from '../../api/response-type';
-import { deleteNode, postNode } from '../../api';
+import { deleteNode } from '../../api';
 import { AuthContext } from '../../authentication';
 import { withRouter } from 'react-router-dom';
 import SaveButton from './save-button';
-import transformGraphNodesToJson
-    from '../../transform/transform-graph-nodes-to-json';
-import MessageType from '../../context/message/message-type';
 import withMessage from '../../context/message/with-message';
 import getProperty from '../../utility/get-property';
 
@@ -54,42 +51,6 @@ class GraphBuilder extends Component {
         const node = graph.getNodeByUuid(uuid);
         node[key] = value;
         this.props.updateGraph(graph);
-    };
-
-    saveNodes = () => {
-        const {graph, model} = this.props;
-        const data = transformGraphNodesToJson(graph);
-        data.forEach(d => {
-            postNode(d, {modelId: model.id})
-                .then(result => {
-                    switch(result.type) {
-                        case ResponseType.SUCCESS:
-                            // Todo: handle validation
-                            this.props.setMessage(
-                                'Nodes saved',
-                                MessageType.SUCCESS);
-                            this.props.showMessage();
-                            break;
-                        case ResponseType.INVALID:
-                            // Todo: handle marking form errors
-                            this.props.setMessage(
-                                'Invalid node data',
-                                MessageType.ERROR);
-                            this.props.showMessage();
-                            break;
-                        case ResponseType.AUTHENTICATION_FAILURE:
-                            this.context.logout();
-                            this.props.history.push('/login');
-                            break;
-                        default:
-                            this.props.setMessage(
-                                'Failed to save nodes',
-                                MessageType.ERROR);
-                            this.props.showMessage();
-
-                    }
-                });
-        });
     };
 
     removeNode = (uuid) => () => {
@@ -167,7 +128,7 @@ class GraphBuilder extends Component {
                         </Button>
                         {' '}
                         {getProperty(model.id) ? <SaveButton
-                            handleSave={this.saveNodes}
+                            handleSave={this.props.saveNodes}
                         /> : null}
                     </Column>
                     <Column span={6} sSpan={6} className={'align-right'}>
